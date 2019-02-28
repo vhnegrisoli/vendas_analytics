@@ -25,7 +25,6 @@ public class ClienteService {
 
     public void criaUsuarioAoInserirCliente(Cliente cliente) {
         Usuario usuario = new Usuario();
-
     }
 
 }

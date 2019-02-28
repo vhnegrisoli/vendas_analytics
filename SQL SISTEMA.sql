@@ -2,18 +2,19 @@
 
 -- REGIÃO
 
- 	Insert into Regiao (Id, Nome) values (1, 'Norte');
-	Insert into Regiao (Id, Nome) values (2, 'Nordeste');
-	Insert into Regiao (Id, Nome) values (3, 'Sudeste');
-	Insert into Regiao (Id, Nome) values (4, 'Sul');
-	Insert into Regiao (Id, Nome) values (5, 'Centro-Oeste');
+ 	Insert into Regiao (Nome) values ('Norte');
+	Insert into Regiao (Nome) values ('Nordeste');
+	Insert into Regiao (Nome) values ('Sudeste');
+	Insert into Regiao (Nome) values ('Sul');
+	Insert into Regiao (Nome) values ('Centro-Oeste');
 
 -- ESTADOS
 	
-	Insert into Estado (codigo_ibge, estado, sigla, Regiao_id) values (12, 'Acre', 'AC', 1);
-	Insert into Estado (codigo_ibge, estado, sigla, Regiao) values (27, 'Alagoas', 'AL', 2);
-	Insert into Estado (codigo_ibge, estado, sigla, Regiao) values (16, 'Amapá', 'AP', 1);
-	Insert into Estado (codigo_ibge, estado, sigla, Regiao) values (13, 'Amazonas', 'AM', 1);
+	
+	Insert into Estado (codigo_ibge, estado, sigla, regiao_id) values (12, 'Acre', 'AC', 1);
+	Insert into Estado (codigo_ibge, estado, sigla, regiao_id) values (27, 'Alagoas', 'AL', 2);
+	Insert into Estado (codigo_ibge, estado, sigla, regiao_id) values (16, 'Amapá', 'AP', 1);
+	Insert into Estado (codigo_ibge, estado, sigla, regiao_id) values (13, 'Amazonas', 'AM', 1);
 	Insert into Estado (codigo_ibge, estado, sigla, regiao_id) values (29, 'Bahia', 'BA', 2);
 	Insert into Estado (codigo_ibge, estado, sigla, regiao_id) values (23, 'Ceará', 'CE', 2);
 	Insert into Estado (codigo_ibge, estado, sigla, regiao_id) values (53, 'Distrito Federal', 'DF', 5);
