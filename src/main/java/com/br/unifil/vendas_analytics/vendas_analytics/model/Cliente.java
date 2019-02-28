@@ -36,11 +36,6 @@ public class Cliente {
     @NotNull
     @Column
     @Basic
-    private String endereco;
-
-    @NotNull
-    @Column
-    @Basic
     @CPF
     private String cpf;
 
@@ -63,7 +58,7 @@ public class Cliente {
     @NotNull
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
-    private Regiao regiao;
+    private Endereco endereco;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", insertable = false, updatable = false)
