@@ -1,9 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
@@ -17,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class Cliente {
 
     @Id
@@ -56,12 +55,13 @@ public class Cliente {
     private Date dataNascimento;
 
     @NotNull
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "endereco_id")
     private Endereco endereco;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id", insertable = false, updatable = false)
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @ManyToMany(mappedBy = "clientes", cascade = CascadeType.PERSIST)

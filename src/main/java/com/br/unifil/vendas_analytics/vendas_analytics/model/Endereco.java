@@ -31,7 +31,7 @@ public class Endereco {
     private String cep;
 
     @NotNull
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cidade_id")
     private Cidade cidade;
 
@@ -41,7 +41,7 @@ public class Endereco {
     private int numero;
 
     @NotNull
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "estado_id")
     private Estado estado;
 }

@@ -9,35 +9,20 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "estado")
+@Table(name = "regiao")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class Estado {
+public class Regiao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "codigo_ibge")
-    @NotNull
-    @Basic
-    private int codigoIbge;
-
     @Column
     @NotNull
     @Basic
-    private String estado;
-
-    @Column
-    @NotNull
-    @Basic
-    private String sigla;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "regiao_id")
-    private Regiao regiao;
+    private String nome;
 
 }
