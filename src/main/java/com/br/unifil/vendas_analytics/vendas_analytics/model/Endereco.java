@@ -30,6 +30,10 @@ public class Endereco {
     @NotNull
     private String cep;
 
+    @Column
+    @Basic
+    private String complemento;
+
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cidade_id")

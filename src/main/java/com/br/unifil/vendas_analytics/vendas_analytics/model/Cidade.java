@@ -23,6 +23,11 @@ public class Cidade {
     @Column
     @NotNull
     @Basic
-    private int cidade;
+    private String cidade;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "estado_id")
+    private Estado estado;
 
 }

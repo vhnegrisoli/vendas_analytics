@@ -21,7 +21,7 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @NotNull
     @Column
@@ -49,4 +49,9 @@ public class Usuario {
     @Basic
     @Enumerated(EnumType.STRING)
     private UsuarioSituacao situacao;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
 }

@@ -38,3 +38,15 @@
 	Insert into Estado (codigo_ibge, estado, sigla, regiao_id) values (35, 'São Paulo', 'SP', 3);
 	Insert into Estado (codigo_ibge, estado, sigla, regiao_id) values (28, 'Sergipe', 'SE', 2);
 	Insert into Estado (codigo_ibge, estado, sigla, regiao_id) values (17, 'Tocantins', 'TO', 1);
+	
+	-- CIDADES
+	
+	INSERT INTO CIDADE (CIDADE, ESTADO_ID) VALUES ('Londrina', 16);
+	INSERT INTO CIDADE (CIDADE, ESTADO_ID) VALUES ('Curitiba', 16);
+	INSERT INTO CIDADE (CIDADE, ESTADO_ID) VALUES ('Ponta Grossa', 16);
+	INSERT INTO CIDADE (CIDADE, ESTADO_ID) VALUES ('São Paulo', 25);
+	INSERT INTO CIDADE (CIDADE, ESTADO_ID) VALUES ('Rio de Janeiro', 19);
+
+	-- ENDERECO
+	INSERT INTO ENDERECO (CEP, NUMERO, RUA, CIDADE_ID, ESTADO_ID, COMPLEMENTO)
+	VALUES ('86.050-523', 80, 'Rua Tereza Zanetti Lopes', 1, 16, 'Apto. 706');

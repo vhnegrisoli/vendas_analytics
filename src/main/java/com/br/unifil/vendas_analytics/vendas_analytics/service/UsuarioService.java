@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.xml.bind.ValidationException;
 
 @Service
 public class UsuarioService {
@@ -13,9 +14,12 @@ public class UsuarioService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-    @Transactional
-    public void salvarUsuario(Usuario usuario) {
-        usuarioRepository.save(usuario);
+    public void salvarUsuario(Usuario usuario) throws ValidationException {
+        try {
+            usuarioRepository.save(usuario);
+        } catch (Exception e) {
+            throw new ValidationException("Erro ao salvar usuário");
+        }
     }
 
 }

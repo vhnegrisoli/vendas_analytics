@@ -20,7 +20,7 @@ public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @NotNull
     @Column
@@ -58,11 +58,6 @@ public class Cliente {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
 
     @ManyToMany(mappedBy = "clientes", cascade = CascadeType.PERSIST)
     private List<Venda> vendas;
