@@ -8,9 +8,12 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioReposit
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+
 import javax.xml.bind.ValidationException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
@@ -27,15 +30,18 @@ public class ClienteService {
 
     public void salvarCliente(Cliente cliente) throws ValidationException {
         try {
+            if (ObjectUtils.isEmpty(cliente.getId())) {
+                validarNovoCliente(cliente);
+            }
             clienteRepository.save(cliente);
             criaUsuarioAoInserirCliente(cliente);
-        }catch (Exception e) {
-            throw new ValidationException("Erro ao salvar cliente");
+        } catch (Exception ex) {
+            throw ex;
         }
     }
 
     public void criaUsuarioAoInserirCliente(Cliente cliente) throws ValidationException {
-        if(!hasUsuario(cliente)) {
+        if (!hasUsuario(cliente)) {
             Calendar calendar = Calendar.getInstance();
             Date date = null;
             Usuario usuario = Usuario
@@ -66,5 +72,24 @@ public class ClienteService {
         RandomStringGenerator pwdGenerator = new RandomStringGenerator.Builder().withinRange(33, 45)
                 .build();
         return pwdGenerator.generate(10);
+    }
+
+    public void validarNovoCliente(Cliente cliente) throws ValidationException {
+        validarCpfCadastrado(cliente);
+        validarEmailCadastrado(cliente);
+    }
+
+    public void validarCpfCadastrado(Cliente cliente) throws ValidationException {
+        Optional<Cliente> clienteCpf = clienteRepository.findByCpf(cliente.getCpf());
+        if (clienteCpf.isPresent()) {
+            throw new ValidationException("CPF já cadastrado");
+        }
+    }
+
+    public void validarEmailCadastrado(Cliente cliente) throws ValidationException {
+        Optional<Cliente> clienteEmail = clienteRepository.findByEmail(cliente.getEmail());
+        if (clienteEmail.isPresent()) {
+            throw new ValidationException("Email já cadastrado");
+        }
     }
 }
