@@ -12,6 +12,8 @@ import org.springframework.util.ObjectUtils;
 import javax.transaction.Transactional;
 import javax.xml.bind.ValidationException;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
@@ -27,6 +29,12 @@ public class UsuarioService {
     ClienteRepository clienteRepository;
 
     public void salvarUsuario(Usuario usuario) throws ValidationException {
+        if (isNovoCadastro(usuario)) {
+            Date date = null;
+            Calendar calendar = Calendar.getInstance();
+            usuario.setSituacao(ATIVO);
+            usuario.setDataCadastro(date = calendar.getTime());
+        }
         try {
             validaUsuario(usuario);
             usuario = validarTrocaDeSituacao(usuario);

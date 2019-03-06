@@ -1,6 +1,5 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.enums.CategoriaTipo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,9 +25,4 @@ public class Categoria {
     @NotNull
     private String descricao;
 
-    @Column
-    @Basic
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private CategoriaTipo tipo;
 }
