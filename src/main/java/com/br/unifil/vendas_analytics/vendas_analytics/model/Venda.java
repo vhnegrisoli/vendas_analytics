@@ -47,15 +47,17 @@ public class Venda {
     @Enumerated(EnumType.STRING)
     private VendaAprovacaoEnum aprovacao;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "cliente_venda",
-               joinColumns = @JoinColumn(name = "venda_id", insertable = false, updatable = false),
-               inverseJoinColumns = @JoinColumn(name = "cliente_id", insertable = false, updatable = false))
-    private List<Cliente> clientes;
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cliente_id")
+    private Cliente clientes;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "produto_venda",
-            joinColumns = @JoinColumn(name = "venda_id", insertable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "produto_id", insertable = false, updatable = false))
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "vendas", cascade = CascadeType.ALL)
     private List<Produto> produtos;
+
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "produto_venda",
+//            joinColumns = @JoinColumn(name = "venda_id"),
+//            inverseJoinColumns = @JoinColumn(name = "produto_id"))
+//    private List<Produto> produtos;
 }

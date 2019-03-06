@@ -59,6 +59,4 @@ public class Cliente {
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
 
-    @ManyToMany(mappedBy = "clientes", cascade = CascadeType.PERSIST)
-    private List<Venda> vendas;
 }

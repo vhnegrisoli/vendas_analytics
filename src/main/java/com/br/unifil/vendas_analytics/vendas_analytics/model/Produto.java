@@ -46,6 +46,13 @@ public class Produto {
     @JoinColumn(name = "categoria_id", insertable = false, updatable = false)
     Categoria categoria;
 
-    @ManyToMany(mappedBy = "produtos", cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "produto_venda",
+            joinColumns = @JoinColumn(name = "produto_id"),
+            inverseJoinColumns = @JoinColumn(name = "venda_id"))
     private List<Venda> vendas;
+
+//
+//    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "produtos", cascade = CascadeType.ALL)
+//    private List<Venda> vendas;
 }
