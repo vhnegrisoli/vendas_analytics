@@ -52,12 +52,9 @@ public class Venda {
     @JoinColumn(name = "cliente_id")
     private Cliente clientes;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "vendas", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "produto_venda",
+            joinColumns = @JoinColumn(name = "venda_id"),
+            inverseJoinColumns = @JoinColumn(name = "produto_id"))
     private List<Produto> produtos;
-
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "produto_venda",
-//            joinColumns = @JoinColumn(name = "venda_id"),
-//            inverseJoinColumns = @JoinColumn(name = "produto_id"))
-//    private List<Produto> produtos;
 }
