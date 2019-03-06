@@ -1,5 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,7 +48,7 @@ public class Produto {
     @JoinColumn(name = "categoria_id", insertable = false, updatable = false)
     Categoria categoria;
 
-    @JsonIgnore
+    @JsonBackReference
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "produtos", cascade = CascadeType.ALL)
     private List<Venda> vendas;
 }
