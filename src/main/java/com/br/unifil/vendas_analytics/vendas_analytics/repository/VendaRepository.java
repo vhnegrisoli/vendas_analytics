@@ -23,7 +23,8 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
             " v.ID  AS  codigo_venda , " +
             " v.QUANTIDADE_DE_ITENS " +
             " AS  quantidade_itens , " +
-            " v.DATA_COMPRA AS  data_venda , " +
+            //" CAST(v.DATA_COMPRA AS VARCHAR(10)) AS  data_venda , " +
+            " CONCAT(DAY(v.DATA_COMPRA),'/',MONTH(v.DATA_COMPRA),'/',YEAR(v.DATA_COMPRA)), " +
             " v.SITUACAO  AS  situacao_venda , " +
             " v.aprovacao  AS  aprovacao_venda , " +
             " p.ID  AS  codigo_produto , " +

@@ -24,7 +24,7 @@ import java.util.Date;
                 @ColumnResult(name = "usuario_cliente", type = String.class),
                 @ColumnResult(name = "codigo_venda", type = Integer.class),
                 @ColumnResult(name = "quantidade_itens", type = Integer.class),
-                @ColumnResult(name = "data_venda", type = Date.class),
+                @ColumnResult(name = "data_venda", type = String.class),
                 @ColumnResult(name = "situacao_venda", type = String.class),
                 @ColumnResult(name = "aprovacao_venda", type = String.class),
                 @ColumnResult(name = "codigo_produto", type = Integer.class),
@@ -50,7 +50,7 @@ public class ExportarCsvDto {
     private String usuario_cliente;
     private Integer codigo_venda;
     private Integer quantidade_itens;
-    private Date data_venda;
+    private String data_venda;
     private String situacao_venda;
     private String aprovacao_venda;
     private Integer codigo_produto;
