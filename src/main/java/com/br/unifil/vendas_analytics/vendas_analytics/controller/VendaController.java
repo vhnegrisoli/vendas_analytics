@@ -52,7 +52,7 @@ public class VendaController {
     public @ResponseBody String getCsv(@Valid String dataInicial, @Valid String dataFinal,
                                      HttpServletResponse response) throws JsonProcessingException {
         response.setContentType("application/octet-stream");
-        response.setContentType("text/plain;charset=ANSI");
+        response.setContentType("text/plain;charset=UTF-8");
         response.setHeader("Content-Disposition","attachment; filename=relatorio_geral_vendas.csv");
         return relatorioCsvService.gerarCsv(dataInicial, dataFinal);
     }

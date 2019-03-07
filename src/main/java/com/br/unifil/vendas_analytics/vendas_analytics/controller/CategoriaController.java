@@ -21,7 +21,6 @@ public class CategoriaController {
         return categoriaRepository.findAll();
     }
 
-
     @PostMapping("/salvar")
     public void save(@RequestBody Categoria categoria) throws ValidationException {
         try {
