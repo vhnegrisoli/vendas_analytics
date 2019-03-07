@@ -1,13 +1,19 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.ExportarCsvDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.HistoricoVenda;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Venda;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.HistoricoVendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.service.RelatorioCsvService;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.VendaService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.File;
 import java.util.List;
 
 @CrossOrigin
@@ -24,6 +30,9 @@ public class VendaController {
     @Autowired
     VendaService vendaService;
 
+    @Autowired
+    RelatorioCsvService relatorioCsvService;
+
     @GetMapping("/todas")
     public List<Venda> getAllVendas() {
         return vendaRepository.findAll();
@@ -37,6 +46,15 @@ public class VendaController {
     @GetMapping("/historico-de-vendas")
     public List<HistoricoVenda> getAllHistoricos() {
         return historicoVendaRepository.findAll();
+    }
+
+    @RequestMapping(value = "/relatorio-csv", produces = "text/csv", method = RequestMethod.GET)
+    public @ResponseBody String getCsv(@Valid String dataInicial, @Valid String dataFinal,
+                                     HttpServletResponse response) throws JsonProcessingException {
+        response.setContentType("application/octet-stream");
+        response.setContentType("text/plain;charset=ANSI");
+        response.setHeader("Content-Disposition","attachment; filename=relatorio_geral_vendas.csv");
+        return relatorioCsvService.gerarCsv(dataInicial, dataFinal);
     }
 
 }
