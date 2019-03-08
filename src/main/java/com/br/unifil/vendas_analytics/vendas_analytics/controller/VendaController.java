@@ -16,6 +16,9 @@ import javax.validation.Valid;
 import java.io.File;
 import java.util.List;
 
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.APROVADA;
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FECHADA;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/vendas")
@@ -55,6 +58,16 @@ public class VendaController {
         response.setContentType("text/plain;charset=UTF-8");
         response.setHeader("Content-Disposition","attachment; filename=relatorio_geral_vendas.csv");
         return relatorioCsvService.gerarCsv(dataInicial, dataFinal);
+    }
+
+    @GetMapping("/vendas-realizadas")
+    public List<Venda> getAllVendasRealizadas() {
+        return vendaRepository.findBySituacaoAndAprovacao(FECHADA, APROVADA);
+    }
+
+    @GetMapping("/vendas-nao-realizadas")
+    public List<Venda> getAllVendasNaoRealizadas() {
+        return vendaRepository.findBySituacaoNot(FECHADA);
     }
 
 }

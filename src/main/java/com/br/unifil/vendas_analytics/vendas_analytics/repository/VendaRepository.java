@@ -1,6 +1,8 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ExportarCsvDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum;
+import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Venda;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +18,7 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
             " c.EMAIL  AS  email_cliente , " +
             " CONCAT(e.RUA " +
             " , ' - nº ', e.NUMERO)AS  endereco_cliente , " +
-            " cd.CIDADE  AS  cidade , " +
+            " e.CIDADE  AS  cidade , " +
             " es.ESTADO  AS  estado , " +
             " r.NOME  AS  regiao , " +
             " u.NOME  AS  usuario_cliente ," +
@@ -37,7 +39,6 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
             "FROM Cliente c " +
             " LEFT JOIN Usuario u ON c.id = u.cliente_id " +
             " LEFT JOIN Endereco e ON e.id = c.endereco_id " +
-            " LEFT JOIN Cidade cd ON cd.id = e.cidade_id " +
             " LEFT JOIN Estado es ON es.id = e.estado_id " +
             " LEFT JOIN Regiao r ON es.regiao_id = r.id " +
             " LEFT JOIN Venda v ON v.cliente_id = c.id " +
@@ -47,5 +48,9 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
             " LEFT JOIN Fornecedor f ON f.id = p.fornecedor_id " +
             " WHERE v.DATA_COMPRA BETWEEN ?1 AND  ?2", nativeQuery = true)
     List<Object> getRelatoriosCsv(String dataInicial, String dataFinal);
+
+    List<Venda> findBySituacaoAndAprovacao(VendaSituacaoEnum situacao, VendaAprovacaoEnum aprovacao);
+
+    List<Venda> findBySituacaoNot(VendaSituacaoEnum situacao);
 
 }
