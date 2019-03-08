@@ -1,4 +1,7 @@
--- VIEWS PARA OS RELATÓRIOS DO ANALYTICS
+-- VIEWS PARA OS RELATÓRIOS DA DASHBOARD
+
+-- GRÁFICO PRINCIPAL
+
 CREATE VIEW VENDAS_POR_PERIODO AS
 SELECT 
 	ROW_NUMBER() OVER (ORDER BY v.data_compra) AS "id",
@@ -9,6 +12,44 @@ FROM VENDA v
 INNER JOIN produto_venda pv ON v.id = pv.venda_id
 INNER JOIN produto p ON p.id = pv.produto_id
 GROUP BY v.data_compra;
+
+-- CARDS INICIAIS
+CREATE VIEW VENDAS_POR_CLIENTE AS
+SELECT 
+	ROW_NUMBER() OVER (ORDER BY v.data_compra) AS "id",
+	COUNT(c.ID) AS "Clientes",
+	DATENAME(MONTH, v.data_compra) AS "Meses"
+FROM Cliente c
+INNER JOIN Venda v ON c.id = v.cliente_id
+GROUP BY v.data_compra;
+
+CREATE VIEW VENDAS_POR_PRODUTO AS
+SELECT 
+	ROW_NUMBER() OVER (ORDER BY v.data_compra) AS "id",
+	COUNT(p.ID) AS "Produtos",
+	DATENAME(MONTH, v.data_compra) AS "Meses"
+FROM Produto p
+INNER JOIN produto_venda pv ON p.id = pv.produto_id
+INNER JOIN Venda v ON v.id = pv.venda_id
+GROUP BY v.data_compra;
+
+CREATE VIEW VENDAS_CONCRETIZADAS AS
+SELECT 
+	ROW_NUMBER() OVER (ORDER BY data_compra) AS "id",
+	COUNT(ID) AS "vendas_concluidas",
+	DATENAME(MONTH, data_compra) AS "meses"
+FROM VENDA
+WHERE SITUACAO = 'FECHADA' AND APROVACAO = 'APROVADA'
+GROUP BY data_compra;
+
+CREATE VIEW VENDAS_NAO_CONCRETIZADAS AS
+SELECT 
+	ROW_NUMBER() OVER (ORDER BY data_compra) AS "id",
+	COUNT(ID) AS "vendas_concluidas",
+	DATENAME(MONTH, data_compra) AS "meses"
+FROM VENDA
+WHERE APROVACAO != 'APROVADA'
+GROUP BY data_compra;
 
 -- CONSULTA EXPORTAR CSV
 
@@ -47,3 +88,5 @@ FROM Cliente c
 	LEFT JOIN Produto p ON p.id = pv.produto_id
 	LEFT JOIN Categoria ct ON ct.id = p.fornecedor_id
 	LEFT JOIN Fornecedor f ON f.id = p.fornecedor_id;
+	
+-- ANALYTICS
