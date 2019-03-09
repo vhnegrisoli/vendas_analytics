@@ -44,10 +44,10 @@ public class ClienteService {
     public void criaUsuarioAoInserirCliente(Cliente cliente) throws ValidationException {
         if (!hasUsuario(cliente)) {
             Calendar calendar = Calendar.getInstance();
-            Date date = null;
+            Date date = calendar.getTime();
             Usuario usuario = Usuario
                     .builder()
-                    .dataCadastro(date = calendar.getTime())
+                    .dataCadastro(date)
                     .email(cliente.getEmail())
                     .nome(cliente.getNome())
                     .senha(gerarSenha())

@@ -12,9 +12,16 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.ValidationException;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.AGUARDANDO_APROVACAO;
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.APROVADA;
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.ABERTA;
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FECHADA;
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FINALIZADA;
 
 @Service
 public class VendaService {
@@ -28,20 +35,43 @@ public class VendaService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private HistoricoVendaService historicoVendaService;
-
     public void save(Venda venda) {
         Cliente cliente = clienteRepository.findById(venda.getClientes().getId())
                 .orElseThrow(() -> new ValidationException("Cliente não encontrado."));
-        List<Produto> produtos = venda.getProdutos();
         try {
             validarClienteComUsuarioAtivo(cliente);
+            valindarVendaFechadaOuConcluida(venda);
+            venda = validarInformacoesVenda(venda);
+            validarRejeicaoVenda(venda);
             vendaRepository.save(venda);
-            historicoVendaService.geraHistorico(venda, cliente, produtos);
         } catch (Exception e) {
             throw new ValidationException("Não foi possível salvar a venda.");
         }
+    }
+
+    public void valindarVendaFechadaOuConcluida(Venda venda) {
+        if (venda.getSituacao().equals(FECHADA)
+            || venda.getSituacao().equals(FINALIZADA)) {
+            throw new ValidationException("A venda está " + venda.getSituacao() + ", ou seja, " +
+                    "não é possível fazer alterações.");
+        }
+    }
+
+    public Venda validarInformacoesVenda(Venda venda) {
+        if (venda.getAprovacao().equals(APROVADA)) {
+            Calendar calendar = Calendar.getInstance();
+            Date date = calendar.getTime();
+            venda.setDataCompra(date);
+            venda.setSituacao(ABERTA);
+        } else if (venda.getAprovacao().equals(AGUARDANDO_APROVACAO)) {
+
+        }
+
+        return venda;
+    }
+
+    public void validarRejeicaoVenda(Venda venda) {
+
     }
 
     public void validarClienteComUsuarioAtivo(Cliente cliente) {

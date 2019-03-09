@@ -23,7 +23,7 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
             " r.NOME  AS  regiao , " +
             " u.NOME  AS  usuario_cliente ," +
             " v.ID  AS  codigo_venda , " +
-            " v.QUANTIDADE_DE_ITENS " +
+            " pv.QUANTIDADE " +
             " AS  quantidade_itens , " +
             " CONCAT(DAY(v.DATA_COMPRA),'/',MONTH(v.DATA_COMPRA),'/',YEAR(v.DATA_COMPRA)), " +
             " v.SITUACAO  AS  situacao_venda , " +
@@ -59,7 +59,7 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
             " r.NOME  AS  regiao , " +
             " u.NOME  AS  usuario_cliente ," +
             " v.ID  AS  codigo_venda , " +
-            " v.QUANTIDADE_DE_ITENS " +
+            " pv.QUANTIDADE " +
             " AS  quantidade_itens , " +
             " CONCAT(DAY(v.DATA_COMPRA),'/',MONTH(v.DATA_COMPRA),'/',YEAR(v.DATA_COMPRA)), " +
             " v.SITUACAO  AS  situacao_venda , " +

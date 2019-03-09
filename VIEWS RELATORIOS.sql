@@ -90,3 +90,31 @@ FROM Cliente c
 	LEFT JOIN Fornecedor f ON f.id = p.fornecedor_id;
 	
 -- ANALYTICS
+
+
+-- HISTORICO DE VENDAS
+CREATE VIEW HISTORICO_DE_VENDA AS
+SELECT
+	ROW_NUMBER() OVER (ORDER BY data_compra) AS "id",
+	v.ID			AS "codigo_venda",
+	v.SITUACAO		AS "situacao_venda",
+	v.APROVACAO		AS "aprovacao_venda",
+	pv.quantidade	AS "quantidade_itens",
+	c.nome			AS "nome_cliente",
+	c.email			AS "email_cliente",
+	CONCAT(c.rua
+    ,', nº',c.numero) AS "endereco_cliente",
+	CONCAT(c.cidade,
+	' - ', e.estado) AS "local_cliente",
+	p.nome_produto	AS "nome_produto",
+	p.descricao		AS "descricao_produto",
+	p.preco			AS "preco"
+FROM Cliente c
+	LEFT JOIN Estado e ON e.id = c.estado_id
+	LEFT JOIN Regiao r ON e.regiao_id = r.id
+	LEFT JOIN Venda v ON v.cliente_id = c.id
+	LEFT JOIN Produto_Venda pv ON pv.venda_id = v.id
+	LEFT JOIN Produto p ON p.id = pv.produto_id
+	LEFT JOIN Categoria ct ON ct.id = p.fornecedor_id
+	LEFT JOIN Fornecedor f ON f.id = p.fornecedor_id;
+	

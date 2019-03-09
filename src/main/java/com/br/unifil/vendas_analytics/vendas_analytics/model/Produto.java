@@ -48,7 +48,4 @@ public class Produto {
     @JoinColumn(name = "categoria_id")
     Categoria categoria;
 
-    @JsonBackReference
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "produtos", cascade = CascadeType.ALL)
-    private List<Venda> vendas;
 }
