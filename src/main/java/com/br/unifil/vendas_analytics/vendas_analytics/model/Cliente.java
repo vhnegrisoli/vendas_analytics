@@ -54,9 +54,32 @@ public class Cliente {
     @Temporal(TemporalType.DATE)
     private Date dataNascimento;
 
+    @Column
+    @Basic
+    @NotNull
+    private String rua;
+
+    @Column
+    @Basic
+    @NotNull
+    private String cep;
+
+    @Column
+    @Basic
+    private String complemento;
+
+    @NotNull
+    @Basic
+    private String cidade;
+
+    @Column
+    @Basic
+    @NotNull
+    private int numero;
+
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "endereco_id")
-    private Endereco endereco;
+    @JoinColumn(name = "estado_id")
+    private Estado estado;
 
 }

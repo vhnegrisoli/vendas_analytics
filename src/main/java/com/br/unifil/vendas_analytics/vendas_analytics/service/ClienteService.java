@@ -2,10 +2,8 @@ package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.Endereco;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.EnderecoRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,32 +28,17 @@ public class ClienteService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-    @Autowired
-    EnderecoRepository enderecoRepository;
 
     public void salvarCliente(Cliente cliente) throws ValidationException {
         try {
             if (ObjectUtils.isEmpty(cliente.getId())) {
                 validarNovoCliente(cliente);
             }
-            salvaEndereco(cliente);
             clienteRepository.save(cliente);
             criaUsuarioAoInserirCliente(cliente);
         } catch (Exception ex) {
             throw ex;
         }
-    }
-
-    public void salvaEndereco(Cliente cliente) {
-        Endereco endereco = cliente.getEndereco();
-        Optional<Endereco> validaExistente = enderecoRepository
-                .findByRuaAndNumeroAndCep(endereco.getRua(), endereco.getNumero(), endereco.getCep());
-        if (validaExistente.isPresent() && !ObjectUtils.isEmpty(validaExistente.get().getId())) {
-            enderecoRepository.save(validaExistente.get());
-        } else {
-            enderecoRepository.save(cliente.getEndereco());
-        }
-        enderecoRepository.save(cliente.getEndereco());
     }
 
     public void criaUsuarioAoInserirCliente(Cliente cliente) throws ValidationException {

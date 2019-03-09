@@ -21,7 +21,7 @@ public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "nome_produto")
     @Basic
@@ -40,12 +40,12 @@ public class Produto {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "fornecedor_id", insertable = false, updatable = false)
+    @JoinColumn(name = "fornecedor_id")
     Fornecedor fornecedor;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "categoria_id", insertable = false, updatable = false)
+    @JoinColumn(name = "categoria_id")
     Categoria categoria;
 
     @JsonBackReference

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +25,12 @@ public class RelatorioCsvService {
     }
 
     public String gerarCsv(String dataInicial, String dataFinal) throws JsonProcessingException {
-        List<Object> resposta = vendaRepository.getRelatoriosCsv(dataInicial, dataFinal);
+        List<Object> resposta = null;
+        if (ObjectUtils.isEmpty(dataInicial) || ObjectUtils.isEmpty(dataFinal)) {
+            resposta = vendaRepository.getRelatoriosCsvGeral();
+        } else {
+            resposta = vendaRepository.getRelatoriosCsv(dataInicial, dataFinal);
+        }
         String dadosVenda = gerarCabecalho() + "\n";
         Iterator itr = resposta.iterator();
         while(itr.hasNext()) {

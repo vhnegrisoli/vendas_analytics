@@ -21,7 +21,7 @@ public class ProdutoController {
         return produtoRepository.findAll();
     }
 
-    @GetMapping
+    @PostMapping("/salvar")
     public void save(@RequestBody Produto produto) throws ValidationException {
         try {
             produtoRepository.save(produto);
