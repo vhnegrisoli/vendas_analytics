@@ -2,6 +2,7 @@ package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum;
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum;
+import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,16 +19,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="id")
 public class Venda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(name = "quantidade_de_itens")
-    @Basic
-    @NotNull
-    private int quantidadeItens;
+    private Integer id;
 
     @Column(name = "data_compra")
     @Basic
@@ -51,5 +48,8 @@ public class Venda {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cliente_id")
     private Cliente clientes;
+
+    @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProdutoVenda> produtos;
 
 }

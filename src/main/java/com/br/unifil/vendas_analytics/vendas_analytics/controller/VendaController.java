@@ -1,9 +1,9 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.ExportarCsvDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.HistoricoVenda;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Venda;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.HistoricoVendaRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.RelatorioCsvService;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.VendaService;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
+import javax.validation.ValidationException;
 import java.util.List;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.APROVADA;
@@ -36,14 +36,28 @@ public class VendaController {
     @Autowired
     RelatorioCsvService relatorioCsvService;
 
+    @Autowired
+    ProdutoVendaRepository produtoVendaRepository;
+
     @GetMapping("/todas")
     public List<Venda> getAllVendas() {
         return vendaRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public Venda getUmaVenda(@PathVariable int id) throws ValidationException {
+        return vendaRepository.findById(id).orElseThrow(
+                () -> new ValidationException("Venda não existente"));
+    }
+
     @PostMapping("/salvar")
     public void save(@RequestBody Venda venda) {
-        vendaService.save(venda);
+        vendaRepository.save(venda);
+        venda.getProdutos().forEach(
+            produto -> {
+                produtoVendaRepository.save(produto);
+        });
+
     }
 
     @GetMapping("/historico-de-vendas")

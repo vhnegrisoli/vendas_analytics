@@ -1,7 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="id")
 public class Produto {
 
     @Id
@@ -48,4 +48,7 @@ public class Produto {
     @JoinColumn(name = "categoria_id")
     Categoria categoria;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProdutoVenda> venda;
 }

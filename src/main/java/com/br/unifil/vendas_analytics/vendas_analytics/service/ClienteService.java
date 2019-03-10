@@ -31,7 +31,7 @@ public class ClienteService {
 
     public void salvarCliente(Cliente cliente) throws ValidationException {
         try {
-            if (ObjectUtils.isEmpty(cliente.getId())) {
+            if (isNovoCadastro(cliente)) {
                 validarNovoCliente(cliente);
             }
             clienteRepository.save(cliente);
@@ -92,5 +92,9 @@ public class ClienteService {
         if (clienteEmail.isPresent()) {
             throw new ValidationException("Email já cadastrado");
         }
+    }
+
+    public boolean isNovoCadastro(Cliente cliente) {
+        return ObjectUtils.isEmpty(cliente.getId());
     }
 }

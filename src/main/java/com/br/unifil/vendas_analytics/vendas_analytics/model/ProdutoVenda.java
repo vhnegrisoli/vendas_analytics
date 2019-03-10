@@ -1,5 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "produto_venda")
@@ -17,18 +18,17 @@ import java.util.List;
 @Builder
 public class ProdutoVenda {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @EmbeddedId
+    private ProdutoVendaId id;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "produto_id")
+    @MapsId("produto_id")
+    @JoinColumn(name = "produto_id", referencedColumnName = "id")
     private Produto produto;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "venda_id")
+    @JoinColumn(name = "venda_id", referencedColumnName = "id")
+    @MapsId("venda_id")
     private Venda venda;
 
     @Column

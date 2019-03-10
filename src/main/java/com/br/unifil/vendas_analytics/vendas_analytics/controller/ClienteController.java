@@ -27,7 +27,6 @@ public class ClienteController {
 
     @PostMapping("/salvar")
     public void salvar(@RequestBody Cliente cliente) throws Exception{
-
         clienteService.salvarCliente(cliente);
     }
 }
