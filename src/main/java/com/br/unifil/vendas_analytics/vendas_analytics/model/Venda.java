@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="id")
-public class Venda {
+public class Venda implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +50,7 @@ public class Venda {
     @JoinColumn(name = "cliente_id")
     private Cliente clientes;
 
-    @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL)
     private List<ProdutoVenda> produtos;
 
 }
