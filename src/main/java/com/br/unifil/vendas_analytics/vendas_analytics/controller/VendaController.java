@@ -1,8 +1,11 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.model.HistoricoVenda;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.ProdutoVenda;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.ProdutoVendaId;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Venda;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.HistoricoVendaRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.RelatorioCsvService;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.VendaService;
@@ -11,12 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
+import java.security.Timestamp;
+import java.lang.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.APROVADA;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FECHADA;
+import static java.lang.System.currentTimeMillis;
 
 @CrossOrigin
 @RestController
@@ -35,6 +46,9 @@ public class VendaController {
     @Autowired
     RelatorioCsvService relatorioCsvService;
 
+    @Autowired
+    ProdutoVendaRepository produtoVendaRepository;
+
     @GetMapping("/todas")
     public List<Venda> getAllVendas() {
         return vendaRepository.findAll();
@@ -48,7 +62,7 @@ public class VendaController {
 
     @PostMapping("/salvar")
     public void save(@RequestBody Venda venda) {
-        vendaRepository.save(venda);
+        vendaService.save(venda);
     }
 
     @GetMapping("/historico-de-vendas")

@@ -1,10 +1,8 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.Produto;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.Venda;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +10,11 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.ValidationException;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.AGUARDANDO_APROVACAO;
@@ -35,18 +35,27 @@ public class VendaService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private ProdutoVendaRepository produtoVendaRepository;
+
     public void save(Venda venda) {
-        Cliente cliente = clienteRepository.findById(venda.getClientes().getId())
-                .orElseThrow(() -> new ValidationException("Cliente não encontrado."));
-        try {
-            validarClienteComUsuarioAtivo(cliente);
-            valindarVendaFechadaOuConcluida(venda);
-            venda = validarInformacoesVenda(venda);
-            validarRejeicaoVenda(venda);
-            vendaRepository.save(venda);
-        } catch (Exception e) {
-            throw new ValidationException("Não foi possível salvar a venda.");
-        }
+        AtomicReference<Integer> id = new AtomicReference<>(null);
+        List<ProdutoVenda> produtos = venda.getProdutos();
+        venda.setDataCompra(null);
+        venda.setDataCompra(LocalDateTime.now());
+        Venda vendaCadastrar = venda;
+        vendaCadastrar.setProdutos(null);
+        vendaRepository.save(vendaCadastrar);
+        id.set(vendaCadastrar.getId());
+        produtos.forEach(
+            produto -> {
+                ProdutoVendaId pk = new ProdutoVendaId();
+                pk.setProdutoId(produto.getId().getProdutoId());
+                pk.setVendaId(id.get());
+                produto.setId(pk);
+                produtoVendaRepository.save(produto);
+            }
+        );
     }
 
     public void valindarVendaFechadaOuConcluida(Venda venda) {
@@ -61,7 +70,7 @@ public class VendaService {
         if (venda.getAprovacao().equals(APROVADA)) {
             Calendar calendar = Calendar.getInstance();
             Date date = calendar.getTime();
-            venda.setDataCompra(date);
+//            venda.setDataCompra(date);
             venda.setSituacao(ABERTA);
         } else if (venda.getAprovacao().equals(AGUARDANDO_APROVACAO)) {
 

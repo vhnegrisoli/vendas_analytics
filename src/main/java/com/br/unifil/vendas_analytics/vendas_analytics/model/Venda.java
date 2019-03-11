@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -30,8 +31,7 @@ public class Venda implements Serializable {
     @Column(name = "data_compra")
     @Basic
     @NotNull
-    @Temporal(TemporalType.DATE)
-    private Date dataCompra;
+    private LocalDateTime dataCompra;
 
     @Column
     @Basic

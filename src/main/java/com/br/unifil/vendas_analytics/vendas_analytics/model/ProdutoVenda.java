@@ -1,5 +1,7 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -14,12 +16,13 @@ public class ProdutoVenda implements Serializable{
     @EmbeddedId
     private ProdutoVendaId id;
 
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venda_id", referencedColumnName = "id")
     @MapsId("venda_id")
     private Venda venda;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("produto_id")
     @JoinColumn(name = "produto_id", referencedColumnName = "id")
