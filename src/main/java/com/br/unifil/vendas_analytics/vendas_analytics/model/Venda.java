@@ -53,4 +53,7 @@ public class Venda implements Serializable {
     @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL)
     private List<ProdutoVenda> produtos;
 
+    @Column(name = "mes_compra")
+    private String mesCompra;
+
 }

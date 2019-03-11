@@ -5,15 +5,20 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteReposit
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ValidationException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
@@ -42,7 +47,11 @@ public class VendaService {
         AtomicReference<Integer> id = new AtomicReference<>(null);
         List<ProdutoVenda> produtos = venda.getProdutos();
         venda.setDataCompra(null);
-        venda.setDataCompra(LocalDateTime.now());
+        LocalDate date = LocalDate.now();
+        String mes = date.getMonth().getDisplayName(TextStyle.FULL, new Locale("pt"));
+        LocalDateTime dataCompra = LocalDateTime.now();
+        venda.setDataCompra(dataCompra);
+        venda.setMesCompra(mes);
         Venda vendaCadastrar = venda;
         vendaCadastrar.setProdutos(null);
         vendaRepository.save(vendaCadastrar);
@@ -57,6 +66,17 @@ public class VendaService {
             }
         );
     }
+
+    public String getMes(String mes) {
+        switch(mes) {
+            case "FEBUARY":
+                mes = "Fevereiro";
+                break;
+
+        }
+        return mes;
+    }
+
 
     public void valindarVendaFechadaOuConcluida(Venda venda) {
         if (venda.getSituacao().equals(FECHADA)
