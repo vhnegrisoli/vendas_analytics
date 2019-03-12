@@ -1,16 +1,14 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import javax.transaction.Transactional;
-import javax.xml.bind.ValidationException;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -28,7 +26,7 @@ public class UsuarioService {
     @Autowired
     ClienteRepository clienteRepository;
 
-    public void salvarUsuario(Usuario usuario) throws ValidationException {
+    public void salvarUsuario(Usuario usuario) throws ValidacaoException {
         if (isNovoCadastro(usuario)) {
             Date date = null;
             Calendar calendar = Calendar.getInstance();
@@ -40,37 +38,37 @@ public class UsuarioService {
             usuario = validarTrocaDeSituacao(usuario);
             usuarioRepository.save(usuario);
         } catch (Exception e) {
-            throw new ValidationException("Erro ao salvar usuário");
+            throw new ValidacaoException("Erro ao salvar usuário");
         }
     }
 
-    public void validaUsuario(Usuario usuario) throws ValidationException {
+    public void validaUsuario(Usuario usuario) throws ValidacaoException {
         validarClienteExistente(usuario);
         if (isNovoCadastro(usuario) && !usuario.getSituacao().equals(ATIVO)) {
-            throw new ValidationException("Não é possível cadastrar um usuário INATIVO.");
+            throw new ValidacaoException("Não é possível cadastrar um usuário INATIVO.");
         }
         validaEmailClienteESituacao(usuario);
         validarTrocaDeEmail(usuario);
     }
 
-    public void validarClienteExistente(Usuario usuario) throws ValidationException {
+    public void validarClienteExistente(Usuario usuario) throws ValidacaoException {
         if (isNovoCadastro(usuario)) {
             if (ObjectUtils.isEmpty(usuario.getCliente().getId())) {
-                throw new ValidationException("É preciso ter um cliente para cadastrar um novo usuário");
+                throw new ValidacaoException("É preciso ter um cliente para cadastrar um novo usuário");
             }
         }
     }
 
-    public Usuario validarTrocaDeSituacao(Usuario usuario) throws ValidationException {
+    public Usuario validarTrocaDeSituacao(Usuario usuario) throws ValidacaoException {
         usuario = validarInativacao(usuario);
         usuario = validarAtivacao(usuario);
         return usuario;
     }
 
-    public Usuario validarInativacao(Usuario usuario) throws ValidationException {
+    public Usuario validarInativacao(Usuario usuario) throws ValidacaoException {
         if(!isNovoCadastro(usuario)) {
             Usuario usuarioAntigo = usuarioRepository.findById(usuario.getId())
-                    .orElseThrow(() -> new ValidationException("Usuário não existe"));
+                    .orElseThrow(() -> new ValidacaoException("Usuário não existe"));
             if (!usuario.getSituacao().equals(usuarioAntigo.getSituacao())
                 && usuario.getSituacao().equals(INATIVO)) {
                     usuario.setSituacao(INATIVO);
@@ -79,10 +77,10 @@ public class UsuarioService {
         return  usuario;
     }
 
-    public Usuario validarAtivacao(Usuario usuario) throws ValidationException {
+    public Usuario validarAtivacao(Usuario usuario) throws ValidacaoException {
         if(!isNovoCadastro(usuario)) {
             Usuario usuarioAntigo = usuarioRepository.findById(usuario.getId())
-                    .orElseThrow(() -> new ValidationException("Usuário não existe"));
+                    .orElseThrow(() -> new ValidacaoException("Usuário não existe"));
             if (!usuario.getSituacao().equals(usuarioAntigo.getSituacao())
                     && usuario.getSituacao().equals(ATIVO)) {
                 usuario.setSituacao(ATIVO);
@@ -92,19 +90,19 @@ public class UsuarioService {
     }
 
 
-    public void validaEmailClienteESituacao(Usuario usuario) throws ValidationException {
+    public void validaEmailClienteESituacao(Usuario usuario) throws ValidacaoException {
         Optional<Usuario> usuarioValidar = usuarioRepository
                 .findByEmailAndSituacao(usuario.getEmail(), ATIVO);
         if (usuarioValidar.isPresent()) {
-            throw new ValidationException("Não é possível inserir o usuário pois o email "
+            throw new ValidacaoException("Não é possível inserir o usuário pois o email "
                                         + usuario.getEmail() + " já está cadastrado.");
         }
     }
 
-    public void validarTrocaDeEmail(Usuario usuario) throws ValidationException {
+    public void validarTrocaDeEmail(Usuario usuario) throws ValidacaoException {
         if (!isNovoCadastro(usuario)) {
             Cliente cliente = clienteRepository.findById(usuario.getCliente().getId())
-                    .orElseThrow(() -> new ValidationException("O cliente não está cadastrado"));
+                    .orElseThrow(() -> new ValidacaoException("O cliente não está cadastrado"));
             if (!usuario.getEmail().equals(cliente.getEmail())) {
                 cliente.setEmail(usuario.getEmail());
                 clienteRepository.save(cliente);

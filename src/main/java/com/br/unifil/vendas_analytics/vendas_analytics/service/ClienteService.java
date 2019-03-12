@@ -5,12 +5,12 @@ import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import javax.xml.bind.ValidationException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -29,7 +29,7 @@ public class ClienteService {
     UsuarioRepository usuarioRepository;
 
 
-    public void salvarCliente(Cliente cliente) throws ValidationException {
+    public void salvarCliente(Cliente cliente) throws ValidacaoException {
         try {
             if (isNovoCadastro(cliente)) {
                 validarNovoCliente(cliente);
@@ -37,11 +37,11 @@ public class ClienteService {
             clienteRepository.save(cliente);
             criaUsuarioAoInserirCliente(cliente);
         } catch (Exception ex) {
-            throw ex;
+            throw new ValidacaoException("Não foi possível salvar o cliente.");
         }
     }
 
-    public void criaUsuarioAoInserirCliente(Cliente cliente) throws ValidationException {
+    public void criaUsuarioAoInserirCliente(Cliente cliente) throws ValidacaoException {
         if (!hasUsuario(cliente)) {
             Calendar calendar = Calendar.getInstance();
             Date date = calendar.getTime();
@@ -75,22 +75,22 @@ public class ClienteService {
         return pwdGenerator.generate(10);
     }
 
-    public void validarNovoCliente(Cliente cliente) throws ValidationException {
+    public void validarNovoCliente(Cliente cliente) throws ValidacaoException {
         validarCpfCadastrado(cliente);
         validarEmailCadastrado(cliente);
     }
 
-    public void validarCpfCadastrado(Cliente cliente) throws ValidationException {
+    public void validarCpfCadastrado(Cliente cliente) throws ValidacaoException {
         Optional<Cliente> clienteCpf = clienteRepository.findByCpf(cliente.getCpf());
         if (clienteCpf.isPresent()) {
-            throw new ValidationException("CPF já cadastrado");
+            throw new ValidacaoException("CPF já cadastrado");
         }
     }
 
-    public void validarEmailCadastrado(Cliente cliente) throws ValidationException {
+    public void validarEmailCadastrado(Cliente cliente) throws ValidacaoException {
         Optional<Cliente> clienteEmail = clienteRepository.findByEmail(cliente.getEmail());
         if (clienteEmail.isPresent()) {
-            throw new ValidationException("Email já cadastrado");
+            throw new ValidacaoException("Email já cadastrado");
         }
     }
 
