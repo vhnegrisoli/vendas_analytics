@@ -93,6 +93,7 @@ FROM Cliente c
 
 
 -- HISTORICO DE VENDAS
+
 CREATE VIEW HISTORICO_DE_VENDA AS
 SELECT
 	ROW_NUMBER() OVER (ORDER BY data_compra) AS "id",
@@ -110,11 +111,12 @@ SELECT
 	p.descricao		AS "descricao_produto",
 	p.preco			AS "preco"
 FROM Cliente c
-	LEFT JOIN Estado e ON e.id = c.estado_id
-	LEFT JOIN Regiao r ON e.regiao_id = r.id
-	LEFT JOIN Venda v ON v.cliente_id = c.id
-	LEFT JOIN Produto_Venda pv ON pv.venda_id = v.id
-	LEFT JOIN Produto p ON p.id = pv.produto_id
-	LEFT JOIN Categoria ct ON ct.id = p.fornecedor_id
-	LEFT JOIN Fornecedor f ON f.id = p.fornecedor_id;
+	INNER JOIN Estado e ON e.id = c.estado_id
+	INNER JOIN Regiao r ON e.regiao_id = r.id
+	INNER JOIN Venda v ON v.cliente_id = c.id
+	INNER JOIN Produto_Venda pv ON pv.venda_id = v.id
+	INNER JOIN Produto p ON p.id = pv.produto_id
+	INNER JOIN Categoria ct ON ct.id = p.fornecedor_id
+	INNER JOIN Fornecedor f ON f.id = p.fornecedor_id
+
 	
