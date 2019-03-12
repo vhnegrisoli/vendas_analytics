@@ -10,8 +10,12 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
@@ -27,7 +31,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository
                 .findByEmailAndSituacao(email, ATIVO)
             .orElseThrow(() -> new ValidacaoException("Usuário não encontrado"));
-        List<GrantedAuthority> authorityListAdmin = AuthorityUtils.createAuthorityList("ROLE_ADMIN");
+        List<GrantedAuthority> authorityListAdmin = AuthorityUtils
+                .createAuthorityList("ROLE_" + usuario.getPermissoesUsuario().getPermissao().name());
         return new User(
                 usuario.getEmail(),
                 usuario.getSenha(),

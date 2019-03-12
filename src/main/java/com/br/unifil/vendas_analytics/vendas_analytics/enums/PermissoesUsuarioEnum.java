@@ -5,7 +5,7 @@ public enum PermissoesUsuarioEnum {
     USER("ROLE_USER"),
     ADMIN("ROLE_ADMIN");
 
-    private String permissao;
+    String permissao;
 
     PermissoesUsuarioEnum (String permissao) {
         this.permissao = permissao;

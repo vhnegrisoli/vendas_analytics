@@ -6,6 +6,6 @@ public class Password {
 
     public static void main (String args []) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        System.out.println(passwordEncoder.encode("123456"));
+        System.out.println(passwordEncoder.encode("tataialinda123"));
     }
 }
