@@ -54,4 +54,9 @@ public class Usuario {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "permissoes_usuario_id")
+    private PermissoesUsuario permissoesUsuario;
 }
