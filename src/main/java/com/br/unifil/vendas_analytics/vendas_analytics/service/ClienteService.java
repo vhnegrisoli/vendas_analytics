@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -43,11 +44,9 @@ public class ClienteService {
 
     public void criaUsuarioAoInserirCliente(Cliente cliente) throws ValidacaoException {
         if (!hasUsuario(cliente)) {
-            Calendar calendar = Calendar.getInstance();
-            Date date = calendar.getTime();
             Usuario usuario = Usuario
                     .builder()
-                    .dataCadastro(date)
+                    .dataCadastro(LocalDateTime.now())
                     .email(cliente.getEmail())
                     .nome(cliente.getNome())
                     .senha(gerarSenha())

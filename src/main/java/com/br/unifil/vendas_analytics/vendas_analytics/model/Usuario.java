@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -31,8 +32,7 @@ public class Usuario {
     @NotNull
     @Column(name = "data_cadastro")
     @Basic
-    @Temporal(TemporalType.DATE)
-    private Date dataCadastro;
+    private LocalDateTime dataCadastro;
 
     @NotNull
     @Column

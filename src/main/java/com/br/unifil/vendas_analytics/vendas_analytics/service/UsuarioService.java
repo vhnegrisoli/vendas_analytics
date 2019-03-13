@@ -10,8 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
@@ -28,10 +27,8 @@ public class UsuarioService {
 
     public void salvarUsuario(Usuario usuario) throws ValidacaoException {
         if (isNovoCadastro(usuario)) {
-            Date date = null;
-            Calendar calendar = Calendar.getInstance();
             usuario.setSituacao(ATIVO);
-            usuario.setDataCadastro(date = calendar.getTime());
+            usuario.setDataCadastro(LocalDateTime.now());
         }
         try {
             validaUsuario(usuario);
@@ -44,9 +41,6 @@ public class UsuarioService {
 
     public void validaUsuario(Usuario usuario) throws ValidacaoException {
         validarClienteExistente(usuario);
-        if (isNovoCadastro(usuario) && !usuario.getSituacao().equals(ATIVO)) {
-            throw new ValidacaoException("Não é possível cadastrar um usuário INATIVO.");
-        }
         validaEmailClienteESituacao(usuario);
         validarTrocaDeEmail(usuario);
     }
