@@ -2,6 +2,7 @@ package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Categoria;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.CategoriaRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,13 @@ public class CategoriaController {
         } catch (Exception e) {
             throw new ValidationException("Não foi possível salvar a categoria.");
         }
+    }
+
+    @GetMapping("/remover/{id}")
+    public void remover(@PathVariable int id) {
+        Categoria categoria = categoriaRepository.findById(id).orElseThrow(() -> new ValidacaoException("Categoria" +
+                " não encontrada."));
+        categoriaRepository.delete(categoria);
     }
 
 }
