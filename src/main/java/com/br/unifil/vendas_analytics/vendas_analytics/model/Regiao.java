@@ -18,7 +18,7 @@ public class Regiao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column
     @NotNull
