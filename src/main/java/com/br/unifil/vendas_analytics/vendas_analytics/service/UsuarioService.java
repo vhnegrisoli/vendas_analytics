@@ -25,6 +25,8 @@ public class UsuarioService {
     @Autowired
     ClienteRepository clienteRepository;
 
+    private final ValidacaoException USUARIO_NAO_EXISTENTE_EXCEPTION = new ValidacaoException("O usuário não existe");
+
     public void salvarUsuario(Usuario usuario) throws ValidacaoException {
         if (isNovoCadastro(usuario)) {
             usuario.setSituacao(ATIVO);
@@ -62,7 +64,7 @@ public class UsuarioService {
     public Usuario validarInativacao(Usuario usuario) throws ValidacaoException {
         if(!isNovoCadastro(usuario)) {
             Usuario usuarioAntigo = usuarioRepository.findById(usuario.getId())
-                    .orElseThrow(() -> new ValidacaoException("Usuário não existe"));
+                    .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
             if (!usuario.getSituacao().equals(usuarioAntigo.getSituacao())
                 && usuario.getSituacao().equals(INATIVO)) {
                     usuario.setSituacao(INATIVO);
@@ -74,7 +76,7 @@ public class UsuarioService {
     public Usuario validarAtivacao(Usuario usuario) throws ValidacaoException {
         if(!isNovoCadastro(usuario)) {
             Usuario usuarioAntigo = usuarioRepository.findById(usuario.getId())
-                    .orElseThrow(() -> new ValidacaoException("Usuário não existe"));
+                    .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
             if (!usuario.getSituacao().equals(usuarioAntigo.getSituacao())
                     && usuario.getSituacao().equals(ATIVO)) {
                 usuario.setSituacao(ATIVO);
