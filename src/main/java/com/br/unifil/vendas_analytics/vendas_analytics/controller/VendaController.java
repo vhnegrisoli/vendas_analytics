@@ -1,9 +1,7 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.model.HistoricoVenda;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.ProdutoVenda;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.ProdutoVendaId;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.Venda;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.HistoricoVendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
@@ -99,6 +97,11 @@ public class VendaController {
     @GetMapping("/rejeitar-venda/{id}")
     public void rejeitarVenda(@PathVariable int id) {
         vendaService.rejeitarVenda(id);
+    }
+
+    @GetMapping("/vendas-produtos/{id}")
+    public List<ProdutosDaVendaDto> getProdutosDaVenda(@PathVariable int id) {
+        return vendaRepository.findAllProdutosDaVendaByVendaId(id);
     }
 
 }

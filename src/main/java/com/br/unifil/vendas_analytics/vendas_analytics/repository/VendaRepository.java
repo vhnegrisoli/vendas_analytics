@@ -1,6 +1,7 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ExportarCsvDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum;
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
@@ -90,4 +91,19 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
     List<Venda> findBySituacaoAndAprovacao(VendaSituacaoEnum situacao, VendaAprovacaoEnum aprovacao);
 
     List<Venda> findByAprovacao(VendaAprovacaoEnum aprovacao);
+
+    @Query(value = "SELECT p.id, " +
+            "p.nome, " +
+            "p.descricao, " +
+            "p.preco, " +
+            "f.razao_social, " +
+            "c.descricao, " +
+            "pv.preco " +
+            "FROM Produto p " +
+            "LEFT JOIN Produto_Venda pv ON p.id = pv.produto_id " +
+            "LEFT JOIN Fornecedor f ON f.id = p.fornecedor_id " +
+            "LEFT JOIN Categoria c ON c.id = p.categoria_id " +
+            "WHERE pv.venda_id = ?1",
+            nativeQuery = true)
+    List<ProdutosDaVendaDto> findAllProdutosDaVendaByVendaId(int id);
 }
