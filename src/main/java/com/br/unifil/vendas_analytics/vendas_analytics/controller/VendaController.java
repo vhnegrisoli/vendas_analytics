@@ -9,6 +9,7 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRe
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.RelatorioCsvService;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.VendaService;
+import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
