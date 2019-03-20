@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.APROVADA;
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.REJEITADA;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FECHADA;
 import static java.lang.System.currentTimeMillis;
 
@@ -86,7 +87,7 @@ public class VendaController {
 
     @GetMapping("/vendas-nao-realizadas")
     public List<Venda> getAllVendasNaoRealizadas() {
-        return vendaRepository.findBySituacaoNot(FECHADA);
+        return vendaRepository.findByAprovacao(REJEITADA);
     }
 
     @GetMapping("/aprovar-venda/{id}")

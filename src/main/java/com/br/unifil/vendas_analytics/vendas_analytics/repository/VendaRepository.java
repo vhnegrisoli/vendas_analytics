@@ -89,6 +89,5 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
 
     List<Venda> findBySituacaoAndAprovacao(VendaSituacaoEnum situacao, VendaAprovacaoEnum aprovacao);
 
-    List<Venda> findBySituacaoNot(VendaSituacaoEnum situacao);
-
+    List<Venda> findByAprovacao(VendaAprovacaoEnum aprovacao);
 }
