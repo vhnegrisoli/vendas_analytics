@@ -89,4 +89,14 @@ public class VendaController {
         return vendaRepository.findBySituacaoNot(FECHADA);
     }
 
+    @GetMapping("/aprovar-venda/{id}")
+    public void aprovarVenda(@PathVariable int id) {
+        vendaService.aprovarVenda(id);
+    }
+
+    @GetMapping("/rejeitar-venda/{id}")
+    public void rejeitarVenda(@PathVariable int id) {
+        vendaService.rejeitarVenda(id);
+    }
+
 }
