@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.*;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.ABERTA;
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FECHADA;
 
 @Service
 public class VendaService {
@@ -94,6 +95,7 @@ public class VendaService {
         if (!isNovaVenda(venda)) {
             if (venda.getAprovacao().equals(AGUARDANDO_APROVACAO)) {
                 venda.setAprovacao(REJEITADA);
+                venda.setSituacao(FECHADA);
             }
         }
         vendaRepository.save(venda);
@@ -107,6 +109,7 @@ public class VendaService {
             if (venda.getAprovacao().equals(AGUARDANDO_APROVACAO)
                     || venda.getAprovacao().equals(APROVADA)) {
                 venda.setAprovacao(REJEITADA);
+                venda.setSituacao(FECHADA);
             }
         }
         vendaRepository.save(venda);
