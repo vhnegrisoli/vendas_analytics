@@ -1,5 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRepository;
@@ -16,6 +17,7 @@ import javax.validation.ValidationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
@@ -126,6 +128,23 @@ public class VendaService {
 
     public boolean isNovaVenda(Venda venda) {
         return ObjectUtils.isEmpty(venda.getId());
+    }
+
+    public List<ProdutosDaVendaDto> produtosVenda(int id) {
+        List<ProdutosDaVendaDto> produtos = new ArrayList();
+        List<Object[]> objetosProdutos = vendaRepository.findAllProdutosDaVendaByVendaId(id);
+        for (Object[] itemProduto : objetosProdutos) {
+            ProdutosDaVendaDto produtoInserir = new ProdutosDaVendaDto();
+            produtoInserir.setId((Integer) itemProduto[0]);
+            produtoInserir.setProduto((String) itemProduto[1]);
+            produtoInserir.setDescricao((String) itemProduto[2]);
+            produtoInserir.setFornecedor((String) itemProduto[3]);
+            produtoInserir.setCategoria((String) itemProduto[4]);
+            produtoInserir.setPreco((Double) itemProduto[5]);
+            produtoInserir.setQuantidade((Integer) itemProduto[6]);
+            produtos.add(produtoInserir);
+        }
+        return produtos;
     }
 
 }

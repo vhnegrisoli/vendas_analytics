@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Data
 @Builder
-public class Estado {
+public class  Estado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

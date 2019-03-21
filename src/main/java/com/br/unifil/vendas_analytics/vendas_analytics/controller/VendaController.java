@@ -101,7 +101,7 @@ public class VendaController {
 
     @GetMapping("/vendas-produtos/{id}")
     public List<ProdutosDaVendaDto> getProdutosDaVenda(@PathVariable int id) {
-        return vendaRepository.findAllProdutosDaVendaByVendaId(id);
+        return vendaService.produtosVenda(id);
     }
 
 }

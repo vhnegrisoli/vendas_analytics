@@ -92,18 +92,18 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
 
     List<Venda> findByAprovacao(VendaAprovacaoEnum aprovacao);
 
-    @Query(value = "SELECT p.id, " +
-            "p.nome, " +
-            "p.descricao, " +
-            "p.preco, " +
-            "f.razao_social, " +
-            "c.descricao, " +
-            "pv.preco " +
+    @Query(value = "SELECT p.id as id, " +
+            "p.nome_produto as produto, " +
+            "p.descricao as descricao, " +
+            "f.razao_social as fornecedor, " +
+            "c.descricao as categoria ," +
+            "p.preco as preco, " +
+            "pv.quantidade as quantidade " +
             "FROM Produto p " +
             "LEFT JOIN Produto_Venda pv ON p.id = pv.produto_id " +
             "LEFT JOIN Fornecedor f ON f.id = p.fornecedor_id " +
             "LEFT JOIN Categoria c ON c.id = p.categoria_id " +
             "WHERE pv.venda_id = ?1",
             nativeQuery = true)
-    List<ProdutosDaVendaDto> findAllProdutosDaVendaByVendaId(int id);
+    List<Object[]> findAllProdutosDaVendaByVendaId(int id);
 }
