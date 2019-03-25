@@ -116,12 +116,8 @@ public class VendaService {
     }
 
     public void validarClienteComUsuarioAtivo(Cliente cliente) {
-        Usuario usuario = usuarioRepository.findByClienteId(cliente.getId())
-                .orElseThrow(() -> new ValidationException("Usuário não existente"));
-        if (!usuario.getSituacao().equals(ATIVO)) {
-            throw new ValidationException("Não é possível salvar uma venda de um cliente que não possua um usuário" +
-                    " ATIVO.");
-        }
+        Usuario usuario = usuarioRepository.findByClienteIdAndSituacao(cliente.getId(), ATIVO)
+                .orElseThrow(() -> new ValidationException("Não existe um usuário ativo para este cliente."));
     }
 
     public boolean isNovaVenda(Venda venda) {
