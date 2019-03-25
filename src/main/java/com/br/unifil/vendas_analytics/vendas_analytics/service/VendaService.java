@@ -53,9 +53,7 @@ public class VendaService {
         vendaCadastrar.setProdutos(null);
         validarClienteComUsuarioAtivo(venda.getClientes());
         vendaRepository.save(vendaCadastrar);
-        if (isNovaVenda(venda)) {
-            saveVendaProduto(venda, vendaCadastrar, produtos);
-        }
+        saveVendaProduto(venda, vendaCadastrar, produtos);
     }
 
     public void saveVendaProduto(Venda venda, Venda vendaCadastrar, List<ProdutoVenda> produtos) {
