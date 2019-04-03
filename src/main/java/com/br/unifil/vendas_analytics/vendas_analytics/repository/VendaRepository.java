@@ -90,7 +90,7 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
 
     List<Venda> findBySituacaoAndAprovacao(VendaSituacaoEnum situacao, VendaAprovacaoEnum aprovacao);
 
-    List<Venda> findByAprovacao(VendaAprovacaoEnum aprovacao);
+    List<Venda> findByAprovacaoNot(VendaAprovacaoEnum aprovacao);
 
     @Query(value = "SELECT p.id as id, " +
             "p.nome_produto as produto, " +

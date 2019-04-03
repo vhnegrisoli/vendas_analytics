@@ -13,7 +13,7 @@ public class vendas_rejeitadas {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "vendas_nao_concluidas")
     private int vendasNaoConcluidas;

@@ -86,7 +86,7 @@ public class VendaController {
 
     @GetMapping("/vendas-nao-realizadas")
     public List<Venda> getAllVendasNaoRealizadas() {
-        return vendaRepository.findByAprovacao(REJEITADA);
+        return vendaRepository.findByAprovacaoNot(APROVADA);
     }
 
     @GetMapping("/aprovar-venda/{id}")

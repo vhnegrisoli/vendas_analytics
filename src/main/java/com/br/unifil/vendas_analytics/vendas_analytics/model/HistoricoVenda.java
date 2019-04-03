@@ -17,7 +17,7 @@ public class HistoricoVenda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "codigo_venda")
     private int codigoVenda;

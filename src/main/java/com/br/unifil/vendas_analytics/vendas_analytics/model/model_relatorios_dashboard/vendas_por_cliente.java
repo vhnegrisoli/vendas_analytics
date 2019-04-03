@@ -13,7 +13,7 @@ public class vendas_por_cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "Clientes")
     private int clientes;
