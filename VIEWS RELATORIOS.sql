@@ -16,12 +16,12 @@ GROUP BY v.data_compra;
 -- CARDS INICIAIS
 CREATE VIEW VENDAS_POR_CLIENTE AS
 SELECT 
-	ROW_NUMBER() OVER (ORDER BY v.data_compra) AS "id",
+	ROW_NUMBER() OVER (ORDER BY v.mes_compra) AS "id",
 	COUNT(c.ID) AS "Clientes",
-	DATENAME(MONTH, v.data_compra) AS "Meses"
+	v.mes_compra AS "Meses"
 FROM Cliente c
 INNER JOIN Venda v ON c.id = v.cliente_id
-GROUP BY v.data_compra;
+GROUP BY v.mes_compra;
 
 CREATE VIEW VENDAS_POR_PRODUTO AS
 SELECT 
