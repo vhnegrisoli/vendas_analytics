@@ -119,4 +119,29 @@ FROM Cliente c
 	INNER JOIN Categoria ct ON ct.id = p.fornecedor_id
 	INNER JOIN Fornecedor f ON f.id = p.fornecedor_id
 
-	
+-- ANALYTICS: LUCRO E MEDIA POR PRODUTO
+
+CREATE VIEW LUCRO_MEDIA_PRODUTO AS
+    SELECT  ROW_NUMBER() OVER (ORDER BY p.nome_produto) AS "id",
+    	p.nome_produto as "produto",
+    	SUM(p.PRECO * pv.quantidade) as "quantidade",
+    	CAST(AVG(p.PRECO * pv.QUANTIDADE) as NUMERIC(10,2)) as "media"
+    FROM Produto p INNER JOIN produto_venda pv ON p.id = pv.produto_id
+    GROUP BY p.nome_produto
+
+-- ANALYTICS: VENDAS POR REGIÕES
+CREATE VIEW VENDAS_POR_REGIOES AS
+SELECT  COUNT(v.id) as "qtdVendas",
+		SUM(p.preco * pv.quantidade) as "lucro",
+		AVG(p.preco * pv.quantidade)  as "media",
+		SUM(pv.quantidade)	as "qtdProdutos",
+		COUNT(c.ID) as "qtdClientes",
+		r.nome as "regiao",
+		e.estado as "estado"
+FROM Regiao r
+INNER JOIN estado e ON r.id = e.regiao_id
+INNER JOIN cliente c ON c.estado_id = e.id
+INNER JOIN venda v ON v.cliente_id = c.id
+INNER JOIN produto_venda pv ON pv.venda_id = v.id
+INNER JOIN produto p ON p.id = pv.produto_id
+GROUP BY r.nome, e.estado;
