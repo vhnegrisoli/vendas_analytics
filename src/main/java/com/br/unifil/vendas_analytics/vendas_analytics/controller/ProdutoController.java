@@ -30,4 +30,9 @@ public class ProdutoController {
         }
     }
 
+    @GetMapping("/total-produtos")
+    public long getTotalProdutos() {
+        return produtoRepository.count();
+    }
+
 }

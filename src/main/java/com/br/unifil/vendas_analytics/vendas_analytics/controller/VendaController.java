@@ -80,13 +80,13 @@ public class VendaController {
     }
 
     @GetMapping("/vendas-realizadas")
-    public List<Venda> getAllVendasRealizadas() {
-        return vendaRepository.findBySituacaoAndAprovacao(FECHADA, APROVADA);
+    public Integer getAllVendasRealizadas() {
+        return vendaRepository.countBySituacaoAndAprovacao(FECHADA, APROVADA);
     }
 
     @GetMapping("/vendas-nao-realizadas")
-    public List<Venda> getAllVendasNaoRealizadas() {
-        return vendaRepository.findByAprovacaoNot(APROVADA);
+    public Integer getAllVendasNaoRealizadas() {
+        return vendaRepository.countByAprovacaoNot(APROVADA);
     }
 
     @GetMapping("/aprovar-venda/{id}")

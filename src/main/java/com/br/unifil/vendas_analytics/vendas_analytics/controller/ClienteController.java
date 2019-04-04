@@ -35,4 +35,9 @@ public class ClienteController {
     public void salvar(@RequestBody Cliente cliente) throws Exception{
         clienteService.salvarCliente(cliente);
     }
+
+    @GetMapping("/total-clientes")
+    public long getTotalClientes() {
+        return clienteRepository.count();
+    }
 }

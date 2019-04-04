@@ -88,9 +88,9 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
             " LEFT JOIN Fornecedor f ON f.id = p.fornecedor_id ", nativeQuery = true)
     List<Object> getRelatoriosCsvGeral();
 
-    List<Venda> findBySituacaoAndAprovacao(VendaSituacaoEnum situacao, VendaAprovacaoEnum aprovacao);
+    Integer countBySituacaoAndAprovacao(VendaSituacaoEnum situacao, VendaAprovacaoEnum aprovacao);
 
-    List<Venda> findByAprovacaoNot(VendaAprovacaoEnum aprovacao);
+    Integer countByAprovacaoNot(VendaAprovacaoEnum aprovacao);
 
     @Query(value = "SELECT p.id as id, " +
             "p.nome_produto as produto, " +

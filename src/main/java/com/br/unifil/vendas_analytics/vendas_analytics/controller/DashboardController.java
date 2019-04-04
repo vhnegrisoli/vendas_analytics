@@ -1,6 +1,10 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.CardsDashboardDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_dashboard.*;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.repository_relatorios_dashboard.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.APROVADA;
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FECHADA;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/dashboard")
@@ -17,6 +24,17 @@ public class DashboardController {
 
     @Autowired
     Vendas_Por_PeriodoRepository vendas_por_periodoRepository;
+
+    @Autowired
+    ClienteRepository clienteRepository;
+
+
+    @Autowired
+    ProdutoRepository produtoRepository;
+
+
+    @Autowired
+    VendaRepository vendaRepository;
 
     @Autowired
     Vendas_Por_ClienteRepository vendas_por_clienteRepository;
@@ -29,6 +47,9 @@ public class DashboardController {
 
     @Autowired
     Vendas_RejeitadasRepository vendas_rejeitadasRepository;
+
+    @Autowired
+    Vendas_Analise_DashboardRepository vendas_analise_dashboardRepository;
 
     @GetMapping("/vendas-por-periodo")
     public List<vendas_por_periodo> getAllVendasPorPeriodo() {
@@ -55,4 +76,23 @@ public class DashboardController {
         return vendas_rejeitadasRepository.findAll();
     }
 
+    @GetMapping("/vendas-analise-dashboard")
+    public List<Vendas_Analise_Dashboard> getAllVendasDashboard() {
+        return vendas_analise_dashboardRepository.findAll();
+    }
+
+    @GetMapping("/cards-totais")
+    public CardsDashboardDto getSomatorios() {
+        long qtdClientes = clienteRepository.count();
+        long qtdProdutos = produtoRepository.count();
+        long qtdVendasRealizadas = vendaRepository.countBySituacaoAndAprovacao(FECHADA, APROVADA);
+        long qtdVendasNaoRealizadas = vendaRepository.countByAprovacaoNot(APROVADA);
+        return CardsDashboardDto
+                .builder()
+                .qtdClientes(qtdClientes)
+                .qtdProdutos(qtdProdutos)
+                .qtdVendasRealizadas(qtdVendasRealizadas)
+                .qtdVendasNaoRealizadas(qtdVendasNaoRealizadas)
+                .build();
+    }
 }
