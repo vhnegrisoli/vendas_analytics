@@ -49,7 +49,7 @@ public class DashboardController {
     Vendas_RejeitadasRepository vendas_rejeitadasRepository;
 
     @Autowired
-    Vendas_Analise_DashboardRepository vendas_analise_dashboardRepository;
+    Vendas_DashboardRepository vendas__dashboardRepository;
 
     @GetMapping("/vendas-por-periodo")
     public List<vendas_por_periodo> getAllVendasPorPeriodo() {
@@ -77,8 +77,8 @@ public class DashboardController {
     }
 
     @GetMapping("/vendas-analise-dashboard")
-    public List<Vendas_Analise_Dashboard> getAllVendasDashboard() {
-        return vendas_analise_dashboardRepository.findAll();
+    public List<Vendas_Dashboard> getAllVendasDashboard() {
+        return vendas__dashboardRepository.findAll();
     }
 
     @GetMapping("/cards-totais")
