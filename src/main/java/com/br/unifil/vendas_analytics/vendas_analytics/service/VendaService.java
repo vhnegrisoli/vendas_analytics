@@ -94,7 +94,7 @@ public class VendaService {
                 .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
         if (!isNovaVenda(venda)) {
             if (venda.getAprovacao().equals(AGUARDANDO_APROVACAO)) {
-                venda.setAprovacao(REJEITADA);
+                venda.setAprovacao(APROVADA);
                 venda.setSituacao(FECHADA);
             }
         }

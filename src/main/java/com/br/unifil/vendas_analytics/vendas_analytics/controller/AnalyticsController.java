@@ -1,9 +1,13 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_analytics.ProdutoAnalytics;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_analytics.VendasFornecedor;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_analytics.VendasRegioes;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_dashboard.vendas_por_categoria;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.Vendas_Por_CategoriaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.repository_analytics.ProdutoAnalyticsRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.repository_analytics.VendasFornecedorRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.repository_analytics.VendasRegioesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +27,12 @@ public class AnalyticsController {
     @Autowired
     private ProdutoAnalyticsRepository produtoAnalyticsRepository;
 
+    @Autowired
+    private VendasRegioesRepository vendasRegioesRepository;
+
+    @Autowired
+    private VendasFornecedorRepository vendasFornecedorRepository;
+
     @GetMapping("/vendas-por-categoria")
     public List<vendas_por_categoria> getAllVendasPorCategoria() {
         return vendas_por_categoriaRepository.findAll();
@@ -31,6 +41,16 @@ public class AnalyticsController {
     @GetMapping("/geral-produtos")
     public List<ProdutoAnalytics> getAllProdutosAnalytics() {
         return produtoAnalyticsRepository.findAll();
+    }
+
+    @GetMapping("/geral-regioes")
+    public List<VendasRegioes> getAllAnaliseRegioes() {
+        return vendasRegioesRepository.findAll();
+    }
+
+    @GetMapping("/geral-fornecedores")
+    public List<VendasFornecedor> getAllAnaliseFornecedores() {
+        return vendasFornecedorRepository.findAll();
     }
 
 }
