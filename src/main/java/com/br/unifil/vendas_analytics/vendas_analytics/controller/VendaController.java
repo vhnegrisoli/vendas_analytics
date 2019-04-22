@@ -35,19 +35,19 @@ import static java.lang.System.currentTimeMillis;
 public class VendaController {
 
     @Autowired
-    VendaRepository vendaRepository;
+    private VendaRepository vendaRepository;
 
     @Autowired
-    HistoricoVendaRepository historicoVendaRepository;
+    private HistoricoVendaRepository historicoVendaRepository;
 
     @Autowired
-    VendaService vendaService;
+    private VendaService vendaService;
 
     @Autowired
-    RelatorioCsvService relatorioCsvService;
+    private RelatorioCsvService relatorioCsvService;
 
     @Autowired
-    ProdutoVendaRepository produtoVendaRepository;
+    private ProdutoVendaRepository produtoVendaRepository;
 
     @GetMapping("/todas")
     public List<Venda> getAllVendas() {
