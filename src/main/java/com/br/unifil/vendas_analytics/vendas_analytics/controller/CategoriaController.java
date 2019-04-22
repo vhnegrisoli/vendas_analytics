@@ -31,6 +31,11 @@ public class CategoriaController {
         }
     }
 
+    @GetMapping("buscar/{id}")
+    public Categoria findOne(@PathVariable Integer id) {
+        return categoriaRepository.findById(id).orElseThrow(() -> new ValidacaoException("Categoria não encontrada"));
+    }
+
     @GetMapping("/remover/{id}")
     public void remover(@PathVariable int id) {
         Categoria categoria = categoriaRepository.findById(id).orElseThrow(() -> new ValidacaoException("Categoria" +
