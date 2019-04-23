@@ -1,6 +1,7 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
@@ -35,6 +36,11 @@ public class UsuarioService {
         try {
             validaUsuario(usuario);
             usuario = validarTrocaDeSituacao(usuario);
+            PermissoesUsuario permissao = PermissoesUsuario
+                    .builder()
+                    .id(1)
+                    .build();
+            usuario.setPermissoesUsuario(permissao);
             usuarioRepository.save(usuario);
         } catch (Exception e) {
             throw new ValidacaoException("Erro ao salvar usuário");

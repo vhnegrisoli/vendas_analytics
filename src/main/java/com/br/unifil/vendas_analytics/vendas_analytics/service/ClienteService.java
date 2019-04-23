@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,7 +30,7 @@ public class ClienteService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-
+    @Transactional
     public void salvarCliente(Cliente cliente) throws ValidacaoException {
         try {
             if (isNovoCadastro(cliente)) {

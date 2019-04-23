@@ -2,6 +2,7 @@ package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PermissoesUsuario {
 
     @Id
