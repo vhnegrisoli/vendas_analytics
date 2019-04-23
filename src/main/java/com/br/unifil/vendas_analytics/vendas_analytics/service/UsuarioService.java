@@ -36,11 +36,6 @@ public class UsuarioService {
         try {
             validaUsuario(usuario);
             usuario = validarTrocaDeSituacao(usuario);
-            PermissoesUsuario permissao = PermissoesUsuario
-                    .builder()
-                    .id(1)
-                    .build();
-            usuario.setPermissoesUsuario(permissao);
             usuarioRepository.save(usuario);
         } catch (Exception e) {
             throw new ValidacaoException("Erro ao salvar usuário");

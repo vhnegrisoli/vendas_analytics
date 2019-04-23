@@ -40,4 +40,11 @@ public class ClienteController {
     public long getTotalClientes() {
         return clienteRepository.count();
     }
+
+    @GetMapping("/remover/{id}")
+    public void remover(@PathVariable int id) {
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new ValidacaoException("Cliente" +
+                " não encontrado."));
+        clienteRepository.delete(cliente);
+    }
 }

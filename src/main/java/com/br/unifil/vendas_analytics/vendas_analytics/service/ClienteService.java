@@ -2,6 +2,7 @@ package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
@@ -52,6 +53,7 @@ public class ClienteService {
                     .nome(cliente.getNome())
                     .senha(gerarSenha())
                     .situacao(UsuarioSituacao.ATIVO)
+                    .permissoesUsuario(PermissoesUsuario.builder().id(1).build())
                     .cliente(cliente)
                     .build();
             usuarioService.salvarUsuario(usuario);
