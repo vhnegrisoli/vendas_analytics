@@ -1,18 +1,26 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.QProduto;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.ClienteService;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
 import java.util.List;
+
+import static com.br.unifil.vendas_analytics.vendas_analytics.model.QCliente.cliente;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteController {
+
+    private EntityManager entityManager;
 
     @Autowired
     private ClienteRepository clienteRepository;
@@ -47,4 +55,27 @@ public class ClienteController {
                 " não encontrado."));
         clienteRepository.delete(cliente);
     }
+
+    @GetMapping("/querydsl")
+    public List<Cliente> getQuery() {
+        return new JPAQueryFactory(entityManager)
+                .select(Projections.constructor(
+                        Cliente.class,
+                        cliente.id,
+                        cliente.nome,
+                        cliente.email,
+                        cliente.cpf,
+                        cliente.rg,
+                        cliente.telefone,
+                        cliente.dataNascimento,
+                        cliente.rua,
+                        cliente.cep,
+                        cliente.complemento,
+                        cliente.cidade,
+                        cliente.numero,
+                        cliente.estado))
+                .from(cliente)
+                .fetch();
+    }
+
 }
