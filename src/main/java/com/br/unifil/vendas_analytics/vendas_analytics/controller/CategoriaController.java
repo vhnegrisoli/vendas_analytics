@@ -1,7 +1,9 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.DtoTeste;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Categoria;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.CategoriaRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.CategoriaTestRepositorio;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,9 @@ public class CategoriaController {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private CategoriaTestRepositorio categoriaTestRepositorio;
 
     @GetMapping("/todas")
     public List<Categoria> getAllCategorias() {
@@ -41,6 +46,11 @@ public class CategoriaController {
         Categoria categoria = categoriaRepository.findById(id).orElseThrow(() -> new ValidacaoException("Categoria" +
                 " não encontrada."));
         categoriaRepository.delete(categoria);
+    }
+
+    @GetMapping("/relatorio")
+    public List<DtoTeste> teste() {
+        return categoriaTestRepositorio.listar();
     }
 
 }
