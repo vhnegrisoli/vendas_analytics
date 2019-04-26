@@ -1,21 +1,21 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.ExportarCsvDto2;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.ExportarCsvRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class RelatorioCsvService {
 
     @Autowired
-    private VendaRepository vendaRepository;
+    private ExportarCsvRepository exportarCsvRepository;
 
     public String gerarCabecalho() {
         return "Nome do Cliente;CPF do Cliente;Email do Cliente;Endereço do Cliente;Cidade;Estado;" +
@@ -25,42 +25,40 @@ public class RelatorioCsvService {
     }
 
     public String gerarCsv(String dataInicial, String dataFinal) throws JsonProcessingException {
-        List<Object> resposta = null;
+        List<ExportarCsvDto2> resposta = new ArrayList<>();
         if (ObjectUtils.isEmpty(dataInicial) || ObjectUtils.isEmpty(dataFinal)) {
-            resposta = vendaRepository.getRelatoriosCsvGeral();
+            resposta = exportarCsvRepository.exportarCsvSemFiltroDeData();
         } else {
-            resposta = vendaRepository.getRelatoriosCsv(dataInicial, dataFinal);
+            resposta = exportarCsvRepository.exportarCsvComFiltroDeData(dataInicial, dataFinal);
         }
-        String dadosVenda = gerarCabecalho() + "\n";
-        Iterator itr = resposta.iterator();
-        while(itr.hasNext()) {
-            Object element = itr.next();
-            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-            String [] json = ow.writeValueAsString(element).split(",");
-            dadosVenda = dadosVenda +
-                    json[1].replaceAll("\"", "") + ";" +
-                    json[2].replaceAll("\"", "")  + ";" +
-                    json[3].replaceAll("\"", "")  + ";" +
-                    json[4].replaceAll("\"", "")  + ";" +
-                    json[5].replaceAll("\"", "")  + ";" +
-                    json[6].replaceAll("\"", "")  + ";" +
-                    json[7].replaceAll("\"", "")  + ";" +
-                    json[8].replaceAll("\"", "")  + ";" +
-                    json[9].replaceAll("\"", "")  + ";" +
-                    json[10].replaceAll("\"", "")  + ";" +
-                    json[11].replaceAll("\"", "")  + ";" +
-                    json[12].replaceAll("\"", "")  + ";" +
-                    json[13].replaceAll("\"", "")  + ";" +
-                    json[14].replaceAll("\"", "")  + ";" +
-                    json[15].replaceAll("\"", "")  + ";" +
-                    json[16].replaceAll("\"", "")  + ";" +
-                    json[17].replaceAll("\"", "")  + ";" +
-                    json[18].replaceAll("\"", "")  + ";" +
-                    json[19].replaceAll("\"", "")  + ";" +
-                    json[20].replaceAll("]", "")
-                            .replaceAll("\"", "") + "\n";
-        }
-        return dadosVenda;
+        AtomicReference<String> dadosVenda = new AtomicReference<>(gerarCabecalho() + "\n");
+        resposta
+            .forEach(
+                registro -> {
+                    dadosVenda.set(dadosVenda.get() +
+                            registro.getNome_cliente() + ";" +
+                            registro.getCpf_cliente() + ";" +
+                            registro.getEmail_cliente() + ";" +
+                            registro.getEndereco_cliente() + ";" +
+                            registro.getCidade() + ";" +
+                            registro.getEstado() + ";" +
+                            registro.getRegiao() + ";" +
+                            registro.getUsuario_cliente() + ";" +
+                            registro.getCodigo_venda() + ";" +
+                            registro.getQuantidade_itens() + ";" +
+                            registro.getData_venda() + ";" +
+                            registro.getSituacao_venda() + ";" +
+                            registro.getAprovacao_venda() + ";" +
+                            registro.getCodigo_produto() + ";" +
+                            registro.getProduto() + ";" +
+                            registro.getValor_pedido() + ";" +
+                            registro.getCategoria() + ";" +
+                            registro.getCnpj_fornecedor() + ";" +
+                            registro.getFornecedor_nome_fantasia() + ";" +
+                            registro.getRazao_social_fornecedor() + ";\n");
+                }
+            );
+        return dadosVenda.get();
     }
 
 }
