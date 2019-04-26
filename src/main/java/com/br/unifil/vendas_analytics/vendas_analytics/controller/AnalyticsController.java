@@ -1,9 +1,12 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorProdutoDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.Produto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_analytics.ProdutoAnalytics;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_analytics.VendasFornecedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_analytics.VendasRegioes;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_dashboard.vendas_por_categoria;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.RelatoriosRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.Vendas_Por_CategoriaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.repository_analytics.ProdutoAnalyticsRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.repository_analytics.VendasFornecedorRepository;
@@ -25,7 +28,7 @@ public class AnalyticsController {
     private Vendas_Por_CategoriaRepository vendas_por_categoriaRepository;
 
     @Autowired
-    private ProdutoAnalyticsRepository produtoAnalyticsRepository;
+    private RelatoriosRepository relatoriosRepository;
 
     @Autowired
     private VendasRegioesRepository vendasRegioesRepository;
@@ -39,8 +42,8 @@ public class AnalyticsController {
     }
 
     @GetMapping("/geral-produtos")
-    public List<ProdutoAnalytics> getAllProdutosAnalytics() {
-        return produtoAnalyticsRepository.findAll();
+    public List<VendasPorProdutoDto> getAllProdutosAnalytics() {
+        return relatoriosRepository.vendasPorProduto();
     }
 
     @GetMapping("/geral-regioes")

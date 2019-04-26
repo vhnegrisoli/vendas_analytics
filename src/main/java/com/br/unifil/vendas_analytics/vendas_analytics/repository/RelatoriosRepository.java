@@ -2,6 +2,7 @@ package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.DtoTeste;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorProdutoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,23 +15,9 @@ public class RelatoriosRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private String consulta() {
-        return "SELECT v.id as id, v.mes_compra as mes, c.nome as cliente, SUM(p.preco) as lucro " +
-                "FROM venda v " +
-                "LEFT JOIN cliente c ON c.id = v.cliente_id " +
-                "LEFT JOIN produto_venda pv ON v.id = pv.venda_id " +
-                "LEFT JOIN produto p ON p.id = pv.produto_id " +
-                "GROUP BY v.id, v.mes_compra, c.nome";
-    }
-
-    public List<DtoTeste> listar() {
-        return jdbcTemplate.query(consulta(),
-                (rs, rowNum) -> new DtoTeste(
-                        rs.getInt("id"),
-                        rs.getString("mes"),
-                        rs.getString("cliente"),
-                        rs.getDouble("lucro")));
-    }
+    /*
+        Relatório VENDAS POR PERÍODO
+     */
 
     private String relatorioVendasPorPeriodo() {
         return "SELECT " +
@@ -51,6 +38,29 @@ public class RelatoriosRepository {
                         rs.getDouble("lucro"),
                         rs.getDouble("media"),
                         rs.getString("meses")));
+    }
+
+    /*
+        Relatório VENDAS POR PRODUTO
+     */
+
+    private String relatorioVendasPorProduto() {
+        return "SELECT " +
+                "p.nome_produto as produto, " +
+                "SUM(pv.quantidade) as quantidade, " +
+                "SUM(p.PRECO * pv.quantidade) as lucro, " +
+                "CAST(AVG(p.PRECO * pv.QUANTIDADE) as NUMERIC(10,2)) as media " +
+                "FROM Produto p INNER JOIN produto_venda pv ON p.id = pv.produto_id " +
+                "GROUP BY p.nome_produto";
+    }
+
+    public List<VendasPorProdutoDto> vendasPorProduto() {
+        return jdbcTemplate.query(relatorioVendasPorProduto(),
+                (rs, rowNum) -> new VendasPorProdutoDto(
+                        rs.getString("produto"),
+                        rs.getInt("quantidade"),
+                        rs.getDouble("lucro"),
+                        rs.getDouble("media")));
     }
 
 }
