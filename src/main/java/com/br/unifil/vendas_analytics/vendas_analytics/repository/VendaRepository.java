@@ -2,6 +2,7 @@ package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum;
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Venda;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -99,4 +100,6 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
             "WHERE pv.venda_id = ?1",
             nativeQuery = true)
     List<Object[]> findAllProdutosDaVendaByVendaId(int id);
+
+    List<Venda> findByClientes(Cliente cliente);
 }

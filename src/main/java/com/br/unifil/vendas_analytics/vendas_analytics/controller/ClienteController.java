@@ -43,8 +43,6 @@ public class ClienteController {
 
     @GetMapping("/remover/{id}")
     public void remover(@PathVariable int id) {
-        Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new ValidacaoException("Cliente" +
-                " não encontrado."));
-        clienteRepository.delete(cliente);
+        clienteService.removerClienteComUsuarioComVendasVinculadas(id);
     }
 }

@@ -46,17 +46,16 @@ public class VendaService {
 
     public void save(Venda venda) {
         List<ProdutoVenda> produtos = venda.getProdutos();
-        venda.setDataCompra(null);
         venda = insereData(venda);
         venda = validaVendaAguardandoAprovacao(venda);
         Venda vendaCadastrar = venda;
         vendaCadastrar.setProdutos(null);
         validarClienteComUsuarioAtivo(venda.getClientes());
         vendaRepository.save(vendaCadastrar);
-        saveVendaProduto(venda, vendaCadastrar, produtos);
+        saveVendaProduto(vendaCadastrar, produtos);
     }
 
-    public void saveVendaProduto(Venda venda, Venda vendaCadastrar, List<ProdutoVenda> produtos) {
+    public void saveVendaProduto(Venda vendaCadastrar, List<ProdutoVenda> produtos) {
         AtomicReference<Integer> id = new AtomicReference<>(null);
         id.set(vendaCadastrar.getId());
         produtos.forEach(
@@ -71,6 +70,7 @@ public class VendaService {
     }
 
     public Venda insereData(Venda venda) {
+        venda.setDataCompra(null);
         LocalDate date = LocalDate.now();
         String mes = date.getMonth().getDisplayName(TextStyle.FULL, new Locale("pt"));
         LocalDateTime dataCompra = LocalDateTime.now();

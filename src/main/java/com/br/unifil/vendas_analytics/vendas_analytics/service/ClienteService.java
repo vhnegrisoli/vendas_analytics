@@ -4,8 +4,10 @@ import com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.Venda;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,11 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
 
 @Service
 public class ClienteService {
@@ -30,6 +35,9 @@ public class ClienteService {
 
     @Autowired
     UsuarioRepository usuarioRepository;
+
+    @Autowired
+    VendaRepository vendaRepository;
 
     @Transactional
     public void salvarCliente(Cliente cliente) throws ValidacaoException {
@@ -44,6 +52,28 @@ public class ClienteService {
         }
     }
 
+    @Transactional
+    public void removerClienteComUsuarioComVendasVinculadas(Integer id) {
+        Cliente cliente = clienteRepository.findById(id)
+            .orElseThrow(() -> new ValidacaoException("Não foi possível encontrar o cliente."));
+        Usuario usuario = usuarioRepository.findByClienteIdAndSituacao(cliente.getId(), ATIVO)
+            .orElseThrow(() -> new ValidacaoException("Não há usuário ativo para o cliente " + cliente.getNome()
+                + ", por favor, verifique se o cliente possui usuários inativos, ative novamente e tente fazer a " +
+                    "remoção do cliente."));
+        try {
+            List<Venda> vendas = vendaRepository.findByClientes(cliente);
+            if (!vendas.isEmpty()) {
+                vendaRepository.deleteAll(vendas);
+            }
+            usuarioRepository.delete(usuario);
+            clienteRepository.delete(cliente);
+
+        } catch (Exception e){
+            throw e;
+        }
+
+    }
+
     public void criaUsuarioAoInserirCliente(Cliente cliente) throws ValidacaoException {
         if (!hasUsuario(cliente)) {
             Usuario usuario = Usuario
@@ -52,7 +82,7 @@ public class ClienteService {
                     .email(cliente.getEmail())
                     .nome(cliente.getNome())
                     .senha(gerarSenha())
-                    .situacao(UsuarioSituacao.ATIVO)
+                    .situacao(ATIVO)
                     .permissoesUsuario(PermissoesUsuario.builder().id(1).build())
                     .cliente(cliente)
                     .build();
