@@ -67,11 +67,9 @@ public class ClienteService {
             }
             usuarioRepository.delete(usuario);
             clienteRepository.delete(cliente);
-
         } catch (Exception e){
             throw e;
         }
-
     }
 
     public void criaUsuarioAoInserirCliente(Cliente cliente) throws ValidacaoException {
