@@ -1,19 +1,12 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.ExportarCsvDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum;
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Venda;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public interface VendaRepository extends JpaRepository<Venda, Integer> {
 

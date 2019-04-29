@@ -1,6 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.ExportarCsvDto2;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.ExportarCsvDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ExportarCsvRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class RelatorioCsvService {
     }
 
     public String gerarCsv(String dataInicial, String dataFinal) throws JsonProcessingException {
-        List<ExportarCsvDto2> resposta = new ArrayList<>();
+        List<ExportarCsvDto> resposta = new ArrayList<>();
         if (ObjectUtils.isEmpty(dataInicial) || ObjectUtils.isEmpty(dataFinal)) {
             resposta = exportarCsvRepository.exportarCsvSemFiltroDeData();
         } else {

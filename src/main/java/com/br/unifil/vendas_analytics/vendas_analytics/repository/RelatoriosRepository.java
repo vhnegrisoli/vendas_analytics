@@ -1,6 +1,5 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.DtoTeste;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorProdutoDto;
 import org.springframework.beans.factory.annotation.Autowired;

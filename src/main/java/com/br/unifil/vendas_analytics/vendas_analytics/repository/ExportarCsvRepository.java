@@ -1,7 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.ExportarCsvDto2;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.ExportarCsvDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -50,12 +49,12 @@ public class ExportarCsvRepository {
                 " LEFT JOIN Produto p ON p.id = pv.produto_id " +
                 " LEFT JOIN Categoria ct ON ct.id = p.fornecedor_id " +
                 " LEFT JOIN Fornecedor f ON f.id = p.fornecedor_id " +
-                " WHERE v.DATA_COMPRA BETWEEN '" + dataInicial + "' AND  '" + dataFinal + "'";
+                " WHERE v.DATA_COMPRA BETWEEN CAST('" + dataInicial + "' AS DATE) AND  CAST('" + dataFinal + "' AS DATE)";
     }
 
-    public List<ExportarCsvDto2> exportarCsvComFiltroDeData(String dataInicial, String dataFinal) {
+    public List<ExportarCsvDto> exportarCsvComFiltroDeData(String dataInicial, String dataFinal) {
         return jdbcTemplate.query(exportarCsvFiltroData(dataInicial, dataFinal),
-                (rs, rowNum) -> new ExportarCsvDto2(
+                (rs, rowNum) -> new ExportarCsvDto(
                         rs.getString("nome_cliente"),
                         rs.getString("cpf_cliente"),
                         rs.getString("email_cliente"),
@@ -115,9 +114,9 @@ public class ExportarCsvRepository {
                 " LEFT JOIN Fornecedor f ON f.id = p.fornecedor_id ";
     }
 
-    public List<ExportarCsvDto2> exportarCsvSemFiltroDeData() {
+    public List<ExportarCsvDto> exportarCsvSemFiltroDeData() {
         return jdbcTemplate.query(exportarCsvCompleto(),
-                (rs, rowNum) -> new ExportarCsvDto2(
+                (rs, rowNum) -> new ExportarCsvDto(
                         rs.getString("nome_cliente"),
                         rs.getString("cpf_cliente"),
                         rs.getString("email_cliente"),
