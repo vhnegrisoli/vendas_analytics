@@ -26,6 +26,7 @@ import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSitua
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.*;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.ABERTA;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FECHADA;
+import static org.apache.logging.log4j.ThreadContext.isEmpty;
 
 @Service
 public class VendaService {
@@ -49,6 +50,7 @@ public class VendaService {
         venda = insereData(venda);
         venda = validaVendaAguardandoAprovacao(venda);
         Venda vendaCadastrar = venda;
+        validarProdutosEClientesNulos(venda);
         vendaCadastrar.setProdutos(null);
         validarClienteComUsuarioAtivo(venda.getClientes());
         vendaRepository.save(vendaCadastrar);
@@ -87,6 +89,16 @@ public class VendaService {
         }
         return venda;
     }
+
+    public void validarProdutosEClientesNulos(Venda venda) {
+        if (venda.getProdutos().isEmpty()) {
+            throw new ValidacaoException("Você deve cadastrar produtos no carrinho de compra para tratar uma venda.");
+        }
+        if (ObjectUtils.isEmpty(venda.getClientes())) {
+            throw new ValidacaoException("Você deve selecionar cliente para realizar a venda.");
+        }
+    }
+
 
     @Transactional
     public void aprovarVenda(int id) {
