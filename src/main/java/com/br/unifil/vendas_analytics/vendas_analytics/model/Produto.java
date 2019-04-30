@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="id")
+//@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="id")
 public class Produto implements Serializable {
 
     @Id
@@ -50,6 +50,6 @@ public class Produto implements Serializable {
     Categoria categoria;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "produto")
     private List<ProdutoVenda> venda;
 }
