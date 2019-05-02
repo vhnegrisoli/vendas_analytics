@@ -45,6 +45,11 @@ public class ProdutoController {
     public void remover(@PathVariable int id) {
         Produto produto = produtoRepository.findById(id).orElseThrow(() -> new ValidacaoException("Produto" +
                 " não encontrado."));
-        produtoRepository.delete(produto);
+        try {
+            produtoRepository.delete(produto);
+        } catch (Exception e) {
+            throw new ValidacaoException("Não é possível remover o produto " + produto.getNomeProduto() + " pois " +
+                    "esse produto já está vinculado a uma venda realizada.");
+        }
     }
 }

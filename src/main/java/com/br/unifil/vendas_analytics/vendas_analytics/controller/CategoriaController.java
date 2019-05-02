@@ -40,7 +40,13 @@ public class CategoriaController {
     public void remover(@PathVariable int id) {
         Categoria categoria = categoriaRepository.findById(id).orElseThrow(() -> new ValidacaoException("Categoria" +
                 " não encontrada."));
-        categoriaRepository.delete(categoria);
+        try {
+            categoriaRepository.delete(categoria);
+        } catch (Exception e) {
+            throw new ValidacaoException("Não é possível remover a categoria " + categoria.getDescricao() + " pois" +
+                    " essa categoria já está vinculada a um produto.");
+        }
+
     }
 
 }

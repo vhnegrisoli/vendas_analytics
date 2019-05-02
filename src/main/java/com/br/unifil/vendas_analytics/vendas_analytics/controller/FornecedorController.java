@@ -38,9 +38,9 @@ public class FornecedorController {
             .orElseThrow(() -> new ValidacaoException("Fornecedor não encontrado."));
         try {
             fornecedorRepository.delete(fornecedor);
-        } catch (ValidacaoException v) {
-            throw new ValidacaoException("Não é possível remover o fornecedor pois ele já está definido para outros " +
-                    "registros.");
+        } catch (Exception e) {
+            throw new ValidacaoException("Não é possível remover o fornecedor " + fornecedor.getNomeFantasia()
+                    + " pois ele já está definido para outros produtos.");
         }
     }
 }

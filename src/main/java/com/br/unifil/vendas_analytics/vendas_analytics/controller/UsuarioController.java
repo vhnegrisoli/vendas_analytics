@@ -36,9 +36,19 @@ public class UsuarioController {
         usuarioService.salvarUsuario(usuario);
     }
 
+    @GetMapping("buscar/{id}")
+    public Usuario findOne(@PathVariable Integer id) {
+        return usuarioRepository.findById(id).orElseThrow(() -> new ValidacaoException("Usuário não encontrado"));
+    }
+
     @GetMapping("/permissoes")
     public List<PermissoesUsuario> getAllPermissoes() {
         return permissoesUsuarioRepository.findAll();
+    }
+
+    @GetMapping("/remover/{id}")
+    public void remover(@PathVariable Integer id) {
+        usuarioService.removerUsuario(id);
     }
 
 }

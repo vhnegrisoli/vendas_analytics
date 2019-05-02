@@ -63,7 +63,9 @@ public class ClienteService {
         try {
             List<Venda> vendas = vendaRepository.findByClientes(cliente);
             if (!vendas.isEmpty()) {
-                vendaRepository.deleteAll(vendas);
+                throw new ValidacaoException("O cliente " + cliente.getNome() + " não pode ser removido pois já " +
+                        "possui vendas cadastradas em seu nome. Por favor, contate o administrador do " +
+                        "sistema para a remoção.");
             }
             usuarioRepository.delete(usuario);
             clienteRepository.delete(cliente);
@@ -112,14 +114,14 @@ public class ClienteService {
 
     public void validarCpfCadastrado(Cliente cliente) throws ValidacaoException {
         Optional<Cliente> clienteCpf = clienteRepository.findByCpf(cliente.getCpf());
-        if (clienteCpf.isPresent()) {
+        if (clienteCpf.isPresent() && !cliente.getId().equals(clienteCpf.get().getId())) {
             throw new ValidacaoException("CPF já cadastrado");
         }
     }
 
     public void validarEmailCadastrado(Cliente cliente) throws ValidacaoException {
         Optional<Cliente> clienteEmail = clienteRepository.findByEmail(cliente.getEmail());
-        if (clienteEmail.isPresent()) {
+        if (clienteEmail.isPresent() && !cliente.getId().equals(clienteEmail.get().getId())) {
             throw new ValidacaoException("Email já cadastrado");
         }
     }
