@@ -38,8 +38,8 @@ public class UsuarioService {
     public void salvarUsuario(Usuario usuario) throws ValidacaoException {
         if (isNovoCadastro(usuario)) {
             usuario.setSituacao(ATIVO);
-            usuario.setDataCadastro(LocalDateTime.now());
         }
+        usuario.setDataCadastro(LocalDateTime.now());
         validaUsuario(usuario);
         usuario = validarTrocaDeSituacao(usuario);
         usuarioRepository.save(usuario);
@@ -51,10 +51,8 @@ public class UsuarioService {
     }
 
     public void validarClienteExistente(Usuario usuario) throws ValidacaoException {
-        if (isNovoCadastro(usuario)) {
-            if (ObjectUtils.isEmpty(usuario.getCliente().getId())) {
-                throw new ValidacaoException("É preciso ter um cliente para cadastrar um novo usuário");
-            }
+        if (ObjectUtils.isEmpty(usuario.getCliente().getId())) {
+            throw new ValidacaoException("É preciso ter um cliente para cadastrar um novo usuário");
         }
     }
 
@@ -78,14 +76,23 @@ public class UsuarioService {
 
     public Usuario validarAtivacao(Usuario usuario) throws ValidacaoException {
         if(!isNovoCadastro(usuario)) {
+
             Usuario usuarioAntigo = usuarioRepository.findById(usuario.getId())
                     .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
-            if (usuarioAntigo.getCliente().getId().equals(usuario.getCliente().getId())
-                && !usuarioAntigo.getId().equals(usuario.getId())
-                && usuarioAntigo.getSituacao().equals(ATIVO) && usuario.getSituacao().equals(ATIVO)) {
-                throw new ValidacaoException("O cliente " + usuario.getCliente().getNome() + " já possui um usuário " +
-                    "ATIVO, e não há possibilidade de um cliente ter mais de um usuário ATIVO. Inative o usuário" +
-                        " atual para poder ativar este usuário para o cliente " + usuario.getCliente().getNome());
+
+            List<Usuario> validaCliente = usuarioRepository.findByClienteId(usuario.getCliente().getId());
+
+            if (!validaCliente.isEmpty()) {
+                validaCliente
+                        .stream()
+                        .filter(usuarioCliente -> usuarioCliente.getSituacao().equals(ATIVO)
+                                && usuario.getSituacao().equals(ATIVO)
+                                && !usuarioCliente.getId().equals(usuario.getId()))
+                        .forEach(cliente -> {
+                            throw new ValidacaoException("Este cliente já possui um "
+                                    + "um usuário ATIVO, e não há possibilidade de um cliente ter mais de um usuário"
+                                    + " ATIVO. Inative o usuário atual para poder ativar este usuário para o cliente.");
+                        });
             }
             if (!usuario.getSituacao().equals(usuarioAntigo.getSituacao())
                     && usuario.getSituacao().equals(ATIVO)) {
@@ -97,12 +104,13 @@ public class UsuarioService {
 
 
     public void validaEmailClienteESituacao(Usuario usuario) throws ValidacaoException {
-        Optional<Usuario> usuarioValidar = usuarioRepository
-                .findByEmailAndSituacao(usuario.getEmail(), ATIVO);
-        if (usuarioValidar.isPresent() && !usuario.getId().equals(usuarioValidar.get().getId())) {
-            throw new ValidacaoException("Não é possível inserir o usuário pois o email "
-                                        + usuario.getEmail() + " já está cadastrado.");
-        }
+        usuarioRepository.findByEmailAndSituacao(usuario.getEmail(), ATIVO)
+            .ifPresent(usuarioValidar -> {
+                if (!usuario.getId().equals(usuarioValidar.getId())) {
+                    throw new ValidacaoException("Não é possível inserir o usuário pois o email "
+                            + usuario.getEmail() + " já está cadastrado para um usuário ATIVO.");
+                }
+            });
     }
 
     public boolean isNovoCadastro(Usuario usuario) {
@@ -114,9 +122,12 @@ public class UsuarioService {
 
         List<RelatoriosPowerBi> relatorios = powerBiRepository.findByUsuario(usuario);
 
+        Cliente cliente = clienteRepository.findById(usuario.getCliente().getId())
+            .orElseThrow(() -> new ValidacaoException("Cliente não identificado."));
+
         if (usuario.getSituacao().equals(ATIVO)) {
             throw new ValidacaoException("Não é possível remover esse usuário pois ele está ativo para o cliente "
-                    + usuario.getCliente().getNome() + ".");
+                    + cliente .getNome() + ".");
         } else if (!relatorios.isEmpty()) {
             throw new ValidacaoException("Não é possível remover o usuário " + usuario.getNome() + " pois esse" +
                     " usuário está vinculado aos relatórios: " + getNomes(relatorios));

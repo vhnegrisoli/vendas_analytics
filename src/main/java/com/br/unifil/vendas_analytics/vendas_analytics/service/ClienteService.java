@@ -93,7 +93,7 @@ public class ClienteService {
     public boolean hasUsuario(Cliente cliente) {
         AtomicReference<Boolean> hasUsuario = new AtomicReference<>();
         hasUsuario.set(false);
-        usuarioRepository.findByClienteId(cliente.getId()).ifPresent(
+        usuarioRepository.findByClienteId(cliente.getId()).forEach(
                 usuario -> {
                     hasUsuario.set(true);
                 }
