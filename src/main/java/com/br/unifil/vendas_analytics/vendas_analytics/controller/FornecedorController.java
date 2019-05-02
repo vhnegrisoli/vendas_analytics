@@ -1,7 +1,9 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.model.Categoria;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Fornecedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.FornecedorRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,4 +27,20 @@ public class FornecedorController {
         fornecedorRepository.save(fornecedor);
     }
 
+    @GetMapping("buscar/{id}")
+    public Fornecedor findOne(@PathVariable Integer id) {
+        return fornecedorRepository.findById(id).orElseThrow(() -> new ValidacaoException("Fornecedor não encontrado"));
+    }
+
+    @GetMapping("/remover/{id}")
+    public void remover(@PathVariable int id) {
+        Fornecedor fornecedor = fornecedorRepository.findById(id)
+            .orElseThrow(() -> new ValidacaoException("Fornecedor não encontrado."));
+        try {
+            fornecedorRepository.delete(fornecedor);
+        } catch (ValidacaoException v) {
+            throw new ValidacaoException("Não é possível remover o fornecedor pois ele já está definido para outros " +
+                    "registros.");
+        }
+    }
 }
