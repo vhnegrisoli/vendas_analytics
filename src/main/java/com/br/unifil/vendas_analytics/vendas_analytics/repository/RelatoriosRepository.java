@@ -1,9 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorClienteDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorProdutoDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorRegiaoDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -113,6 +110,33 @@ public class RelatoriosRepository {
         return jdbcTemplate.query(relatorioVendasPorRegiao(),
                 (rs, rowNum) -> new VendasPorRegiaoDto(
                         rs.getString("regiao"),
+                        rs.getInt("quantidade"),
+                        rs.getDouble("lucro"),
+                        rs.getDouble("media")));
+    }
+
+                /*
+        Relatório VENDAS POR ESTADOS
+     */
+
+    private String relatorioVendasPorEstado() {
+        return "SELECT " +
+                "e.estado as estado, " +
+                "SUM(pv.quantidade) as quantidade, " +
+                "SUM(p.PRECO * pv.quantidade) as lucro, " +
+                "CAST(AVG(p.PRECO * pv.QUANTIDADE) as NUMERIC(10,2)) as media " +
+                "FROM estado e " +
+                "INNER JOIN cliente c ON c.estado_id = e.id " +
+                "INNER JOIN venda v ON v.cliente_id = c.id " +
+                "INNER JOIN produto_venda pv ON pv.venda_id = v.id " +
+                "INNER JOIN produto p ON p.id = pv.produto_id " +
+                "GROUP BY e.estado";
+    }
+
+    public List<VendasPorEstadoDto> vendasPorEstado() {
+        return jdbcTemplate.query(relatorioVendasPorEstado(),
+                (rs, rowNum) -> new VendasPorEstadoDto(
+                        rs.getString("estado"),
                         rs.getInt("quantidade"),
                         rs.getDouble("lucro"),
                         rs.getDouble("media")));
