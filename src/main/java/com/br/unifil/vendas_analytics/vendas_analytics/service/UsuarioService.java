@@ -106,7 +106,7 @@ public class UsuarioService {
     public void validaEmailClienteESituacao(Usuario usuario) throws ValidacaoException {
         usuarioRepository.findByEmailAndSituacao(usuario.getEmail(), ATIVO)
             .ifPresent(usuarioValidar -> {
-                if (!usuario.getId().equals(usuarioValidar.getId())) {
+                if (isNovoCadastro(usuario) || !usuario.getId().equals(usuarioValidar.getId())) {
                     throw new ValidacaoException("Não é possível inserir o usuário pois o email "
                             + usuario.getEmail() + " já está cadastrado para um usuário ATIVO.");
                 }

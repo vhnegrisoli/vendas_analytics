@@ -1,6 +1,8 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorClienteDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorProdutoDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorRegiaoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Produto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_analytics.ProdutoAnalytics;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_analytics.VendasFornecedor;
@@ -44,6 +46,16 @@ public class AnalyticsController {
     @GetMapping("/geral-produtos")
     public List<VendasPorProdutoDto> getAllProdutosAnalytics() {
         return relatoriosRepository.vendasPorProduto();
+    }
+
+    @GetMapping("/geral-clientes")
+    public List<VendasPorClienteDto> getAllClientesAnalytics() {
+        return relatoriosRepository.vendasPorCliente();
+    }
+
+    @GetMapping("/geral-regioes-personalizados")
+    public List<VendasPorRegiaoDto> getAllRegioesPersonalizados() {
+        return relatoriosRepository.vendasPorRegiao();
     }
 
     @GetMapping("/geral-regioes")
