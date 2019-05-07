@@ -12,11 +12,8 @@ import lombok.NoArgsConstructor;
 public class CardsDashboardDto {
 
     private long qtdClientes;
-
     private long qtdProdutos;
-
     private long qtdVendasRealizadas;
-
     private long qtdVendasNaoRealizadas;
 
 }

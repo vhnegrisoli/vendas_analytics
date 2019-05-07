@@ -192,6 +192,37 @@ public class RelatoriosRepository {
                         rs.getDouble("media")));
     }
 
+                /*
+        CARDS DAS VENDAS
+     */
+
+    private String getProdutosDaVendaByVendaId(Integer id) {
+        return "SELECT " +
+                "p.id as id, " +
+                "p.nome_produto as produto, " +
+                "p.descricao as descricao, " +
+                "f.razao_social as fornecedor, " +
+                "c.descricao as categoria ," +
+                "p.preco as preco, " +
+                "pv.quantidade as quantidade " +
+                "FROM Produto p " +
+                "LEFT JOIN Produto_Venda pv ON p.id = pv.produto_id " +
+                "LEFT JOIN Fornecedor f ON f.id = p.fornecedor_id " +
+                "LEFT JOIN Categoria c ON c.id = p.categoria_id " +
+                "WHERE pv.venda_id = " + id;
+    }
+
+    public List<ProdutosDaVendaDto> findAllProdutosDaVendaByVendaId(Integer id) {
+        return jdbcTemplate.query(getProdutosDaVendaByVendaId(id),
+                (rs, rowNum) -> new ProdutosDaVendaDto(
+                        rs.getInt("id"),
+                        rs.getString("produto"),
+                        rs.getString("descricao"),
+                        rs.getString("fornecedor"),
+                        rs.getString("categoria"),
+                        rs.getDouble("preco"),
+                        rs.getInt("quantidade")));
+    }
 
 
 }

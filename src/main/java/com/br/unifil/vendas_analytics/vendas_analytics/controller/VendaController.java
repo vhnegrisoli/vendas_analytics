@@ -4,6 +4,7 @@ import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.HistoricoVendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.RelatoriosRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.RelatorioCsvService;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.VendaService;
@@ -47,7 +48,7 @@ public class VendaController {
     private RelatorioCsvService relatorioCsvService;
 
     @Autowired
-    private ProdutoVendaRepository produtoVendaRepository;
+    private RelatoriosRepository relatoriosRepository;
 
     @GetMapping("/todas")
     public List<Venda> getAllVendas() {
@@ -101,7 +102,7 @@ public class VendaController {
 
     @GetMapping("/vendas-produtos/{id}")
     public List<ProdutosDaVendaDto> getProdutosDaVenda(@PathVariable int id) {
-        return vendaService.produtosVenda(id);
+        return relatoriosRepository.findAllProdutosDaVendaByVendaId(id);
     }
 
 }
