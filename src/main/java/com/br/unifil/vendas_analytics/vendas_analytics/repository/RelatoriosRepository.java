@@ -62,6 +62,56 @@ public class RelatoriosRepository {
     }
 
         /*
+        Relatório VENDAS POR FORNECEDOR
+     */
+
+    private String relatorioVendasPorFornecedor() {
+        return "SELECT " +
+                "SUM(pv.quantidade) as quantidade, " +
+                "SUM(p.PRECO * pv.quantidade) as lucro, " +
+                "CAST(AVG(p.PRECO * pv.QUANTIDADE) as NUMERIC(10,2)) as media, " +
+                "f.nome_fantasia as fornecedor " +
+                "FROM Fornecedor f " +
+                "INNER JOIN produto p ON f.id = p.fornecedor_id " +
+                "INNER JOIN produto_venda pv ON p.id = pv.produto_id " +
+                "GROUP BY f.nome_fantasia";
+    }
+
+    public List<VendasPorFornecedorDto> vendasPorFornecedor() {
+        return jdbcTemplate.query(relatorioVendasPorFornecedor(),
+                (rs, rowNum) -> new VendasPorFornecedorDto(
+                        rs.getInt("quantidade"),
+                        rs.getDouble("lucro"),
+                        rs.getDouble("media"),
+                        rs.getString("fornecedor")));
+    }
+
+            /*
+        Relatório VENDAS POR CATEGORIA
+     */
+
+    private String relatorioVendasPorCategoria() {
+        return "SELECT " +
+                "SUM(pv.quantidade) as quantidade, " +
+                "SUM(p.PRECO * pv.quantidade) as lucro, " +
+                "CAST(AVG(p.PRECO * pv.QUANTIDADE) as NUMERIC(10,2)) as media, " +
+                "c.descricao as categoria " +
+                "FROM Categoria c " +
+                "INNER JOIN produto p ON c.id = p.categoria_id " +
+                "INNER JOIN produto_venda pv ON p.id = pv.produto_id " +
+                "GROUP BY c.descricao";
+    }
+
+    public List<VendasPorCategoriaDto> vendasPorCategoria() {
+        return jdbcTemplate.query(relatorioVendasPorCategoria(),
+                (rs, rowNum) -> new VendasPorCategoriaDto(
+                        rs.getInt("quantidade"),
+                        rs.getDouble("lucro"),
+                        rs.getDouble("media"),
+                        rs.getString("categoria")));
+    }
+
+        /*
         Relatório VENDAS POR CLIENTE
      */
 
@@ -141,5 +191,7 @@ public class RelatoriosRepository {
                         rs.getDouble("lucro"),
                         rs.getDouble("media")));
     }
+
+
 
 }
