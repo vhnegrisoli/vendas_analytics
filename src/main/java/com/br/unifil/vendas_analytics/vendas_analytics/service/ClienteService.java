@@ -11,6 +11,7 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepositor
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 

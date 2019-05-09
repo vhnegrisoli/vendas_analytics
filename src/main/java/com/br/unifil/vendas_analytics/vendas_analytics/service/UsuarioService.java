@@ -8,6 +8,9 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.PowerBiReposit
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -33,11 +36,17 @@ public class UsuarioService {
     @Autowired
     PowerBiRepository powerBiRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+
     private final ValidacaoException USUARIO_NAO_EXISTENTE_EXCEPTION = new ValidacaoException("O usuário não existe");
 
     public void salvarUsuario(Usuario usuario) throws ValidacaoException {
         if (isNovoCadastro(usuario)) {
             usuario.setSituacao(ATIVO);
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         }
         usuario.setDataCadastro(LocalDateTime.now());
         validaUsuario(usuario);
