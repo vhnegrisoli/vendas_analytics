@@ -1,17 +1,21 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
+import com.br.unifil.vendas_analytics.vendas_analytics.service.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/login")
 public class LoginController {
 
-    @GetMapping
-    public String login() {
-        return "Página sem autenticação";
-    }
+    @Autowired
+    private UsuarioService usuarioService;
 
+    @PostMapping
+    public String validarLogin(@RequestBody Usuario usuario) {
+        return usuarioService.validarLogin(usuario);
+    }
 
 }

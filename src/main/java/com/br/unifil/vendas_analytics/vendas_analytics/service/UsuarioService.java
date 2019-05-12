@@ -158,4 +158,13 @@ public class UsuarioService {
         return relatoriosNomes;
     }
 
+    public String validarLogin(Usuario usuario) {
+        String email = usuario.getEmail();
+        String senha =usuario.getSenha();
+        Usuario usuarioAutenticado = usuarioRepository.findByEmailAndSenhaAndSituacao(email, senha, ATIVO)
+            .orElseThrow(() -> new ValidacaoException("Erro de autenticação. O login e a senha estão inválidos, ou " +
+                    "você não possuo um usuário ATIVO. Por favor, tente novamente."));
+        return "Login efetuado com sucesso! Seja bem-vindo, " + usuarioAutenticado.getNome() + ".";
+    }
+
 }

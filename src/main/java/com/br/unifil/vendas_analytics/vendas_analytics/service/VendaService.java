@@ -81,7 +81,6 @@ public class VendaService {
         return venda;
     }
 
-
     public Venda validaVendaAguardandoAprovacao(Venda venda) {
         if (isNovaVenda(venda)) {
             venda.setAprovacao(AGUARDANDO_APROVACAO);
@@ -98,7 +97,6 @@ public class VendaService {
             throw new ValidacaoException("Você deve selecionar cliente para realizar a venda.");
         }
     }
-
 
     @Transactional
     public void aprovarVenda(int id) {
