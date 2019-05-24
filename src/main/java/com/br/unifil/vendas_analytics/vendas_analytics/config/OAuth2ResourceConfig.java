@@ -8,6 +8,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.ADMIN;
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.USER;
+
 @Configuration
 @EnableResourceServer
 public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
@@ -26,17 +29,19 @@ public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(permitAll).permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/api/clientes/**").hasAnyRole(PermissoesUsuarioEnum.ADMIN.name(), PermissoesUsuarioEnum.USER.name())
-                .antMatchers("/api/vendas/**").hasAnyRole(PermissoesUsuarioEnum.ADMIN.name(), PermissoesUsuarioEnum.USER.name())
-                .antMatchers("/api/produtos/**").hasAnyRole(PermissoesUsuarioEnum.ADMIN.name(), PermissoesUsuarioEnum.USER.name())
-                .antMatchers("/api/categorias/**").hasRole(PermissoesUsuarioEnum.ADMIN.name())
-                .antMatchers("/api/fornecedores/**").hasRole(PermissoesUsuarioEnum.ADMIN.name())
-                .antMatchers("/api/analytics/**").hasAnyRole(PermissoesUsuarioEnum.ADMIN.name(), PermissoesUsuarioEnum.USER.name())
-                .antMatchers("/api/dashboard/**").hasAnyRole(PermissoesUsuarioEnum.ADMIN.name(), PermissoesUsuarioEnum.USER.name())
-                .antMatchers("/api/estados/**").hasAnyRole(PermissoesUsuarioEnum.ADMIN.name(), PermissoesUsuarioEnum.USER.name())
-                .antMatchers("/api/dashboard/**").hasAnyRole(PermissoesUsuarioEnum.ADMIN.name(), PermissoesUsuarioEnum.USER.name())
-                .antMatchers("/api/usuarios/*").hasRole(PermissoesUsuarioEnum.ADMIN.name())
-                .antMatchers("/api/relatorios-power-bi/*").hasRole(PermissoesUsuarioEnum.ADMIN.name())
+                .antMatchers("/oauth/token").hasAnyRole(ADMIN.name(), USER.name())
+                .antMatchers("/oauth/authorize").hasAnyRole(ADMIN.name(), USER.name())
+                .antMatchers("/api/clientes/**").hasAnyRole(ADMIN.name(), USER.name())
+                .antMatchers("/api/vendas/**").hasAnyRole(ADMIN.name(), USER.name())
+                .antMatchers("/api/produtos/**").hasAnyRole(ADMIN.name(), USER.name())
+                .antMatchers("/api/categorias/**").hasRole(ADMIN.name())
+                .antMatchers("/api/fornecedores/**").hasRole(ADMIN.name())
+                .antMatchers("/api/analytics/**").hasAnyRole(ADMIN.name(), USER.name())
+                .antMatchers("/api/dashboard/**").hasAnyRole(ADMIN.name(), USER.name())
+                .antMatchers("/api/estados/**").hasAnyRole(ADMIN.name(), USER.name())
+                .antMatchers("/api/dashboard/**").hasAnyRole(ADMIN.name(), USER.name())
+                .antMatchers("/api/usuarios/*").hasRole(ADMIN.name())
+                .antMatchers("/api/relatorios-power-bi/*").hasRole(ADMIN.name())
                 .anyRequest().authenticated();
     }
 
