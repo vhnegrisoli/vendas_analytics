@@ -1,6 +1,5 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.config;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +18,8 @@ public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         String[] permitAll = {
                 "/login/**",
+                "/oauth/token",
+                "/oauth/authorize",
         };
 
         http
@@ -29,8 +30,6 @@ public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(permitAll).permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/oauth/token").hasAnyRole(ADMIN.name(), USER.name())
-                .antMatchers("/oauth/authorize").hasAnyRole(ADMIN.name(), USER.name())
                 .antMatchers("/api/clientes/**").hasAnyRole(ADMIN.name(), USER.name())
                 .antMatchers("/api/vendas/**").hasAnyRole(ADMIN.name(), USER.name())
                 .antMatchers("/api/produtos/**").hasAnyRole(ADMIN.name(), USER.name())
@@ -44,5 +43,4 @@ public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/api/relatorios-power-bi/*").hasRole(ADMIN.name())
                 .anyRequest().authenticated();
     }
-
 }

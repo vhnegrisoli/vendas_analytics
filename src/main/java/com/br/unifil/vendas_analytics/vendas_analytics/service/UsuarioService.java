@@ -25,7 +25,7 @@ import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSitua
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.INATIVO;
 
 @Service
-public class UsuarioService {
+public abstract class UsuarioService {
 
     @Autowired
     UsuarioRepository usuarioRepository;
@@ -167,4 +167,7 @@ public class UsuarioService {
         return "Login efetuado com sucesso! Seja bem-vindo, " + usuarioAutenticado.getNome() + ".";
     }
 
+    public abstract void delete(long id);
+
+    public abstract Usuario save(Usuario usuario);
 }
