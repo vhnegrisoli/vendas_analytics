@@ -18,21 +18,24 @@ public class ExportarCsvRepository {
 
     private String exportarCsvFiltroData(String dataInicial, String dataFinal) {
         return "SELECT " +
-                " c.NOME  AS  nome_cliente , " +
-                " c.CPF  AS  cpf_cliente, " +
-                " c.EMAIL  AS  email_cliente , " +
+                " c.NOME  AS  nome_vendedor , " +
+                " c.CPF  AS  cpf_vendedor, " +
+                " c.EMAIL  AS  email_vendedor , " +
                 " CONCAT(c.RUA " +
-                " , ' - nº ', c.NUMERO)AS  endereco_cliente , " +
+                " , ' - nº ', c.NUMERO)AS  endereco_vendedor , " +
                 " c.CIDADE  AS  cidade , " +
                 " es.ESTADO  AS  estado , " +
                 " r.NOME  AS  regiao , " +
-                " u.NOME  AS  usuario_cliente ," +
+                " u.NOME  AS  usuario_vendedor ," +
                 " v.ID  AS  codigo_venda , " +
                 " pv.QUANTIDADE " +
                 " AS  quantidade_itens , " +
                 " CONCAT(DAY(v.DATA_COMPRA),'/',MONTH(v.DATA_COMPRA),'/',YEAR(v.DATA_COMPRA)) as data_venda, " +
                 " v.SITUACAO  AS  situacao_venda , " +
                 " v.aprovacao  AS  aprovacao_venda , " +
+                " v.cliente_nome as cliente_nome, " +
+                " v.cliente_email as cliente_email, " +
+                " v.cliente_cpf as cliente_cpf, " +
                 " p.ID  AS  codigo_produto , " +
                 " p.NOME_PRODUTO AS  produto , " +
                 " p.PRECO  AS  valor_pedido , " +
@@ -68,6 +71,9 @@ public class ExportarCsvRepository {
                         rs.getString("data_venda"),
                         rs.getString("situacao_venda"),
                         rs.getString("aprovacao_venda"),
+                        rs.getString("cliente_nome"),
+                        rs.getString("cliente_email"),
+                        rs.getString("cliente_cpf"),
                         rs.getInt("codigo_produto"),
                         rs.getString("produto"),
                         rs.getDouble("valor_pedido"),
@@ -96,6 +102,9 @@ public class ExportarCsvRepository {
                 " CONCAT(DAY(v.DATA_COMPRA),'/',MONTH(v.DATA_COMPRA),'/',YEAR(v.DATA_COMPRA)) as data_venda, " +
                 " v.SITUACAO  AS  situacao_venda , " +
                 " v.aprovacao  AS  aprovacao_venda , " +
+                " v.cliente_nome as cliente_nome, " +
+                " v.cliente_email as cliente_email, " +
+                " v.cliente_cpf as cliente_cpf, " +
                 " p.ID  AS  codigo_produto , " +
                 " p.NOME_PRODUTO AS  produto , " +
                 " p.PRECO  AS  valor_pedido , " +
@@ -130,6 +139,9 @@ public class ExportarCsvRepository {
                         rs.getString("data_venda"),
                         rs.getString("situacao_venda"),
                         rs.getString("aprovacao_venda"),
+                        rs.getString("cliente_nome"),
+                        rs.getString("cliente_email"),
+                        rs.getString("cliente_cpf"),
                         rs.getInt("codigo_produto"),
                         rs.getString("produto"),
                         rs.getDouble("valor_pedido"),
