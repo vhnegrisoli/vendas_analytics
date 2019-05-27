@@ -48,9 +48,9 @@ public class VendaService {
         venda = insereData(venda);
         venda = validaVendaAguardandoAprovacao(venda);
         Venda vendaCadastrar = venda;
-        validarProdutosEClientesNulos(venda);
+        validarProdutosEVendedoresNulos(venda);
         vendaCadastrar.setProdutos(null);
-        validarClienteComUsuarioAtivo(venda.getClientes());
+        validarVendedorComUsuarioAtivo(venda.getVendedor());
         vendaRepository.save(vendaCadastrar);
         saveVendaProduto(vendaCadastrar, produtos);
     }
@@ -88,11 +88,11 @@ public class VendaService {
         return venda;
     }
 
-    public void validarProdutosEClientesNulos(Venda venda) {
+    public void validarProdutosEVendedoresNulos(Venda venda) {
         if (venda.getProdutos().isEmpty()) {
             throw new ValidacaoException("Você deve cadastrar produtos no carrinho de compra para tratar uma venda.");
         }
-        if (ObjectUtils.isEmpty(venda.getClientes())) {
+        if (ObjectUtils.isEmpty(venda.getVendedor())) {
             throw new ValidacaoException("Você deve selecionar o vendedor para realizar a venda.");
         }
     }
@@ -125,8 +125,8 @@ public class VendaService {
         vendaRepository.save(venda);
     }
 
-    public void validarClienteComUsuarioAtivo(Vendedor vendedor) {
-        usuarioRepository.findByClienteIdAndSituacao(vendedor.getId(), ATIVO)
+    public void validarVendedorComUsuarioAtivo(Vendedor vendedor) {
+        usuarioRepository.findByVendedorIdAndSituacao(vendedor.getId(), ATIVO)
                 .orElseThrow(() -> new ValidacaoException("Não existe um usuário ativo para este vendedor."));
     }
 

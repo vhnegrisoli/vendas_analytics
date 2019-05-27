@@ -63,7 +63,7 @@ public class DashboardController {
     }
 
     @GetMapping("/card1/vendas-por-vendedor")
-    public List<vendas_por_cliente> getAllVendasPorCliente() {
+    public List<vendas_por_vendedor> getAllVendasPorVendedor() {
         return vendas_por_vendedorRepository.findAll();
     }
 

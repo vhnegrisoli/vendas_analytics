@@ -50,8 +50,8 @@ public class Usuario {
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "cliente_id")
-    private Vendedor cliente;
+    @JoinColumn(name = "vendedor_id")
+    private Vendedor vendedor;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)

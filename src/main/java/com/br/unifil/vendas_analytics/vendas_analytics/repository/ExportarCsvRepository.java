@@ -43,11 +43,11 @@ public class ExportarCsvRepository {
                 " f.CNPJ  AS  cnpj_fornecedor , " +
                 " f.NOME_FANTASIA AS  fornecedor_nome_fantasia , " +
                 " f.RAZAO_SOCIAL AS  razao_social_fornecedor "  +
-                "FROM Cliente c " +
-                " LEFT JOIN Usuario u ON c.id = u.cliente_id " +
+                "FROM Vendedor c " +
+                " LEFT JOIN Usuario u ON c.id = u.vendedor_id " +
                 " LEFT JOIN Estado es ON es.id = c.estado_id " +
                 " LEFT JOIN Regiao r ON es.regiao_id = r.id " +
-                " LEFT JOIN Venda v ON v.cliente_id = c.id " +
+                " LEFT JOIN Venda v ON v.vendedor_id = c.id " +
                 " LEFT JOIN Produto_Venda pv ON pv.venda_id = v.id " +
                 " LEFT JOIN Produto p ON p.id = pv.produto_id " +
                 " LEFT JOIN Categoria ct ON ct.id = p.fornecedor_id " +
@@ -112,11 +112,11 @@ public class ExportarCsvRepository {
                 " f.CNPJ  AS  cnpj_fornecedor , " +
                 " f.NOME_FANTASIA AS  fornecedor_nome_fantasia , " +
                 " f.RAZAO_SOCIAL AS  razao_social_fornecedor "  +
-                "FROM Cliente c " +
-                " LEFT JOIN Usuario u ON c.id = u.cliente_id " +
+                "FROM Vendedor c " +
+                " LEFT JOIN Usuario u ON c.id = u.vendedor_id " +
                 " LEFT JOIN Estado es ON es.id = c.estado_id " +
                 " LEFT JOIN Regiao r ON es.regiao_id = r.id " +
-                " LEFT JOIN Venda v ON v.cliente_id = c.id " +
+                " LEFT JOIN Venda v ON v.vendedor_id = c.id " +
                 " LEFT JOIN Produto_Venda pv ON pv.venda_id = v.id " +
                 " LEFT JOIN Produto p ON p.id = pv.produto_id " +
                 " LEFT JOIN Categoria ct ON ct.id = p.fornecedor_id " +

@@ -53,12 +53,12 @@ public class VendedorService {
     public void removerClienteComUsuarioComVendasVinculadas(Integer id) {
         Vendedor vendedor = vendedorRepository.findById(id)
             .orElseThrow(() -> new ValidacaoException("Não foi possível encontrar o vendedor."));
-        Usuario usuario = usuarioRepository.findByClienteIdAndSituacao(vendedor.getId(), ATIVO)
+        Usuario usuario = usuarioRepository.findByVendedorIdAndSituacao(vendedor.getId(), ATIVO)
             .orElseThrow(() -> new ValidacaoException("Não há usuário ativo para o vendedor " + vendedor.getNome()
                 + ", por favor, verifique se o vendedor possui usuários inativos, ative novamente e tente fazer a " +
                     "remoção do vendedor."));
         try {
-            List<Venda> vendas = vendaRepository.findByClientes(vendedor);
+            List<Venda> vendas = vendaRepository.findByVendedor(vendedor);
             if (!vendas.isEmpty()) {
                 throw new ValidacaoException("O vendedor " + vendedor.getNome() + " não pode ser removido pois já " +
                         "possui vendas cadastradas em seu nome. Por favor, contate o administrador do " +
@@ -81,7 +81,7 @@ public class VendedorService {
                     .senha(gerarSenha())
                     .situacao(ATIVO)
                     .permissoesUsuario(PermissoesUsuario.builder().id(1).build())
-                    .cliente(vendedor)
+                    .vendedor(vendedor)
                     .build();
             usuarioService.salvarUsuario(usuario);
         }
@@ -90,7 +90,7 @@ public class VendedorService {
     public boolean hasUsuario(Vendedor vendedor) {
         AtomicReference<Boolean> hasUsuario = new AtomicReference<>();
         hasUsuario.set(false);
-        usuarioRepository.findByClienteId(vendedor.getId()).forEach(
+        usuarioRepository.findByVendedorId(vendedor.getId()).forEach(
                 usuario -> {
                     hasUsuario.set(true);
                 }

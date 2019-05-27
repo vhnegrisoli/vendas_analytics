@@ -46,8 +46,8 @@ public class Venda implements Serializable {
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "cliente_id")
-    private Vendedor clientes;
+    @JoinColumn(name = "vendedor_id")
+    private Vendedor vendedor;
 
     @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL)
     private List<ProdutoVenda> produtos;

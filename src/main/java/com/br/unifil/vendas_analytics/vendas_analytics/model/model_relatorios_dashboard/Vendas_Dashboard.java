@@ -21,8 +21,8 @@ public class Vendas_Dashboard {
     @Column(name = "lucro_total")
     private double lucro;
 
-    @Column(name = "Clientes")
-    private int clientes;
+    @Column(name = "Vendedores")
+    private int vendedores;
 
     @Column(name = "Produtos")
     private int produtos;

@@ -57,7 +57,7 @@ public class UsuarioService {
     }
 
     public void validarClienteExistente(Usuario usuario) throws ValidacaoException {
-        if (ObjectUtils.isEmpty(usuario.getCliente().getId())) {
+        if (ObjectUtils.isEmpty(usuario.getVendedor().getId())) {
             throw new ValidacaoException("É preciso ter um vendedor para cadastrar um novo usuário");
         }
     }
@@ -86,7 +86,7 @@ public class UsuarioService {
             Usuario usuarioAntigo = usuarioRepository.findById(usuario.getId())
                     .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
 
-            List<Usuario> validaCliente = usuarioRepository.findByClienteId(usuario.getCliente().getId());
+            List<Usuario> validaCliente = usuarioRepository.findByVendedorId(usuario.getVendedor().getId());
 
             if (!validaCliente.isEmpty()) {
                 validaCliente
@@ -128,7 +128,7 @@ public class UsuarioService {
 
         List<RelatoriosPowerBi> relatorios = powerBiRepository.findByUsuario(usuario);
 
-        Vendedor vendedor = vendedorRepository.findById(usuario.getCliente().getId())
+        Vendedor vendedor = vendedorRepository.findById(usuario.getVendedor().getId())
             .orElseThrow(() -> new ValidacaoException("Vendedor não identificado."));
 
         if (usuario.getSituacao().equals(ATIVO)) {

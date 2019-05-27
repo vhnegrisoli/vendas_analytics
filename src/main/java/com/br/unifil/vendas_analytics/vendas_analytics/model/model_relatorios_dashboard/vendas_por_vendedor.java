@@ -6,17 +6,17 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "VENDAS_POR_CLIENTE")
+@Table(name = "VENDAS_POR_VENDEDORES")
 @Data
 @NoArgsConstructor
-public class vendas_por_cliente {
+public class vendas_por_vendedor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "Clientes")
-    private int clientes;
+    @Column(name = "Vendedores")
+    private int vendedores;
 
     @Column(name = "Meses")
     private String meses;
