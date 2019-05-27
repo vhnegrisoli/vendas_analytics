@@ -56,4 +56,13 @@ public class Venda implements Serializable {
     @Column(name = "mes_compra")
     private String mesCompra;
 
+    @Column(name = "cliente_nome")
+    private String clienteNome;
+
+    @Column(name = "cliente_email")
+    private String clienteEmail;
+
+    @Column(name = "cliente_cpf")
+    private String clienteCpf;
+
 }
