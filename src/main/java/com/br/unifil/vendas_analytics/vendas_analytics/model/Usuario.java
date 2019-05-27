@@ -57,4 +57,7 @@ public class Usuario {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "permissoes_usuario_id")
     private PermissoesUsuario permissoesUsuario;
+
+    @Column(name = "usuario_proprietario")
+    private Integer usuarioProprietario;
 }

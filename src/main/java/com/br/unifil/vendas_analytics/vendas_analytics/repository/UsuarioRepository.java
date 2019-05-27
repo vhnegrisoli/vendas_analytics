@@ -1,6 +1,7 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,4 +16,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     Optional<Usuario> findByEmailAndSituacao(String email, UsuarioSituacao situacao);
 
+    List<Usuario> findByPermissoesUsuarioAndSituacao(PermissoesUsuario permissoesUsuario,
+                                                     UsuarioSituacao usuarioSituacao);
 }

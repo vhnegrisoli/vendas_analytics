@@ -1,9 +1,11 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.RelatoriosPowerBi;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.PermissoesUsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.PowerBiRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.ADMIN;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.INATIVO;
 
@@ -33,6 +36,9 @@ public class UsuarioService {
     @Autowired
     PowerBiRepository powerBiRepository;
 
+    @Autowired
+    PermissoesUsuarioRepository permissoesUsuarioRepository;
+
     private final ValidacaoException USUARIO_NAO_EXISTENTE_EXCEPTION = new ValidacaoException("O usuário não existe");
 
     public void salvarUsuario(Usuario usuario) throws ValidacaoException {
@@ -42,6 +48,7 @@ public class UsuarioService {
         usuario.setDataCadastro(LocalDateTime.now());
         validaUsuario(usuario);
         usuario = validarTrocaDeSituacao(usuario);
+        validarUsuarioProprietario(usuario);
         usuarioRepository.save(usuario);
     }
 
@@ -147,6 +154,20 @@ public class UsuarioService {
              }
         );
         return relatoriosNomes;
+    }
+
+    public void validarUsuarioProprietario(Usuario usuario) {
+        if (!ObjectUtils.isEmpty(usuario.getUsuarioProprietario())) {
+            usuarioRepository.findById(usuario.getUsuarioProprietario())
+                .orElseThrow(() -> new ValidacaoException("Não existe um Usuário Proprietário."));
+            PermissoesUsuario permissoesUsuario = permissoesUsuarioRepository
+                .findById(usuario.getPermissoesUsuario().getId())
+                .orElseThrow(() -> new ValidacaoException("Permissão não existente"));
+            if (permissoesUsuario.getPermissao().equals(ADMIN)) {
+                throw new ValidacaoException("O usuário a ser cadastrado está definido como ADMINISTRADOR, por favor,"
+                        + " defina-o com a permissão de USUÁRIO.");
+            }
+        }
     }
 
 }
