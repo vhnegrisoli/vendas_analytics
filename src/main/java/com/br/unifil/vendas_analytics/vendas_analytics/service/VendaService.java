@@ -2,7 +2,7 @@ package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
-import javax.validation.ValidationException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,7 +25,6 @@ import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSitua
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.*;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.ABERTA;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FECHADA;
-import static org.apache.logging.log4j.ThreadContext.isEmpty;
 
 @Service
 public class VendaService {
@@ -35,7 +33,7 @@ public class VendaService {
     private VendaRepository vendaRepository;
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private VendedorRepository vendedorRepository;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -127,8 +125,8 @@ public class VendaService {
         vendaRepository.save(venda);
     }
 
-    public void validarClienteComUsuarioAtivo(Cliente cliente) {
-        usuarioRepository.findByClienteIdAndSituacao(cliente.getId(), ATIVO)
+    public void validarClienteComUsuarioAtivo(Vendedor vendedor) {
+        usuarioRepository.findByClienteIdAndSituacao(vendedor.getId(), ATIVO)
                 .orElseThrow(() -> new ValidacaoException("Não existe um usuário ativo para este vendedor."));
     }
 

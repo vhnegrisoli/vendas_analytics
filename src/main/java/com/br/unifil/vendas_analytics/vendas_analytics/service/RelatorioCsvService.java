@@ -18,9 +18,9 @@ public class RelatorioCsvService {
     private ExportarCsvRepository exportarCsvRepository;
 
     public String gerarCabecalho() {
-        return "Nome do Cliente;CPF do Cliente;Email do Cliente;Endereço do Cliente;Cidade;Estado;" +
-                "Região;Usuário do Cliente;Código da Venda;Quantidade de Itens;Data da Venda;Situação" +
-                " da Venda;Aprovação da Venda;Nome do Cliente;Email do Cliente;CPF do Cliente;" +
+        return "Nome do Vendedor;CPF do Vendedor;Email do Vendedor;Endereço do Vendedor;Cidade;Estado;" +
+                "Região;Usuário do Vendedor;Código da Venda;Quantidade de Itens;Data da Venda;Situação" +
+                " da Venda;Aprovação da Venda;Nome do Vendedor;Email do Vendedor;CPF do Vendedor;" +
                 "Código do Produto;Produto;Valor do Pedido;Categoria;CNPJ do Fornecedor;" +
                 "Nome do Fornecedor;Razão Social do Fornecedor";
     }

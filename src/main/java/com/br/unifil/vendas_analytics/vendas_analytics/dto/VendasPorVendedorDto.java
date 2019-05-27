@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VendasPorClienteDto {
+public class VendasPorVendedorDto {
 
     private String cliente;
     private int quantidade;

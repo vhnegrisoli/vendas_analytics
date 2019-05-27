@@ -51,7 +51,7 @@ public class Usuario {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cliente_id")
-    private Cliente cliente;
+    private Vendedor cliente;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)

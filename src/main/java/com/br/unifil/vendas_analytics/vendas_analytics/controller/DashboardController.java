@@ -3,7 +3,7 @@ package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.CardsDashboardDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_dashboard.*;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.RelatoriosRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
@@ -28,7 +28,7 @@ public class DashboardController {
     Vendas_Por_PeriodoRepository vendas_por_periodoRepository;
 
     @Autowired
-    ClienteRepository clienteRepository;
+    VendedorRepository vendedorRepository;
 
 
     @Autowired
@@ -43,7 +43,7 @@ public class DashboardController {
     VendaRepository vendaRepository;
 
     @Autowired
-    Vendas_Por_ClienteRepository vendas_por_clienteRepository;
+    Vendas_Por_VendedorRepository vendas_por_vendedorRepository;
 
     @Autowired
     Vendas_Por_ProdutoRepository vendas_por_produtoRepository;
@@ -62,9 +62,9 @@ public class DashboardController {
         return relatoriosRepository.vendasPorPeriodo();
     }
 
-    @GetMapping("/card1/vendas-por-cliente")
+    @GetMapping("/card1/vendas-por-vendedor")
     public List<vendas_por_cliente> getAllVendasPorCliente() {
-        return vendas_por_clienteRepository.findAll();
+        return vendas_por_vendedorRepository.findAll();
     }
 
     @GetMapping("/card2/vendas-por-produto")
@@ -89,7 +89,7 @@ public class DashboardController {
 
     @GetMapping("/cards-totais")
     public CardsDashboardDto getSomatorios() {
-        long qtdClientes = clienteRepository.count();
+        long qtdClientes = vendedorRepository.count();
         long qtdProdutos = produtoRepository.count();
         long qtdVendasRealizadas = vendaRepository.countBySituacaoAndAprovacao(FECHADA, APROVADA);
         long qtdVendasNaoRealizadas = vendaRepository.countByAprovacaoNot(APROVADA);

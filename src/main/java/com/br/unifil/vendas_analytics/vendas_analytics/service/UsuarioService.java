@@ -1,10 +1,10 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.model.Cliente;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.Vendedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.RelatoriosPowerBi;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.ClienteRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.PermissoesUsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.PowerBiRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
@@ -17,7 +17,6 @@ import org.springframework.util.ObjectUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.ADMIN;
@@ -31,7 +30,7 @@ public class UsuarioService {
     UsuarioRepository usuarioRepository;
 
     @Autowired
-    ClienteRepository clienteRepository;
+    VendedorRepository vendedorRepository;
 
     @Autowired
     PowerBiRepository powerBiRepository;
@@ -97,8 +96,8 @@ public class UsuarioService {
                                 && !usuarioCliente.getId().equals(usuario.getId()))
                         .forEach(cliente -> {
                             throw new ValidacaoException("Este vendedor já possui um "
-                                    + "um usuário ATIVO, e não há possibilidade de um cliente ter mais de um usuário"
-                                    + " ATIVO. Inative o usuário atual para poder ativar este usuário para o cliente.");
+                                    + "um usuário ATIVO, e não há possibilidade de um vendedor ter mais de um usuário"
+                                    + " ATIVO. Inative o usuário atual para poder ativar este usuário para o vendedor.");
                         });
             }
             if (!usuario.getSituacao().equals(usuarioAntigo.getSituacao())
@@ -129,12 +128,12 @@ public class UsuarioService {
 
         List<RelatoriosPowerBi> relatorios = powerBiRepository.findByUsuario(usuario);
 
-        Cliente cliente = clienteRepository.findById(usuario.getCliente().getId())
+        Vendedor vendedor = vendedorRepository.findById(usuario.getCliente().getId())
             .orElseThrow(() -> new ValidacaoException("Vendedor não identificado."));
 
         if (usuario.getSituacao().equals(ATIVO)) {
             throw new ValidacaoException("Não é possível remover esse usuário pois ele está ativo para o vendedor "
-                    + cliente .getNome() + ".");
+                    + vendedor.getNome() + ".");
         } else if (!relatorios.isEmpty()) {
             throw new ValidacaoException("Não é possível remover o usuário " + usuario.getNome() + " pois esse" +
                     " usuário está vinculado aos relatórios: " + getNomes(relatorios));

@@ -12,7 +12,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -48,7 +47,7 @@ public class Venda implements Serializable {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cliente_id")
-    private Cliente clientes;
+    private Vendedor clientes;
 
     @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL)
     private List<ProdutoVenda> produtos;
