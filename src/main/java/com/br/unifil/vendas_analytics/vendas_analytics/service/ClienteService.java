@@ -48,14 +48,14 @@ public class ClienteService {
             clienteRepository.save(cliente);
             criaUsuarioAoInserirCliente(cliente);
         } catch (Exception ex) {
-            throw new ValidacaoException("Não foi possível salvar o cliente.");
+            throw new ValidacaoException("Não foi possível salvar o vendedor.");
         }
     }
 
     @Transactional
     public void removerClienteComUsuarioComVendasVinculadas(Integer id) {
         Cliente cliente = clienteRepository.findById(id)
-            .orElseThrow(() -> new ValidacaoException("Não foi possível encontrar o cliente."));
+            .orElseThrow(() -> new ValidacaoException("Não foi possível encontrar o vendedor."));
         Usuario usuario = usuarioRepository.findByClienteIdAndSituacao(cliente.getId(), ATIVO)
             .orElseThrow(() -> new ValidacaoException("Não há usuário ativo para o cliente " + cliente.getNome()
                 + ", por favor, verifique se o cliente possui usuários inativos, ative novamente e tente fazer a " +
@@ -63,7 +63,7 @@ public class ClienteService {
         try {
             List<Venda> vendas = vendaRepository.findByClientes(cliente);
             if (!vendas.isEmpty()) {
-                throw new ValidacaoException("O cliente " + cliente.getNome() + " não pode ser removido pois já " +
+                throw new ValidacaoException("O vendedor " + cliente.getNome() + " não pode ser removido pois já " +
                         "possui vendas cadastradas em seu nome. Por favor, contate o administrador do " +
                         "sistema para a remoção.");
             }

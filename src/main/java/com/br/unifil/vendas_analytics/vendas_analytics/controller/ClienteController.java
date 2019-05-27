@@ -28,7 +28,7 @@ public class ClienteController {
     @GetMapping("/buscar/{id}")
     public Cliente buscaUm(@PathVariable Integer id) throws ValidacaoException {
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new ValidacaoException("O cliente não existe!"));
+                .orElseThrow(() -> new ValidacaoException("O vendedor não existe!"));
     }
 
     @PostMapping("/salvar")

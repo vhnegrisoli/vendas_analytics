@@ -55,14 +55,14 @@ public class ExportarCsvRepository {
     public List<ExportarCsvDto> exportarCsvComFiltroDeData(String dataInicial, String dataFinal) {
         return jdbcTemplate.query(exportarCsvFiltroData(dataInicial, dataFinal),
                 (rs, rowNum) -> new ExportarCsvDto(
-                        rs.getString("nome_cliente"),
-                        rs.getString("cpf_cliente"),
-                        rs.getString("email_cliente"),
-                        rs.getString("endereco_cliente"),
+                        rs.getString("nome_vendedor"),
+                        rs.getString("cpf_vendedor"),
+                        rs.getString("email_vendedor"),
+                        rs.getString("endereco_vendedor"),
                         rs.getString("cidade"),
                         rs.getString("estado"),
                         rs.getString("regiao"),
-                        rs.getString("usuario_cliente"),
+                        rs.getString("usuario_vendedor"),
                         rs.getInt("codigo_venda"),
                         rs.getInt("quantidade_itens"),
                         rs.getString("data_venda"),
@@ -81,15 +81,15 @@ public class ExportarCsvRepository {
 
     private String exportarCsvCompleto() {
         return "SELECT " +
-                " c.NOME  AS  nome_cliente , " +
-                " c.CPF  AS  cpf_cliente, " +
-                " c.EMAIL  AS  email_cliente , " +
+                " c.NOME  AS  nome_vendedor , " +
+                " c.CPF  AS  cpf_vendedor, " +
+                " c.EMAIL  AS  email_vendedor , " +
                 " CONCAT(c.RUA " +
-                " , ' - nº ', c.NUMERO)AS  endereco_cliente , " +
+                " , ' - nº ', c.NUMERO)AS  endereco_vendedor , " +
                 " c.CIDADE  AS  cidade , " +
                 " es.ESTADO  AS  estado , " +
                 " r.NOME  AS  regiao , " +
-                " u.NOME  AS  usuario_cliente ," +
+                " u.NOME  AS  usuario_vendedor ," +
                 " v.ID  AS  codigo_venda , " +
                 " pv.QUANTIDADE " +
                 " AS  quantidade_itens , " +
@@ -117,14 +117,14 @@ public class ExportarCsvRepository {
     public List<ExportarCsvDto> exportarCsvSemFiltroDeData() {
         return jdbcTemplate.query(exportarCsvCompleto(),
                 (rs, rowNum) -> new ExportarCsvDto(
-                        rs.getString("nome_cliente"),
-                        rs.getString("cpf_cliente"),
-                        rs.getString("email_cliente"),
-                        rs.getString("endereco_cliente"),
+                        rs.getString("nome_vendedor"),
+                        rs.getString("cpf_vendedor"),
+                        rs.getString("email_vendedor"),
+                        rs.getString("endereco_vendedor"),
                         rs.getString("cidade"),
                         rs.getString("estado"),
                         rs.getString("regiao"),
-                        rs.getString("usuario_cliente"),
+                        rs.getString("usuario_vendedor"),
                         rs.getInt("codigo_venda"),
                         rs.getInt("quantidade_itens"),
                         rs.getString("data_venda"),

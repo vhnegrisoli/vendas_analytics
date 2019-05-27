@@ -52,7 +52,7 @@ public class UsuarioService {
 
     public void validarClienteExistente(Usuario usuario) throws ValidacaoException {
         if (ObjectUtils.isEmpty(usuario.getCliente().getId())) {
-            throw new ValidacaoException("É preciso ter um cliente para cadastrar um novo usuário");
+            throw new ValidacaoException("É preciso ter um vendedor para cadastrar um novo usuário");
         }
     }
 
@@ -89,7 +89,7 @@ public class UsuarioService {
                                 && usuario.getSituacao().equals(ATIVO)
                                 && !usuarioCliente.getId().equals(usuario.getId()))
                         .forEach(cliente -> {
-                            throw new ValidacaoException("Este cliente já possui um "
+                            throw new ValidacaoException("Este vendedor já possui um "
                                     + "um usuário ATIVO, e não há possibilidade de um cliente ter mais de um usuário"
                                     + " ATIVO. Inative o usuário atual para poder ativar este usuário para o cliente.");
                         });
@@ -123,10 +123,10 @@ public class UsuarioService {
         List<RelatoriosPowerBi> relatorios = powerBiRepository.findByUsuario(usuario);
 
         Cliente cliente = clienteRepository.findById(usuario.getCliente().getId())
-            .orElseThrow(() -> new ValidacaoException("Cliente não identificado."));
+            .orElseThrow(() -> new ValidacaoException("Vendedor não identificado."));
 
         if (usuario.getSituacao().equals(ATIVO)) {
-            throw new ValidacaoException("Não é possível remover esse usuário pois ele está ativo para o cliente "
+            throw new ValidacaoException("Não é possível remover esse usuário pois ele está ativo para o vendedor "
                     + cliente .getNome() + ".");
         } else if (!relatorios.isEmpty()) {
             throw new ValidacaoException("Não é possível remover o usuário " + usuario.getNome() + " pois esse" +
