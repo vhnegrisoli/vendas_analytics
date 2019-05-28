@@ -33,11 +33,11 @@ public class VendedorController {
 
     @PostMapping("/salvar")
     public void salvar(@RequestBody Vendedor vendedor) throws Exception{
-        vendedorService.salvarCliente(vendedor);
+        vendedorService.salvarVendedor(vendedor);
     }
 
     @GetMapping("/remover/{id}")
     public void remover(@PathVariable int id) {
-        vendedorService.removerClienteComUsuarioComVendasVinculadas(id);
+        vendedorService.removerVendedorComUsuarioComVendasVinculadas(id);
     }
 }

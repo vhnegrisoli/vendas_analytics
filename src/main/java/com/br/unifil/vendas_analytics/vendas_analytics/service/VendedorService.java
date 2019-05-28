@@ -37,20 +37,20 @@ public class VendedorService {
     VendaRepository vendaRepository;
 
     @Transactional
-    public void salvarCliente(Vendedor vendedor) throws ValidacaoException {
+    public void salvarVendedor(Vendedor vendedor) throws ValidacaoException {
         try {
             if (isNovoCadastro(vendedor)) {
-                validarNovoCliente(vendedor);
+                validarNovoVendedor(vendedor);
             }
             vendedorRepository.save(vendedor);
-            criaUsuarioAoInserirCliente(vendedor);
+            criaUsuarioAoInserirVendedor(vendedor);
         } catch (Exception ex) {
             throw new ValidacaoException("Não foi possível salvar o vendedor.");
         }
     }
 
     @Transactional
-    public void removerClienteComUsuarioComVendasVinculadas(Integer id) {
+    public void removerVendedorComUsuarioComVendasVinculadas(Integer id) {
         Vendedor vendedor = vendedorRepository.findById(id)
             .orElseThrow(() -> new ValidacaoException("Não foi possível encontrar o vendedor."));
         Usuario usuario = usuarioRepository.findByVendedorIdAndSituacao(vendedor.getId(), ATIVO)
@@ -71,7 +71,7 @@ public class VendedorService {
         }
     }
 
-    public void criaUsuarioAoInserirCliente(Vendedor vendedor) throws ValidacaoException {
+    public void criaUsuarioAoInserirVendedor(Vendedor vendedor) throws ValidacaoException {
         if (!hasUsuario(vendedor)) {
             Usuario usuario = Usuario
                     .builder()
@@ -104,21 +104,21 @@ public class VendedorService {
         return pwdGenerator.generate(10);
     }
 
-    public void validarNovoCliente(Vendedor vendedor) throws ValidacaoException {
+    public void validarNovoVendedor(Vendedor vendedor) throws ValidacaoException {
         validarCpfCadastrado(vendedor);
         validarEmailCadastrado(vendedor);
     }
 
     public void validarCpfCadastrado(Vendedor vendedor) throws ValidacaoException {
-        Optional<Vendedor> clienteCpf = vendedorRepository.findByCpf(vendedor.getCpf());
-        if (clienteCpf.isPresent() && !vendedor.getId().equals(clienteCpf.get().getId())) {
+        Optional<Vendedor> vendedorCpf = vendedorRepository.findByCpf(vendedor.getCpf());
+        if (vendedorCpf.isPresent() && !vendedor.getId().equals(vendedorCpf.get().getId())) {
             throw new ValidacaoException("CPF já cadastrado");
         }
     }
 
     public void validarEmailCadastrado(Vendedor vendedor) throws ValidacaoException {
-        Optional<Vendedor> clienteEmail = vendedorRepository.findByEmail(vendedor.getEmail());
-        if (clienteEmail.isPresent() && !vendedor.getId().equals(clienteEmail.get().getId())) {
+        Optional<Vendedor> vendedorEmail = vendedorRepository.findByEmail(vendedor.getEmail());
+        if (vendedorEmail.isPresent() && !vendedor.getId().equals(vendedorEmail.get().getId())) {
             throw new ValidacaoException("Email já cadastrado");
         }
     }
