@@ -1,4 +1,4 @@
-package com.br.unifil.vendas_analytics.vendas_analytics.config;
+package com.br.unifil.vendas_analytics.vendas_analytics.config.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +36,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient("vendas_analytics")
-                .secret(passwordEncoder.encode("vendas_analytics"))
+                .secret("vendas_analytics")
                 .authorizedGrantTypes("client-credentials", "password","refresh_token")
                 .authorities(ADMIN.name(), USER.name())
                 .scopes("read", "write", "trust")

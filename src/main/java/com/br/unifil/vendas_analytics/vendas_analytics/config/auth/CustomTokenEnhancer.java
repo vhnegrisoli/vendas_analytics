@@ -1,4 +1,4 @@
-package com.br.unifil.vendas_analytics.vendas_analytics.config;
+package com.br.unifil.vendas_analytics.vendas_analytics.config.auth;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
