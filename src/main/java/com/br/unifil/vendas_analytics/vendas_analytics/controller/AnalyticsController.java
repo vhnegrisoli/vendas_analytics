@@ -33,9 +33,9 @@ public class AnalyticsController {
         return relatoriosRepository.vendasPorProduto();
     }
 
-    @GetMapping("/geral-clientes")
-    public List<VendasPorClienteDto> getAllClientesAnalytics() {
-        return relatoriosRepository.vendasPorCliente();
+    @GetMapping("/geral-vendedores")
+    public List<VendasPorVendedorDto> getAllVendedoresAnalytics() {
+        return relatoriosRepository.vendasPorVendedor();
     }
 
     @GetMapping("/geral-regioes-personalizados")

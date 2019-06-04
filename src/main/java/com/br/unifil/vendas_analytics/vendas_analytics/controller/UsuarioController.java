@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.xml.bind.ValidationException;
 import java.util.List;
 
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/usuarios")
@@ -49,6 +51,13 @@ public class UsuarioController {
     @GetMapping("/remover/{id}")
     public void remover(@PathVariable Integer id) {
         usuarioService.removerUsuario(id);
+    }
+
+    @GetMapping("/buscar-administradores")
+    public List<Usuario> buscarAdmins() {
+        PermissoesUsuario permissoesUsuario = new PermissoesUsuario();
+        permissoesUsuario.setId(2);
+        return usuarioRepository.findByPermissoesUsuarioAndSituacao(permissoesUsuario, ATIVO);
     }
 
 }

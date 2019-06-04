@@ -28,7 +28,7 @@ public class VendasRegioes {
     private int qtdProdutos;
 
     @Column
-    private int qtdClientes;
+    private int qtdVendedores;
 
     @Column
     private String regiao;

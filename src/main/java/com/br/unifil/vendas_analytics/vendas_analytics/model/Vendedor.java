@@ -9,14 +9,14 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "cliente")
+@Table(name = "vendedor")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class Cliente {
+public class Vendedor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -31,17 +31,17 @@ public class HistoricoVenda {
     @Column(name = "quantidade_itens")
     private int quantidade;
 
-    @Column(name = "nome_cliente")
-    private String nomeCliente;
+    @Column(name = "nome_vendedor")
+    private String nomeVendedor;
 
-    @Column(name = "email_cliente")
-    private String emailCliente;
+    @Column(name = "email_vendedor")
+    private String emailVendedor;
 
-    @Column(name = "endereco_cliente")
-    private String enderecoCliente;
+    @Column(name = "endereco_vendedor")
+    private String enderecoVendedor;
 
-    @Column(name = "local_cliente")
-    private String localCliente;
+    @Column(name = "local_vendedor")
+    private String localVendedor;
 
     @Column(name = "nome_produto")
     private String nomeProduto;

@@ -112,25 +112,25 @@ public class RelatoriosRepository {
     }
 
         /*
-        Relatório VENDAS POR CLIENTE
+        Relatório VENDAS POR VENDEDORES
      */
 
-    private String relatorioVendasPorCliente() {
+    private String relatorioVendasPorVendedor() {
         return "SELECT " +
                 "c.nome as cliente, " +
                 "SUM(pv.quantidade) as quantidade, " +
                 "SUM(p.PRECO * pv.quantidade) as lucro, " +
                 "CAST(AVG(p.PRECO * pv.QUANTIDADE) as NUMERIC(10,2)) as media " +
-                "FROM Cliente c " +
-                "INNER JOIN venda v ON v.cliente_id = c.id " +
+                "FROM Vendedor c " +
+                "INNER JOIN venda v ON v.vendedor_id = c.id " +
                 "INNER JOIN produto_venda pv ON pv.venda_id = v.id " +
                 "INNER JOIN produto p ON p.id = pv.produto_id " +
                 "GROUP BY c.nome";
     }
 
-    public List<VendasPorClienteDto> vendasPorCliente() {
-        return jdbcTemplate.query(relatorioVendasPorCliente(),
-                (rs, rowNum) -> new VendasPorClienteDto(
+    public List<VendasPorVendedorDto> vendasPorVendedor() {
+        return jdbcTemplate.query(relatorioVendasPorVendedor(),
+                (rs, rowNum) -> new VendasPorVendedorDto(
                         rs.getString("cliente"),
                         rs.getInt("quantidade"),
                         rs.getDouble("lucro"),
@@ -149,8 +149,8 @@ public class RelatoriosRepository {
                 "CAST(AVG(p.PRECO * pv.QUANTIDADE) as NUMERIC(10,2)) as media " +
                 "FROM regiao r " +
                 "INNER JOIN estado e ON e.regiao_id = r.id " +
-                "INNER JOIN cliente c ON c.estado_id = e.id " +
-                "INNER JOIN venda v ON v.cliente_id = c.id " +
+                "INNER JOIN Vendedor c ON c.estado_id = e.id " +
+                "INNER JOIN venda v ON v.vendedor_id = c.id " +
                 "INNER JOIN produto_venda pv ON pv.venda_id = v.id " +
                 "INNER JOIN produto p ON p.id = pv.produto_id " +
                 "GROUP BY r.nome";
@@ -176,8 +176,8 @@ public class RelatoriosRepository {
                 "SUM(p.PRECO * pv.quantidade) as lucro, " +
                 "CAST(AVG(p.PRECO * pv.QUANTIDADE) as NUMERIC(10,2)) as media " +
                 "FROM estado e " +
-                "INNER JOIN cliente c ON c.estado_id = e.id " +
-                "INNER JOIN venda v ON v.cliente_id = c.id " +
+                "INNER JOIN Vendedor c ON c.estado_id = e.id " +
+                "INNER JOIN venda v ON v.vendedor_id = c.id " +
                 "INNER JOIN produto_venda pv ON pv.venda_id = v.id " +
                 "INNER JOIN produto p ON p.id = pv.produto_id " +
                 "GROUP BY e.estado";
