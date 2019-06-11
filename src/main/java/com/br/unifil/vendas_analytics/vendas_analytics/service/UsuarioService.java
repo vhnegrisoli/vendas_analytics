@@ -181,12 +181,19 @@ public abstract class UsuarioService {
 
     public UserDto getUsuarioLogado() {
         UserDto userDto = new UserDto();
-        Optional<Authentication> authentication = Optional.of(SecurityContextHolder.getContext().getAuthentication());
-        authentication.ifPresent(
+        Optional.of(SecurityContextHolder.getContext().getAuthentication()).ifPresent(
             auth -> {
-                userDto.setEmail(auth.getPrincipal());
-                userDto.setPermissao(auth.getAuthorities());
-        });
+                String email = "";
+                email =  auth.getDetails().toString();
+                Usuario usuario = usuarioRepository.findByEmailAndSituacao(email, ATIVO)
+                    .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
+                userDto.setEmail(usuario.getEmail());
+                userDto.setPermissao(usuario.getPermissoesUsuario());
+                userDto.setId(usuario.getId());
+                userDto.setNome(usuario.getNome());
+            }
+        );
+
         return userDto;
     }
 }
