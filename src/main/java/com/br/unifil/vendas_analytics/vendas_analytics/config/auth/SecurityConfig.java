@@ -41,8 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         String[] permitAll = {
                 "/*",
-                "/api/usuarios/esqueci-senha",
                 "/oauth/authorize",
+                "/oauth/token",
                 "/oauth/confirm_access"
         };
 

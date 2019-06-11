@@ -15,7 +15,7 @@ import java.util.List;
 public class FornecedorController {
 
     @Autowired
-    FornecedorRepository fornecedorRepository;
+    private FornecedorRepository fornecedorRepository;
 
     @GetMapping("/todos")
     public List<Fornecedor> getAllFornecedores() {

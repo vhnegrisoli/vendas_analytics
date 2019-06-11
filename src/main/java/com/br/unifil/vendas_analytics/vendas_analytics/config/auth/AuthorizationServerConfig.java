@@ -1,6 +1,7 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.config.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,9 +11,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
-import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.ADMIN;
-import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.USER;
+import java.util.Collections;
+
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.*;
 
 @Configuration
 @EnableAuthorizationServer
@@ -23,6 +26,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    private static final String APPLICATION_CLIENT = "vendas_analytics-client";
+    private static final String APPLICATION_SECRET = "vendas_analytics-secret";
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
@@ -35,14 +41,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient("vendas_analytics")
-                .secret("vendas_analytics")
-                .authorizedGrantTypes("client-credentials", "password","refresh_token")
-                .authorities(ADMIN.name(), USER.name())
+                .withClient(APPLICATION_CLIENT)
+                .secret(APPLICATION_SECRET)
+                .authorizedGrantTypes("password")
+                .authorities(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
                 .scopes("read", "write", "trust")
                 .resourceIds("oauth2-resource")
-                .accessTokenValiditySeconds(5000)
-                .secret("vendas_analytics").refreshTokenValiditySeconds(50000);
+                .accessTokenValiditySeconds(500000);
     }
 
     @Override

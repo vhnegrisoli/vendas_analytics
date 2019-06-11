@@ -39,16 +39,4 @@ public class UserServiceImpl extends UsuarioService implements UserDetailsServic
         usuarioRepository.findAll().iterator().forEachRemaining(list::add);
         return list;
     }
-
-    @Override
-    public void delete(long id) {
-        Usuario usuario = usuarioRepository.findById(Integer.parseInt(String.valueOf(id)))
-            .orElseThrow(() -> new ValidacaoException(""));
-        usuarioRepository.delete(usuario);
-    }
-
-    @Override
-    public Usuario save(Usuario usuario) {
-        return usuarioRepository.save(usuario);
-    }
 }
