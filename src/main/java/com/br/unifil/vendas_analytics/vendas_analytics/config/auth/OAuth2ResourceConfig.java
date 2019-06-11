@@ -8,8 +8,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 
-import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.ADMIN;
-import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.USER;
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.*;
 
 @Configuration
 @EnableResourceServer
@@ -31,7 +30,8 @@ public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(permitAll).permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/api/clientes/**").hasAnyRole(ADMIN.name(), USER.name())
+                .antMatchers("/api/autenticacao/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+                .antMatchers("/api/vendedores/**").hasAnyRole(ADMIN.name(), USER.name())
                 .antMatchers("/api/vendas/**").hasAnyRole(ADMIN.name(), USER.name())
                 .antMatchers("/api/produtos/**").hasAnyRole(ADMIN.name(), USER.name())
                 .antMatchers("/api/categorias/**").hasRole(ADMIN.name())

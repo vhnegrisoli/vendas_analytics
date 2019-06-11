@@ -20,8 +20,10 @@ public class CustomTokenEnhancer implements TokenEnhancer {
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         final Map<String, Object> additionalInfo = new HashMap<>();
+
 //        Usuario usuario = usuarioRepository.findByEmailAndSituacao(user.getUsername(), ATIVO)
 //            .orElseThrow(() -> new ValidacaoException("Usuário não encontrado"));
+
 //        additionalInfo.put("id", usuario.getId());
 //        additionalInfo.put("authorities", usuario.getPermissoesUsuario());
 
