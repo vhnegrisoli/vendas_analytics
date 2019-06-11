@@ -1,8 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.config.auth;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
@@ -12,8 +10,6 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
 
 public class CustomTokenEnhancer implements TokenEnhancer {
 
