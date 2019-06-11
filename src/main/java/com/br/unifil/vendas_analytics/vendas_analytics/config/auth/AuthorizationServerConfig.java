@@ -33,6 +33,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         security
+                .passwordEncoder(passwordEncoder)
                 .tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()")
                 .allowFormAuthenticationForClients();
@@ -42,7 +43,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient(APPLICATION_CLIENT)
-                .secret(APPLICATION_SECRET)
+                .secret(passwordEncoder.encode(APPLICATION_SECRET))
                 .authorizedGrantTypes("password")
                 .authorities(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
                 .scopes("read", "write", "trust")
