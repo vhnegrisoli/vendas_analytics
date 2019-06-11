@@ -27,16 +27,16 @@ import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSitua
 public class UsuarioService {
 
     @Autowired
-    UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    VendedorRepository vendedorRepository;
+    private VendedorRepository vendedorRepository;
 
     @Autowired
-    PowerBiRepository powerBiRepository;
+    private PowerBiRepository powerBiRepository;
 
     @Autowired
-    PermissoesUsuarioRepository permissoesUsuarioRepository;
+    private PermissoesUsuarioRepository permissoesUsuarioRepository;
 
     private final ValidacaoException USUARIO_NAO_EXISTENTE_EXCEPTION = new ValidacaoException("O usuário não existe");
 

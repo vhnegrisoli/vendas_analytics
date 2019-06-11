@@ -20,13 +20,13 @@ import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSitua
 public class UsuarioController {
 
     @Autowired
-    UsuarioService usuarioService;
+    private UsuarioService usuarioService;
 
     @Autowired
-    UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    PermissoesUsuarioRepository permissoesUsuarioRepository;
+    private PermissoesUsuarioRepository permissoesUsuarioRepository;
 
     @GetMapping("/todos")
     public List<Usuario> getAll() {
