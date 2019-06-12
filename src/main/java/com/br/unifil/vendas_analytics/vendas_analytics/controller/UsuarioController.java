@@ -29,7 +29,7 @@ public class UsuarioController {
 
     @GetMapping("/todos")
     public List<Usuario> getAll() {
-        return usuarioRepository.findAll();
+        return usuarioService.buscarTodos();
     }
 
     @PostMapping("/salvar")

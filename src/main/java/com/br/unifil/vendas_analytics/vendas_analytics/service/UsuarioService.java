@@ -1,6 +1,7 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Vendedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.RelatoriosPowerBi;
@@ -20,13 +21,18 @@ import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.ADMIN;
+import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.SUPER_ADMIN;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.INATIVO;
+import static java.util.stream.Collectors.toList;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
 public abstract class UsuarioService {
@@ -48,6 +54,8 @@ public abstract class UsuarioService {
 
     private final ValidacaoException USUARIO_NAO_EXISTENTE_EXCEPTION = new ValidacaoException("O usuário não existe");
 
+    private static final List<PermissoesUsuarioEnum> PERMISSOES_ADMIN = Arrays.asList(ADMIN, SUPER_ADMIN);
+
     public void salvarUsuario(Usuario usuario) throws ValidacaoException {
         if (isNovoCadastro(usuario)) {
             usuario.setSituacao(ATIVO);
@@ -66,7 +74,7 @@ public abstract class UsuarioService {
     }
 
     public void validarClienteExistente(Usuario usuario) throws ValidacaoException {
-        if (ObjectUtils.isEmpty(usuario.getVendedor().getId())) {
+        if (isEmpty(usuario.getVendedor().getId())) {
             throw new ValidacaoException("É preciso ter um vendedor para cadastrar um novo usuário");
         }
     }
@@ -129,7 +137,7 @@ public abstract class UsuarioService {
     }
 
     public boolean isNovoCadastro(Usuario usuario) {
-        return ObjectUtils.isEmpty(usuario.getId());
+        return isEmpty(usuario.getId());
     }
 
     public void removerUsuario(Integer id) {
@@ -165,7 +173,7 @@ public abstract class UsuarioService {
     }
 
     public void validarUsuarioProprietario(Usuario usuario) {
-        if (!ObjectUtils.isEmpty(usuario.getUsuarioProprietario())) {
+        if (!isEmpty(usuario.getUsuarioProprietario())) {
             usuarioRepository.findById(usuario.getUsuarioProprietario())
                 .orElseThrow(() -> new ValidacaoException("Não existe um Usuário Proprietário."));
             PermissoesUsuario permissoesUsuario = permissoesUsuarioRepository
@@ -199,4 +207,24 @@ public abstract class UsuarioService {
             .permissao(usuario.getPermissoesUsuario())
             .build();
     }
+
+    public List<Usuario> buscarTodos() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        UsuarioAutenticadoDto usuarioLogado = getUsuarioLogado();
+        if (usuarioLogado.isAdmin()) {
+            usuarios = getUsuariosNivelAdmin(usuarios, usuarioLogado.getId());
+        }
+        return usuarios;
+    }
+
+    public List<Usuario> getUsuariosNivelAdmin(List<Usuario> usuarios, Integer usuarioLogadoId) {
+        return usuarios
+                .stream()
+                .filter(usuario -> usuario.getId().equals(usuarioLogadoId)
+                    || !isEmpty(usuario.getUsuarioProprietario())
+                    && usuario.getUsuarioProprietario().equals(usuarioLogadoId))
+                .collect(toList());
+
+    }
+
 }
