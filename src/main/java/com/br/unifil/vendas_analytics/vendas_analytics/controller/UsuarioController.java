@@ -1,6 +1,5 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.config.UserDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.PermissoesUsuarioRepository;
@@ -8,11 +7,8 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioReposit
 import com.br.unifil.vendas_analytics.vendas_analytics.service.UsuarioService;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.bind.ValidationException;
 import java.util.List;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;

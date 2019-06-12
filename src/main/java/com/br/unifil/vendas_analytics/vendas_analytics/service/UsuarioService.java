@@ -1,6 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.config.UserDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Vendedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.RelatoriosPowerBi;
@@ -11,10 +11,8 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.PowerBiReposit
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -23,8 +21,8 @@ import org.springframework.util.ObjectUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.ADMIN;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
@@ -179,21 +177,25 @@ public abstract class UsuarioService {
         }
     }
 
-    public UserDto getUsuarioLogado() {
-        UserDto userDto = new UserDto();
-        Optional.of(SecurityContextHolder.getContext().getAuthentication()).ifPresent(
-            auth -> {
-                String email = "";
-                email =  auth.getDetails().toString();
-                Usuario usuario = usuarioRepository.findByEmailAndSituacao(email, ATIVO)
-                    .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
-                userDto.setEmail(usuario.getEmail());
-                userDto.setPermissao(usuario.getPermissoesUsuario());
-                userDto.setId(usuario.getId());
-                userDto.setNome(usuario.getNome());
+    public UsuarioAutenticadoDto getUsuarioLogado() {
+        String email = "";
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try{
+            if (principal instanceof UserDetails) {
+                email = (((UserDetails)principal).getUsername());
             }
-        );
-
-        return userDto;
+        }
+        catch (Exception e) {
+            throw new ValidacaoException("Não há uma sessão de usuário ativa.");
+        }
+        Usuario usuario = usuarioRepository.findByEmailAndSituacao(email, ATIVO)
+            .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
+        return UsuarioAutenticadoDto
+            .builder()
+            .id(usuario.getId())
+            .email(usuario.getEmail())
+            .nome(usuario.getNome())
+            .permissao(usuario.getPermissoesUsuario())
+            .build();
     }
 }
