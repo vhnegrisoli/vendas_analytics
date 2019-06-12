@@ -1,5 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ExportarCsvDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ExportarCsvRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,6 +18,9 @@ public class RelatorioCsvService {
     @Autowired
     private ExportarCsvRepository exportarCsvRepository;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     public String gerarCabecalho() {
         return "Nome do Vendedor;CPF do Vendedor;Email do Vendedor;Endereço do Vendedor;Cidade;Estado;" +
                 "Região;Usuário do Vendedor;Código da Venda;Quantidade de Itens;Data da Venda;Situação" +
@@ -26,11 +30,12 @@ public class RelatorioCsvService {
     }
 
     public String gerarCsv(String dataInicial, String dataFinal) throws JsonProcessingException {
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
         List<ExportarCsvDto> resposta = new ArrayList<>();
         if (ObjectUtils.isEmpty(dataInicial) || ObjectUtils.isEmpty(dataFinal)) {
-            resposta = exportarCsvRepository.exportarCsvSemFiltroDeData();
+            resposta = exportarCsvRepository.exportarCsvSemFiltroDeData(usuarioLogado.getId());
         } else {
-            resposta = exportarCsvRepository.exportarCsvComFiltroDeData(dataInicial, dataFinal);
+            resposta = exportarCsvRepository.exportarCsvComFiltroDeData(dataInicial, dataFinal, usuarioLogado.getId());
         }
         AtomicReference<String> dadosVenda = new AtomicReference<>(gerarCabecalho() + "\n");
         resposta
