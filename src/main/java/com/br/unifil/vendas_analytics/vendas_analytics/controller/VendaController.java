@@ -52,7 +52,7 @@ public class VendaController {
 
     @GetMapping("/todas")
     public List<Venda> getAllVendas() {
-        return vendaRepository.findAll();
+        return vendaService.buscarTodas();
     }
 
     @GetMapping("/{id}")

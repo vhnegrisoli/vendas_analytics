@@ -31,4 +31,6 @@ public interface VendaRepository extends JpaRepository<Venda, Integer> {
     List<Object[]> findAllProdutosDaVendaByVendaId(int id);
 
     List<Venda> findByVendedor(Vendedor vendedor);
+
+    List<Venda> findByVendedorIdIn(List<Integer> vendedoresId);
 }

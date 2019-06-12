@@ -1,5 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorRepository;
@@ -36,7 +37,13 @@ public class VendaService {
     private VendedorRepository vendedorRepository;
 
     @Autowired
+    private VendedorService vendedorService;
+
+    @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @Autowired
     private ProdutoVendaRepository produtoVendaRepository;
@@ -147,6 +154,17 @@ public class VendaService {
             produtos.add(produtoInserir);
         }
         return produtos;
+    }
+
+    public List<Venda> buscarTodas() {
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        List<Integer> vendedoresId = new ArrayList<>();
+        vendedorService
+            .buscaTodos()
+            .forEach(vendedor -> {
+                vendedoresId.add(vendedor.getId());
+            });
+        return vendaRepository.findByVendedorIdIn(vendedoresId);
     }
 
 }
