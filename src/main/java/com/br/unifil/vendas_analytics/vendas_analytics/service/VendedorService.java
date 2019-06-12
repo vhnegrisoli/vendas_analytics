@@ -1,5 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Vendedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
@@ -16,11 +17,15 @@ import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class VendedorService {
@@ -127,4 +132,25 @@ public class VendedorService {
     public boolean isNovoCadastro(Vendedor vendedor) {
         return ObjectUtils.isEmpty(vendedor.getId());
     }
+
+    public List<Vendedor> buscaTodos() {
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        if (usuarioLogado.isUser()) {
+            return Collections.singletonList(vendedorRepository.findByEmail(usuarioLogado.getEmail())
+                .orElseThrow(() -> new ValidacaoException("Vendedor sem usuário ou com email inválido.")));
+        } else if (usuarioLogado.isAdmin()) {
+            return vendedorRepository.findByIdIn(getVendedoresPermitidos(usuarioLogado.getId()));
+        } else {
+            return vendedorRepository.findAll();
+        }
+    }
+
+    public List<Integer> getVendedoresPermitidos(Integer usuarioLogadoId) {
+        List<Integer> vendedoresIds = new ArrayList<>();
+        usuarioService.buscarTodos()
+            .forEach(usuario -> vendedoresIds.add(usuario.getVendedor().getId()));
+        return vendedoresIds;
+    }
+
+
 }
