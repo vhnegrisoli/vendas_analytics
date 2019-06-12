@@ -26,16 +26,16 @@ import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSitua
 public class VendedorService {
 
     @Autowired
-    VendedorRepository vendedorRepository;
+    private VendedorRepository vendedorRepository;
 
     @Autowired
-    UsuarioService usuarioService;
+    private UsuarioService usuarioService;
 
     @Autowired
-    UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    VendaRepository vendaRepository;
+    private VendaRepository vendaRepository;
 
     @Transactional
     public void salvarVendedor(Vendedor vendedor) throws ValidacaoException {

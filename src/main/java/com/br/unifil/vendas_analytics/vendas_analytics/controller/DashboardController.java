@@ -25,37 +25,37 @@ import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituaca
 public class DashboardController {
 
     @Autowired
-    Vendas_Por_PeriodoRepository vendas_por_periodoRepository;
+    private Vendas_Por_PeriodoRepository vendas_por_periodoRepository;
 
     @Autowired
-    VendedorRepository vendedorRepository;
-
-
-    @Autowired
-    ProdutoRepository produtoRepository;
+    private VendedorRepository vendedorRepository;
 
 
     @Autowired
-    RelatoriosRepository relatoriosRepository;
+    private ProdutoRepository produtoRepository;
 
 
     @Autowired
-    VendaRepository vendaRepository;
+    private RelatoriosRepository relatoriosRepository;
+
 
     @Autowired
-    Vendas_Por_VendedorRepository vendas_por_vendedorRepository;
+    private VendaRepository vendaRepository;
 
     @Autowired
-    Vendas_Por_ProdutoRepository vendas_por_produtoRepository;
+    private Vendas_Por_VendedorRepository vendas_por_vendedorRepository;
 
     @Autowired
-    Vendas_FeitasRepository vendas_feitasRepository;
+    private Vendas_Por_ProdutoRepository vendas_por_produtoRepository;
 
     @Autowired
-    Vendas_RejeitadasRepository vendas_rejeitadasRepository;
+    private Vendas_FeitasRepository vendas_feitasRepository;
 
     @Autowired
-    Vendas_DashboardRepository vendas__dashboardRepository;
+    private Vendas_RejeitadasRepository vendas_rejeitadasRepository;
+
+    @Autowired
+    private Vendas_DashboardRepository vendas__dashboardRepository;
 
     @GetMapping("/vendas-por-periodo")
     public List<VendasPorPeriodoDto> getAllVendasPorPeriodo() {

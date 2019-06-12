@@ -15,7 +15,7 @@ import java.util.List;
 public class ProdutoController {
 
     @Autowired
-    ProdutoRepository produtoRepository;
+    private ProdutoRepository produtoRepository;
 
     @GetMapping("/todos")
     public List<Produto> getAllProdutos() {
