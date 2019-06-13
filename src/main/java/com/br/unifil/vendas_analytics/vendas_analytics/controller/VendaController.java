@@ -1,5 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.HistoricoVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.HistoricoVendaRepository;
@@ -7,6 +8,7 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRe
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.RelatoriosRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.RelatorioCsvService;
+import com.br.unifil.vendas_analytics.vendas_analytics.service.UsuarioService;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.VendaService;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,6 +52,9 @@ public class VendaController {
     @Autowired
     private RelatoriosRepository relatoriosRepository;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @GetMapping("/todas")
     public List<Venda> getAllVendas() {
         return vendaService.buscarTodas();
@@ -67,8 +72,8 @@ public class VendaController {
     }
 
     @GetMapping("/historico-de-vendas")
-    public List<HistoricoVenda> getAllHistoricos() {
-        return historicoVendaRepository.findAll();
+    public List<HistoricoVendaDto> getAllHistoricos() {
+        return historicoVendaRepository.historicoDeVenda(usuarioService.getUsuarioLogado().getId());
     }
 
     @RequestMapping(value = "/relatorio-csv", produces = "text/csv", method = RequestMethod.GET)

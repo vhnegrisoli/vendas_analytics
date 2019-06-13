@@ -1,6 +1,7 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.HistoricoVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorRepository;
@@ -157,7 +158,6 @@ public class VendaService {
     }
 
     public List<Venda> buscarTodas() {
-        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
         List<Integer> vendedoresId = new ArrayList<>();
         vendedorService
             .buscaTodos()

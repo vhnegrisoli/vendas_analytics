@@ -8,6 +8,7 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoReposit
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.RelatoriosRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.repository_relatorios_dashboard.*;
+import com.br.unifil.vendas_analytics.vendas_analytics.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,10 +35,8 @@ public class DashboardController {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-
     @Autowired
     private RelatoriosRepository relatoriosRepository;
-
 
     @Autowired
     private VendaRepository vendaRepository;
@@ -57,9 +56,12 @@ public class DashboardController {
     @Autowired
     private Vendas_DashboardRepository vendas__dashboardRepository;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @GetMapping("/vendas-por-periodo")
     public List<VendasPorPeriodoDto> getAllVendasPorPeriodo() {
-        return relatoriosRepository.vendasPorPeriodo();
+        return relatoriosRepository.vendasPorPeriodo(usuarioService.getUsuarioLogado().getId());
     }
 
     @GetMapping("/card1/vendas-por-vendedor")

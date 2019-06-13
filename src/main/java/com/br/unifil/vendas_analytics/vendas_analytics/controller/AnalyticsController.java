@@ -4,6 +4,7 @@ import com.br.unifil.vendas_analytics.vendas_analytics.dto.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_analytics.VendasRegioes;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.RelatoriosRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.repository_analytics.VendasRegioesRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,7 @@ public class AnalyticsController {
     private RelatoriosRepository relatoriosRepository;
 
     @Autowired
-    private VendasRegioesRepository vendasRegioesRepository;
+    private UsuarioService usuarioService;
 
     @GetMapping("/vendas-por-categoria")
     public List<VendasPorCategoriaDto> getAllVendasPorCategoria() {
@@ -49,8 +50,8 @@ public class AnalyticsController {
     }
 
     @GetMapping("/geral-regioes")
-    public List<VendasRegioes> getAllAnaliseRegioes() {
-        return vendasRegioesRepository.findAll();
+    public List<VendasPorRegiaoAnalyticsDto> getAllAnaliseRegioes() {
+        return relatoriosRepository.relatorioVendasPorRegiaoAnalytics(usuarioService.getUsuarioLogado().getId());
     }
 
     @GetMapping("/geral-fornecedores")

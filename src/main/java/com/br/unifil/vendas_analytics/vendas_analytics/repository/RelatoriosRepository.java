@@ -17,7 +17,7 @@ public class RelatoriosRepository {
         Relatório VENDAS POR PERÍODO
      */
 
-    private String relatorioVendasPorPeriodo() {
+    private String relatorioVendasPorPeriodo(Integer usuarioLogadoId) {
         return "SELECT " +
                 "COUNT(v.id) AS quantidade, " +
                 "SUM(p.preco) AS lucro, " +
@@ -26,11 +26,14 @@ public class RelatoriosRepository {
                 "FROM VENDA v " +
                 "INNER JOIN produto_venda pv ON v.id = pv.venda_id " +
                 "INNER JOIN produto p ON p.id = pv.produto_id " +
+                "INNER JOIN vendedor vd ON vd.id = v.vendedor_id " +
+                "INNER JOIN usuario u ON u.vendedor_id = vd.id " +
+                "WHERE u.id =  " + usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId + " " +
                 "GROUP BY v.mes_compra";
     }
 
-    public List<VendasPorPeriodoDto> vendasPorPeriodo() {
-        return jdbcTemplate.query(relatorioVendasPorPeriodo(),
+    public List<VendasPorPeriodoDto> vendasPorPeriodo(Integer usuarioLogadoId) {
+        return jdbcTemplate.query(relatorioVendasPorPeriodo(usuarioLogadoId),
                 (rs, rowNum) -> new VendasPorPeriodoDto(
                         rs.getInt("quantidade"),
                         rs.getDouble("lucro"),
@@ -163,6 +166,40 @@ public class RelatoriosRepository {
                         rs.getInt("quantidade"),
                         rs.getDouble("lucro"),
                         rs.getDouble("media")));
+    }
+
+
+    private String relatorioVendasPorRegiaoAnalyticsQuery(Integer usuarioLogadoId) {
+        return "SELECT   " +
+                "  COUNT(v.id) as qtdVendas, " +
+                "  SUM(p.preco * pv.quantidade) as lucro, " +
+                "  AVG(p.preco * pv.quantidade)  as media, " +
+                "  SUM(pv.quantidade) as qtdProdutos, " +
+                "  COUNT(c.ID) as qtdVendedores, " +
+                "  r.nome as regiao, " +
+                "  e.estado as estado " +
+                "FROM Regiao r " +
+                "INNER JOIN estado e ON r.id = e.regiao_id " +
+                "INNER JOIN vendedor c ON c.estado_id = e.id " +
+                "INNER JOIN venda v ON v.vendedor_id = c.id " +
+                "INNER JOIN produto_venda pv ON pv.venda_id = v.id " +
+                "INNER JOIN produto p ON p.id = pv.produto_id " +
+                "INNER JOIN usuario u ON c.id = u.vendedor_id " +
+                "WHERE u.id = " + usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId +
+                " GROUP BY r.nome, e.estado; ";
+    }
+
+    public List<VendasPorRegiaoAnalyticsDto> relatorioVendasPorRegiaoAnalytics(Integer usuarioLogadoId) {
+        return jdbcTemplate.query(relatorioVendasPorRegiaoAnalyticsQuery(usuarioLogadoId),
+                (rs, rowNum) -> new VendasPorRegiaoAnalyticsDto(
+                        rs.getInt("qtdVendas"),
+                        rs.getDouble("lucro"),
+                        rs.getDouble("media"),
+                        rs.getInt("qtdProdutos"),
+                        rs.getInt("qtdVendedores"),
+                        rs.getString("regiao"),
+                        rs.getString("estado")
+                ));
     }
 
                 /*
