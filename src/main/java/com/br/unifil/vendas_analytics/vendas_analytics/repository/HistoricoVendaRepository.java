@@ -2,7 +2,6 @@ package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
 
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.HistoricoVendaDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

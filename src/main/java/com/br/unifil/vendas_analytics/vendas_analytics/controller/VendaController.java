@@ -4,33 +4,23 @@ import com.br.unifil.vendas_analytics.vendas_analytics.dto.HistoricoVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.HistoricoVendaRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.RelatoriosRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.RelatorioCsvService;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.UsuarioService;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.VendaService;
-import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
-import java.security.Timestamp;
 import java.lang.*;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.APROVADA;
-import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.REJEITADA;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FECHADA;
-import static java.lang.System.currentTimeMillis;
 
 @CrossOrigin
 @RestController
