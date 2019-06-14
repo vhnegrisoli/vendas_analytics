@@ -1,13 +1,8 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.CardsDashboardDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasAnaliseDashboardDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasSituacoesDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_dashboard.*;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.*;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.repository_relatorios_dashboard.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,12 +21,6 @@ public class DashboardController {
     private DashboardRepository dashboardRepository;
 
     @Autowired
-    private Vendas_Por_VendedorRepository vendas_por_vendedorRepository;
-
-    @Autowired
-    private Vendas_Por_ProdutoRepository vendas_por_produtoRepository;
-
-    @Autowired
     private UsuarioService usuarioService;
 
     @GetMapping("/vendas-por-periodo")
@@ -42,13 +31,15 @@ public class DashboardController {
     }
 
     @GetMapping("/card1/vendas-por-vendedor")
-    public List<vendas_por_vendedor> getAllVendasPorVendedor() {
-        return vendas_por_vendedorRepository.findAll();
+    public List<VendasVendedoresDashboardDto> getAllVendasPorVendedor() {
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return dashboardRepository.vendasPorVendedores(usuarioLogado.getId(), usuarioLogado.isSuperAdmin());
     }
 
     @GetMapping("/card2/vendas-por-produto")
-    public List<vendas_por_produto> getAllVendasPorProduto() {
-        return vendas_por_produtoRepository.findAll();
+    public List<VendasProdutosDashboardDto> getAllVendasPorProduto() {
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return dashboardRepository.vendasPorProdutos(usuarioLogado.getId(), usuarioLogado.isSuperAdmin());
     }
 
     @GetMapping("/card3/vendas-feitas")

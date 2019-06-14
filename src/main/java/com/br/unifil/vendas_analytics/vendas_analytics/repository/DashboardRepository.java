@@ -1,9 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.CardsDashboardDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasAnaliseDashboardDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasSituacoesDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -305,5 +302,90 @@ public class DashboardRepository {
         }
     }
 
+    /*
+        RELATÓRIO VENDAS POR VENDEDORES DO DASHBOARD - SUPER ADMIN
+     */
 
+    private String vendasPorVendedoresDashboardUserAdmin(Integer usuarioLogadoId) {
+        return "SELECT " +
+                "COUNT(c.ID) AS Vendedores, " +
+                "v.MES_COMPRA as meses " +
+                "FROM Vendedor c " +
+                "INNER JOIN Venda v ON c.id = v.vendedor_id " +
+                "INNER JOIN Usuario u ON u.vendedor_id = c.id " +
+                "WHERE u.id = " +  usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId +
+                " GROUP BY v.MES_COMPRA;";
+    }
+
+        /*
+        RELATÓRIO VENDAS POR VENDEDORES DO DASHBOARD - USER E ADMIN
+     */
+
+    private String vendasPorVendedoresDashboardSuperAdmin() {
+        return "SELECT " +
+                "COUNT(c.ID) AS Vendedores, " +
+                "v.MES_COMPRA as meses " +
+                "FROM Vendedor c " +
+                "INNER JOIN Venda v ON c.id = v.vendedor_id " +
+                "GROUP BY v.MES_COMPRA;";
+    }
+
+    public List<VendasVendedoresDashboardDto> vendasPorVendedores(Integer usuarioLogadoId, boolean isSuperAdmin) {
+        if (isSuperAdmin) {
+            return jdbcTemplate.query(vendasPorVendedoresDashboardSuperAdmin(),
+                    (rs, rowNum) -> new VendasVendedoresDashboardDto(
+                            rs.getInt("Vendedores"),
+                            rs.getString("meses")));
+        } else {
+            return jdbcTemplate.query(vendasPorVendedoresDashboardUserAdmin(usuarioLogadoId),
+                    (rs, rowNum) -> new VendasVendedoresDashboardDto(
+                            rs.getInt("Vendedores"),
+                            rs.getString("meses")));
+        }
+    }
+
+    /*
+        RELATÓRIO VENDAS POR PRODUTOS DO DASHBOARD - SUPER ADMIN
+     */
+
+    private String vendasPorProdutosDashboardUserAdmin(Integer usuarioLogadoId) {
+        return "SELECT " +
+                "COUNT(p.ID) AS Produtos, " +
+                "v.mes_compra AS Meses " +
+                "FROM Produto p " +
+                "INNER JOIN produto_venda pv ON p.id = pv.produto_id " +
+                "INNER JOIN Venda v ON v.id = pv.venda_id " +
+                "INNER JOIN Vendedor vd ON v.vendedor_id = vd.id " +
+                "INNER JOIN Usuario u ON u.vendedor_id = vd.id " +
+                "WHERE u.id = " + usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId +
+                " GROUP BY v.mes_compra;";
+    }
+
+        /*
+        RELATÓRIO VENDAS POR PRODUTOS DO DASHBOARD - USER E ADMIN
+     */
+
+    private String vendasPorProdutosDashboardSuperAdmin() {
+        return "SELECT " +
+                "COUNT(p.ID) AS Produtos, " +
+                "v.mes_compra AS Meses " +
+                "FROM Produto p " +
+                "INNER JOIN produto_venda pv ON p.id = pv.produto_id " +
+                "INNER JOIN Venda v ON v.id = pv.venda_id " +
+                "GROUP BY v.mes_compra;";
+    }
+
+    public List<VendasProdutosDashboardDto> vendasPorProdutos(Integer usuarioLogadoId, boolean isSuperAdmin) {
+        if (isSuperAdmin) {
+            return jdbcTemplate.query(vendasPorProdutosDashboardSuperAdmin(),
+                    (rs, rowNum) -> new VendasProdutosDashboardDto(
+                            rs.getInt("Produtos"),
+                            rs.getString("Meses")));
+        } else {
+            return jdbcTemplate.query(vendasPorProdutosDashboardUserAdmin(usuarioLogadoId),
+                    (rs, rowNum) -> new VendasProdutosDashboardDto(
+                            rs.getInt("Produtos"),
+                            rs.getString("Meses")));
+        }
+    }
 }
