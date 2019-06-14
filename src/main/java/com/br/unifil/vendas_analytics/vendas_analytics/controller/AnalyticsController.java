@@ -1,5 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.RelatoriosRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.UsuarioService;
@@ -24,37 +25,51 @@ public class AnalyticsController {
 
     @GetMapping("/vendas-por-categoria")
     public List<VendasPorCategoriaDto> getAllVendasPorCategoria() {
-        return relatoriosRepository.vendasPorCategoria(usuarioService.getUsuarioLogado().getId());
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return relatoriosRepository.vendasPorCategoria(usuarioService.getUsuarioLogado().getId(),
+            usuarioLogado.isSuperAdmin());
     }
 
     @GetMapping("/geral-produtos")
     public List<VendasPorProdutoDto> getAllProdutosAnalytics() {
-        return relatoriosRepository.vendasPorProduto(usuarioService.getUsuarioLogado().getId());
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return relatoriosRepository.vendasPorProduto(usuarioService.getUsuarioLogado().getId(),
+            usuarioLogado.isSuperAdmin());
     }
 
     @GetMapping("/geral-vendedores")
     public List<VendasPorVendedorDto> getAllVendedoresAnalytics() {
-        return relatoriosRepository.vendasPorVendedor(usuarioService.getUsuarioLogado().getId());
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return relatoriosRepository.vendasPorVendedor(usuarioService.getUsuarioLogado().getId(),
+            usuarioLogado.isSuperAdmin());
     }
 
     @GetMapping("/geral-regioes-personalizados")
     public List<VendasPorRegiaoDto> getAllRegioesPersonalizados() {
-        return relatoriosRepository.vendasPorRegiao(usuarioService.getUsuarioLogado().getId());
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return relatoriosRepository.vendasPorRegiao(usuarioService.getUsuarioLogado().getId(),
+            usuarioLogado.isSuperAdmin());
     }
 
     @GetMapping("/geral-estados")
     public List<VendasPorEstadoDto> getAllEstados() {
-        return relatoriosRepository.vendasPorEstado(usuarioService.getUsuarioLogado().getId());
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return relatoriosRepository.vendasPorEstado(usuarioService.getUsuarioLogado().getId(),
+            usuarioLogado.isSuperAdmin());
     }
 
     @GetMapping("/geral-regioes")
     public List<VendasPorRegiaoAnalyticsDto> getAllAnaliseRegioes() {
-        return relatoriosRepository.relatorioVendasPorRegiaoAnalytics(usuarioService.getUsuarioLogado().getId());
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return relatoriosRepository.relatorioVendasPorRegiaoAnalytics(usuarioService.getUsuarioLogado().getId(),
+            usuarioLogado.isSuperAdmin());
     }
 
     @GetMapping("/geral-fornecedores")
     public List<VendasPorFornecedorDto> getAllAnaliseFornecedores() {
-        return relatoriosRepository.vendasPorFornecedor(usuarioService.getUsuarioLogado().getId());
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return relatoriosRepository.vendasPorFornecedor(usuarioService.getUsuarioLogado().getId(),
+            usuarioLogado.isSuperAdmin());
     }
 
 }
