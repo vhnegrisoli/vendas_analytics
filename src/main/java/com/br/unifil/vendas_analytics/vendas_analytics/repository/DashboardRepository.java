@@ -152,4 +152,6 @@ public class DashboardRepository {
                             rs.getLong("qtdVendasNaoRealizadas")));
         }
     }
+
+
 }

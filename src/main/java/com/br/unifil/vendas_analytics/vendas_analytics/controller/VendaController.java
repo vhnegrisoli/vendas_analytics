@@ -1,5 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.HistoricoVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
@@ -62,7 +63,8 @@ public class VendaController {
 
     @GetMapping("/historico-de-vendas")
     public List<HistoricoVendaDto> getAllHistoricos() {
-        return historicoVendaRepository.historicoDeVenda(usuarioService.getUsuarioLogado().getId());
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return historicoVendaRepository.historicoDeVenda(usuarioLogado.getId(), usuarioLogado.isSuperAdmin());
     }
 
     @RequestMapping(value = "/relatorio-csv", produces = "text/csv", method = RequestMethod.GET)
