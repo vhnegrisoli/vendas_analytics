@@ -15,25 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.APROVADA;
-import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FECHADA;
-
 @CrossOrigin
 @RestController
 @RequestMapping("/api/dashboard")
 public class DashboardController {
 
     @Autowired
-    private VendedorRepository vendedorRepository;
-
-    @Autowired
-    private ProdutoRepository produtoRepository;
-
-    @Autowired
     private DashboardRepository dashboardRepository;
-
-    @Autowired
-    private VendaRepository vendaRepository;
 
     @Autowired
     private Vendas_Por_VendedorRepository vendas_por_vendedorRepository;
@@ -55,7 +43,9 @@ public class DashboardController {
 
     @GetMapping("/vendas-por-periodo")
     public List<VendasPorPeriodoDto> getAllVendasPorPeriodo() {
-        return dashboardRepository.vendasPorPeriodo(usuarioService.getUsuarioLogado().getId());
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return dashboardRepository.vendasPorPeriodo(usuarioService.getUsuarioLogado().getId(),
+            usuarioLogado.isSuperAdmin());
     }
 
     @GetMapping("/card1/vendas-por-vendedor")

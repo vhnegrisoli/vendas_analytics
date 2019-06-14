@@ -14,7 +14,11 @@ public class DashboardRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private String relatorioVendasPorPeriodo(Integer usuarioLogadoId) {
+    /*
+        RELATÓRIO VENDAS POR PERÍODO - DASHBOARD
+     */
+
+    private String vendasPorPeriodoUserAdmin(Integer usuarioLogadoId) {
         return "SELECT " +
                 "COUNT(v.id) AS quantidade, " +
                 "SUM(p.preco) AS lucro, " +
@@ -29,14 +33,40 @@ public class DashboardRepository {
                 "GROUP BY v.mes_compra";
     }
 
-    public List<VendasPorPeriodoDto> vendasPorPeriodo(Integer usuarioLogadoId) {
-        return jdbcTemplate.query(relatorioVendasPorPeriodo(usuarioLogadoId),
-                (rs, rowNum) -> new VendasPorPeriodoDto(
-                        rs.getInt("quantidade"),
-                        rs.getDouble("lucro"),
-                        rs.getDouble("media"),
-                        rs.getString("meses")));
+    private String vendasPorPeriodoSuperAdmin() {
+        return "SELECT " +
+                "COUNT(v.id) AS quantidade, " +
+                "SUM(p.preco) AS lucro, " +
+                "AVG(p.preco) AS media, " +
+                "v.mes_compra AS meses " +
+                "FROM VENDA v " +
+                "INNER JOIN produto_venda pv ON v.id = pv.venda_id " +
+                "INNER JOIN produto p ON p.id = pv.produto_id " +
+                "INNER JOIN vendedor vd ON vd.id = v.vendedor_id " +
+                "GROUP BY v.mes_compra";
     }
+
+    public List<VendasPorPeriodoDto> vendasPorPeriodo(Integer usuarioLogadoId, boolean isSuperAdmin) {
+        if (isSuperAdmin) {
+            return jdbcTemplate.query(vendasPorPeriodoSuperAdmin(),
+                    (rs, rowNum) -> new VendasPorPeriodoDto(
+                            rs.getInt("quantidade"),
+                            rs.getDouble("lucro"),
+                            rs.getDouble("media"),
+                            rs.getString("meses")));
+        } else {
+            return jdbcTemplate.query(vendasPorPeriodoUserAdmin(usuarioLogadoId),
+                    (rs, rowNum) -> new VendasPorPeriodoDto(
+                            rs.getInt("quantidade"),
+                            rs.getDouble("lucro"),
+                            rs.getDouble("media"),
+                            rs.getString("meses")));
+        }
+    }
+
+    /*
+        VALORES UNITÁRIOS DOS CARDS DA DASHBOARD
+     */
 
     private String totalCardsAdminUserQuery(Integer usuarioLogadoId) {
         return "SELECT DISTINCT " +

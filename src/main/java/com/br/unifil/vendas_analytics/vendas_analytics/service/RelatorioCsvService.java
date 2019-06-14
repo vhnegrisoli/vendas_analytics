@@ -32,10 +32,18 @@ public class RelatorioCsvService {
     public String gerarCsv(String dataInicial, String dataFinal) throws JsonProcessingException {
         UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
         List<ExportarCsvDto> resposta = new ArrayList<>();
-        if (ObjectUtils.isEmpty(dataInicial) || ObjectUtils.isEmpty(dataFinal)) {
-            resposta = exportarCsvRepository.exportarCsvSemFiltroDeData(usuarioLogado.getId());
+        if (usuarioLogado.isSuperAdmin()) {
+            if (ObjectUtils.isEmpty(dataInicial) || ObjectUtils.isEmpty(dataFinal)) {
+                resposta = exportarCsvRepository.exportarCsvSuperAdminCompleto();
+            } else {
+                resposta = exportarCsvRepository.exportarCsvSuperAdminFiltros(dataInicial, dataFinal);
+            }
         } else {
-            resposta = exportarCsvRepository.exportarCsvComFiltroDeData(dataInicial, dataFinal, usuarioLogado.getId());
+            if (ObjectUtils.isEmpty(dataInicial) || ObjectUtils.isEmpty(dataFinal)) {
+                resposta = exportarCsvRepository.exportarCsvSemFiltroDeData(usuarioLogado.getId());
+            } else {
+                resposta = exportarCsvRepository.exportarCsvComFiltroDeData(dataInicial, dataFinal, usuarioLogado.getId());
+            }
         }
         AtomicReference<String> dadosVenda = new AtomicReference<>(gerarCabecalho() + "\n");
         resposta
