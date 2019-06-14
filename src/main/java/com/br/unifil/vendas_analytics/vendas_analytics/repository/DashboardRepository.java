@@ -1,7 +1,9 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.CardsDashboardDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasAnaliseDashboardDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasSituacoesDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -150,6 +152,156 @@ public class DashboardRepository {
                             rs.getLong("qtdProdutos"),
                             rs.getLong("qtdVendasRealizadas"),
                             rs.getLong("qtdVendasNaoRealizadas")));
+        }
+    }
+
+    /*
+        RELATÓRIO VENDAS ANÁLISE DASHBOARD - SUPER ADMIN
+     */
+
+    private String vendasAnaliseDashboardSuperAdmin() {
+        return "SELECT  " +
+                "COUNT(v.id) AS quantidade_de_vendas,   " +
+                "SUM(p.preco) AS lucro_total,  " +
+                "AVG(p.preco) AS lucro_medio_mensal, " +
+                "COUNT(c.ID) AS Vendedores, " +
+                "COUNT(p.ID) AS Produtos, " +
+                "v.mes_compra AS meses " +
+                "FROM VENDA v  " +
+                "INNER JOIN vendedor c ON c.id = v.vendedor_id " +
+                "INNER JOIN produto_venda pv ON v.id = pv.venda_id " +
+                "INNER JOIN produto p ON p.id = pv.produto_id " +
+                "GROUP BY v.mes_compra;";
+    }
+
+
+    /*
+        RELATÓRIO VENDAS ANÁLISE DASHBOARD - USER E ADMIN
+     */
+
+    private String vendasAnaliseDashboardUserAdmin(Integer usuarioLogadoId) {
+        return "SELECT  " +
+                "COUNT(v.id) AS quantidade_de_vendas,   " +
+                "SUM(p.preco) AS lucro_total,  " +
+                "AVG(p.preco) AS lucro_medio_mensal, " +
+                "COUNT(c.ID) AS Vendedores, " +
+                "COUNT(p.ID) AS Produtos, " +
+                "v.mes_compra AS meses " +
+                "FROM VENDA v  " +
+                "INNER JOIN vendedor c ON c.id = v.vendedor_id " +
+                "INNER JOIN produto_venda pv ON v.id = pv.venda_id " +
+                "INNER JOIN produto p ON p.id = pv.produto_id " +
+                "INNER JOIN usuario u ON u.vendedor_id = c.id " +
+                "WHERE u.id = " + usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId +
+                " GROUP BY v.mes_compra;";
+    }
+
+    public List<VendasAnaliseDashboardDto> vendasAnaliseDashboard(Integer usuarioLogadoId, boolean isSuperAdmin) {
+        if (isSuperAdmin) {
+            return jdbcTemplate.query(vendasAnaliseDashboardSuperAdmin(),
+                    (rs, rowNum) -> new VendasAnaliseDashboardDto(
+                            rs.getInt("quantidade_de_vendas"),
+                            rs.getDouble("lucro_total"),
+                            rs.getDouble("lucro_medio_mensal"),
+                            rs.getInt("Produtos"),
+                            rs.getInt("Vendedores"),
+                            rs.getString("meses")));
+        } else {
+            return jdbcTemplate.query(vendasAnaliseDashboardUserAdmin(usuarioLogadoId),
+                    (rs, rowNum) -> new VendasAnaliseDashboardDto(
+                            rs.getInt("quantidade_de_vendas"),
+                            rs.getDouble("lucro_total"),
+                            rs.getDouble("lucro_medio_mensal"),
+                            rs.getInt("Produtos"),
+                            rs.getInt("Vendedores"),
+                            rs.getString("meses")));
+        }
+    }
+
+    /*
+        RELATÓRIO VENDAS REALIZADAS - SUPER ADMIN
+     */
+
+    private String vendasRealizadasDashboardUserAdmin(Integer usuarioLogadoId) {
+        return "SELECT " +
+                "COUNT(v.ID) AS vendas_concluidas, " +
+                "v.mes_compra AS meses " +
+                "FROM VENDA v " +
+                "INNER JOIN Vendedor vd ON v.vendedor_id = vd.id " +
+                "INNER JOIN Usuario u ON u.vendedor_id = vd.id " +
+                "WHERE u.id = " + usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId +
+                " AND v.SITUACAO = 'FECHADA' AND v.APROVACAO = 'APROVADA'" +
+                "GROUP BY v.mes_compra;";
+    }
+
+        /*
+        RELATÓRIO VENDAS REALIZADAS - USER E ADMIN
+     */
+
+    private String vendasRealizadasDashboardSuperAdmin() {
+        return "SELECT " +
+                "COUNT(v.ID) AS vendas_concluidas, " +
+                "v.mes_compra AS meses " +
+                "FROM VENDA v " +
+                "WHERE v.SITUACAO = 'FECHADA' AND v.APROVACAO = 'APROVADA'" +
+                "GROUP BY v.mes_compra;";
+    }
+
+    public List<VendasSituacoesDto> vendasRealizadasDashboard(Integer usuarioLogadoId, boolean isSuperAdmin) {
+        if (isSuperAdmin) {
+            return jdbcTemplate.query(vendasRealizadasDashboardSuperAdmin(),
+                    (rs, rowNum) -> new VendasSituacoesDto(
+                            rs.getInt("vendas_concluidas"),
+                            rs.getString("meses")));
+        } else {
+            return jdbcTemplate.query(vendasRealizadasDashboardUserAdmin(usuarioLogadoId),
+                    (rs, rowNum) -> new VendasSituacoesDto(
+                            rs.getInt("vendas_concluidas"),
+                            rs.getString("meses")));
+        }
+    }
+
+
+    /*
+        RELATÓRIO VENDAS NÃO REALIZADAS - SUPER ADMIN
+     */
+
+    private String vendasNaoRealizadasDashboardUserAdmin(Integer usuarioLogadoId) {
+        return "SELECT " +
+                "COUNT(v.ID) AS vendas_nao_concluidas, " +
+                "v.mes_compra AS meses " +
+                "FROM VENDA v " +
+                "INNER JOIN Vendedor vd ON v.vendedor_id = vd.id " +
+                "INNER JOIN Usuario u ON u.vendedor_id = vd.id " +
+                "WHERE u.id = " + usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId +
+                " AND v.APROVACAO <> 'APROVADA'" +
+                "GROUP BY v.mes_compra;";
+    }
+
+        /*
+        RELATÓRIO VENDAS REALIZADAS - USER E ADMIN
+     */
+
+    private String vendasNaoRealizadasDashboardSuperAdmin() {
+        return "SELECT " +
+                "COUNT(v.ID) AS vendas_nao_concluidas, " +
+                "v.mes_compra AS meses " +
+                "FROM VENDA v " +
+                "WHERE v.APROVACAO <> 'APROVADA'" +
+                "GROUP BY v.mes_compra;";
+    }
+
+    public List<VendasSituacoesDto> vendasNaoRealizadasDashboard(Integer usuarioLogadoId, boolean isSuperAdmin) {
+        if (isSuperAdmin) {
+            return jdbcTemplate.query(vendasNaoRealizadasDashboardSuperAdmin(),
+                    (rs, rowNum) -> new VendasSituacoesDto(
+                            rs.getInt("vendas_nao_concluidas"),
+                            rs.getString("meses")));
+        } else {
+            return jdbcTemplate.query(vendasNaoRealizadasDashboardUserAdmin(usuarioLogadoId),
+                    (rs, rowNum) -> new VendasSituacoesDto(
+                            rs.getInt("vendas_nao_concluidas"),
+                            rs.getString("meses")));
         }
     }
 

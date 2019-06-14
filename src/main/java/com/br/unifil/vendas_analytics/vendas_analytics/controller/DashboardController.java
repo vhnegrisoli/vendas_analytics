@@ -2,7 +2,9 @@ package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.CardsDashboardDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasAnaliseDashboardDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasSituacoesDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_dashboard.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.repository_relatorios_dashboard.*;
@@ -30,15 +32,6 @@ public class DashboardController {
     private Vendas_Por_ProdutoRepository vendas_por_produtoRepository;
 
     @Autowired
-    private Vendas_FeitasRepository vendas_feitasRepository;
-
-    @Autowired
-    private Vendas_RejeitadasRepository vendas_rejeitadasRepository;
-
-    @Autowired
-    private Vendas_DashboardRepository vendas__dashboardRepository;
-
-    @Autowired
     private UsuarioService usuarioService;
 
     @GetMapping("/vendas-por-periodo")
@@ -59,18 +52,21 @@ public class DashboardController {
     }
 
     @GetMapping("/card3/vendas-feitas")
-    public List<vendas_feitas> getAllVendasFeitas() {
-        return vendas_feitasRepository.findAll();
+    public List<VendasSituacoesDto> getAllVendasFeitas() {
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return dashboardRepository.vendasRealizadasDashboard(usuarioLogado.getId(), usuarioLogado.isSuperAdmin());
     }
 
     @GetMapping("/card4/vendas-rejeitadas")
-    public List<vendas_rejeitadas> getAllVendasRejeitadas() {
-        return vendas_rejeitadasRepository.findAll();
+    public List<VendasSituacoesDto> getAllVendasRejeitadas() {
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return dashboardRepository.vendasNaoRealizadasDashboard(usuarioLogado.getId(), usuarioLogado.isSuperAdmin());
     }
 
     @GetMapping("/vendas-analise-dashboard")
-    public List<Vendas_Dashboard> getAllVendasDashboard() {
-        return vendas__dashboardRepository.findAll();
+    public List<VendasAnaliseDashboardDto> getAllVendasDashboard() {
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return dashboardRepository.vendasAnaliseDashboard(usuarioLogado.getId(), usuarioLogado.isSuperAdmin());
     }
 
     @GetMapping("/cards-totais")
