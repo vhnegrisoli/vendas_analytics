@@ -39,7 +39,7 @@ public class UsuarioController {
 
     @GetMapping("buscar/{id}")
     public Usuario findOne(@PathVariable Integer id) {
-        return usuarioRepository.findById(id).orElseThrow(() -> new ValidacaoException("Usuário não encontrado"));
+        return usuarioService.buscarUm(id);
     }
 
     @GetMapping("/permissoes")

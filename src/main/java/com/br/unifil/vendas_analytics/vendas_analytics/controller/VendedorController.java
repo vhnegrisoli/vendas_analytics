@@ -27,8 +27,7 @@ public class VendedorController {
 
     @GetMapping("/buscar/{id}")
     public Vendedor buscaUm(@PathVariable Integer id) throws ValidacaoException {
-        return vendedorRepository.findById(id)
-                .orElseThrow(() -> new ValidacaoException("O vendedor não existe!"));
+        return vendedorService.buscarUm(id);
     }
 
     @PostMapping("/salvar")

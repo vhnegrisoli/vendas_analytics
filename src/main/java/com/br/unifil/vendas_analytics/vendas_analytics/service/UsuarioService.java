@@ -224,7 +224,19 @@ public abstract class UsuarioService {
                     || !isEmpty(usuario.getUsuarioProprietario())
                     && usuario.getUsuarioProprietario().equals(usuarioLogadoId))
                 .collect(toList());
+    }
 
+    public Usuario buscarUm(Integer id) {
+        List<Integer> usuariosPermitidos = new ArrayList<>();
+        buscarTodos().
+            forEach(usuario -> {
+                usuariosPermitidos.add(usuario.getId());
+            });
+        if (!usuariosPermitidos.contains(id)) {
+            throw new ValidacaoException("Você não tem permissão para ver esse usuário.");
+        }
+        return usuarioRepository.findById(id)
+            .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
     }
 
 }

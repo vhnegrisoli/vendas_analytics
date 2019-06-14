@@ -40,7 +40,7 @@ public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/api/dashboard/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
                 .antMatchers("/api/estados/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
                 .antMatchers("/api/dashboard/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .antMatchers("/api/usuarios/*").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
+                .antMatchers("/api/usuarios/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
                 .antMatchers("/api/relatorios-power-bi/*").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
                 .anyRequest().authenticated();
     }

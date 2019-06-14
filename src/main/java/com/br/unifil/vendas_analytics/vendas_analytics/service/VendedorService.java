@@ -42,6 +42,9 @@ public class VendedorService {
     @Autowired
     private VendaRepository vendaRepository;
 
+    private static final ValidacaoException VENDEDOR_SEM_PERMISSAO = new ValidacaoException
+        ("Você não tem permissão para ver esse vendedor.");
+
     @Transactional
     public void salvarVendedor(Vendedor vendedor) throws ValidacaoException {
         try {
@@ -152,5 +155,26 @@ public class VendedorService {
         return vendedoresIds;
     }
 
+    public Vendedor buscarUm(Integer id) {
+        Vendedor vendedor =  vendedorRepository.findById(id)
+                .orElseThrow(() -> new ValidacaoException("O vendedor não existe."));
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        if (usuarioLogado.isUser()) {
+            validarPermissaoVendedorUser(id, usuarioLogado);
+        }
+        if (!getVendedoresPermitidos(usuarioLogado.getId()).contains(id)) {
+            throw VENDEDOR_SEM_PERMISSAO;
+        }
+        return vendedor;
+    }
+
+    public void validarPermissaoVendedorUser(Integer idBuscado, UsuarioAutenticadoDto usuarioLogado) {
+        usuarioRepository.findById(usuarioLogado.getId()).ifPresent(
+                usuario -> {
+                    if (!usuario.getVendedor().getId().equals(idBuscado)) {
+                        throw VENDEDOR_SEM_PERMISSAO;
+                    }
+                });
+    }
 
 }
