@@ -11,7 +11,6 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepositor
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -22,10 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class VendedorService {

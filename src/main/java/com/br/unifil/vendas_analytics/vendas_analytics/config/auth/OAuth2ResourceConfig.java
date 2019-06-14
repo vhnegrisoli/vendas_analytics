@@ -17,31 +17,35 @@ public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         String[] permitAll = {
-                "/login/**",
-                "/oauth/token",
-                "/oauth/authorize",
+            "/login/**",
+            "/oauth/token",
+            "/oauth/authorize",
         };
 
         http
-                .addFilterBefore(new CorsConfigFilter(), ChannelProcessingFilter.class)
-                .requestMatchers()
-                .antMatchers("/**")
-                .and()
-                .authorizeRequests()
-                .antMatchers(permitAll).permitAll()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/api/autenticacao/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .antMatchers("/api/vendedores/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .antMatchers("/api/vendas/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .antMatchers("/api/produtos/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name(), USER.name())
-                .antMatchers("/api/categorias/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .antMatchers("/api/fornecedores/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .antMatchers("/api/analytics/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .antMatchers("/api/dashboard/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .antMatchers("/api/estados/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .antMatchers("/api/dashboard/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .antMatchers("/api/usuarios/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
-                .antMatchers("/api/relatorios-power-bi/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
-                .anyRequest().authenticated();
+            .addFilterBefore(new CorsConfigFilter(), ChannelProcessingFilter.class)
+            .requestMatchers()
+            .antMatchers("/**")
+            .and()
+            .authorizeRequests()
+            .antMatchers(permitAll).permitAll()
+            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .antMatchers("/api/autenticacao/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+            .antMatchers("/api/vendedores/salvar").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
+            .antMatchers("/api/vendedores/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+            .antMatchers("/api/vendas/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+            .antMatchers("/api/produtos/salvar").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
+            .antMatchers("/api/categorias/salvar").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
+            .antMatchers("/api/fornecedores/salvar").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
+            .antMatchers("/api/produtos/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+            .antMatchers("/api/categorias/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+            .antMatchers("/api/fornecedores/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+            .antMatchers("/api/analytics/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+            .antMatchers("/api/dashboard/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+            .antMatchers("/api/estados/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+            .antMatchers("/api/dashboard/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+            .antMatchers("/api/usuarios/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
+            .antMatchers("/api/relatorios-power-bi/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
+            .anyRequest().authenticated();
     }
 }
