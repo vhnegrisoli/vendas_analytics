@@ -106,7 +106,8 @@ public class VendaService {
 
     @Transactional
     public void aprovarVenda(int id) {
-        Venda venda = vendaRepository.findById(id)
+        Integer idPermitido = getIdVendaPermitida(id);
+        Venda venda = vendaRepository.findById(idPermitido)
                 .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
         if (!isNovaVenda(venda)) {
             if (venda.getAprovacao().equals(AGUARDANDO_APROVACAO)) {
@@ -119,7 +120,8 @@ public class VendaService {
 
     @Transactional
     public void rejeitarVenda(int id) {
-        Venda venda = vendaRepository.findById(id)
+        Integer idPermitido = getIdVendaPermitida(id);
+        Venda venda = vendaRepository.findById(idPermitido)
                 .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
         if (!isNovaVenda(venda)) {
             if (venda.getAprovacao().equals(AGUARDANDO_APROVACAO)
@@ -187,8 +189,12 @@ public class VendaService {
     }
 
     public List<ProdutosDaVendaDto> getProdutosDaVenda(Integer id, Integer usuarioLogadoId) {
-        Integer idPermitido = buscarUma(id).getId();
+        Integer idPermitido = getIdVendaPermitida(id);
         return relatoriosRepository.findAllProdutosDaVendaByVendaId(idPermitido);
+    }
+
+    public Integer getIdVendaPermitida(Integer id) {
+        return buscarUma(id).getId();
     }
 
 }

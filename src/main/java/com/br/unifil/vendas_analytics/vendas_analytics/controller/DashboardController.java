@@ -3,10 +3,7 @@ package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.CardsDashboardDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_dashboard.*;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.RelatoriosRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.repository_relatorios_dashboard.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +23,13 @@ import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituaca
 public class DashboardController {
 
     @Autowired
-    private Vendas_Por_PeriodoRepository vendas_por_periodoRepository;
-
-    @Autowired
     private VendedorRepository vendedorRepository;
-
 
     @Autowired
     private ProdutoRepository produtoRepository;
 
     @Autowired
-    private RelatoriosRepository relatoriosRepository;
+    private DashboardRepository dashboardRepository;
 
     @Autowired
     private VendaRepository vendaRepository;
@@ -61,7 +54,7 @@ public class DashboardController {
 
     @GetMapping("/vendas-por-periodo")
     public List<VendasPorPeriodoDto> getAllVendasPorPeriodo() {
-        return relatoriosRepository.vendasPorPeriodo(usuarioService.getUsuarioLogado().getId());
+        return dashboardRepository.vendasPorPeriodo(usuarioService.getUsuarioLogado().getId());
     }
 
     @GetMapping("/card1/vendas-por-vendedor")
