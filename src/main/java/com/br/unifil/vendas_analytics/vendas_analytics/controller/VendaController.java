@@ -76,16 +76,6 @@ public class VendaController {
         return relatorioCsvService.gerarCsv(dataInicial, dataFinal);
     }
 
-    @GetMapping("/vendas-realizadas")
-    public Integer getAllVendasRealizadas() {
-        return vendaRepository.countBySituacaoAndAprovacao(FECHADA, APROVADA);
-    }
-
-    @GetMapping("/vendas-nao-realizadas")
-    public Integer getAllVendasNaoRealizadas() {
-        return vendaRepository.countByAprovacaoNot(APROVADA);
-    }
-
     @GetMapping("/aprovar-venda/{id}")
     public void aprovarVenda(@PathVariable int id) {
         vendaService.aprovarVenda(id);

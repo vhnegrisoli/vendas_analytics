@@ -14,15 +14,7 @@ import java.util.List;
 public class PowerBiController {
 
     @Autowired
-    private PowerBiRepository powerBiRepository;
-
-    @Autowired
     private PowerBiService powerBiService;
-
-    @GetMapping("/todos")
-    public List<RelatoriosPowerBi> getAllRelatorios() {
-        return powerBiRepository.findAll();
-    }
 
     @GetMapping("/buscar/{id}")
     public List<RelatoriosPowerBi> buscarUm(@PathVariable Integer id) {

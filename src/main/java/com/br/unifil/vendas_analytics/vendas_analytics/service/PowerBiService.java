@@ -17,11 +17,9 @@ public class PowerBiService {
     private PowerBiRepository powerBiRepository;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService;
 
     public List<RelatoriosPowerBi> findByUsuario(Integer id) {
-        Usuario usuario = usuarioRepository.findById(id)
-            .orElseThrow(() -> new ValidacaoException("Usuário não existente"));
-        return powerBiRepository.findByUsuario(usuario);
+        return powerBiRepository.findByUsuario(usuarioService.buscarUm(id));
     }
 }
