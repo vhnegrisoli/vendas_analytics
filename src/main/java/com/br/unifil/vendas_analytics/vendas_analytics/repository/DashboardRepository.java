@@ -1,5 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.CardsDashboardDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,5 +38,88 @@ public class DashboardRepository {
                         rs.getString("meses")));
     }
 
+    private String totalCardsAdminUserQuery(Integer usuarioLogadoId) {
+        return "SELECT DISTINCT " +
+                "( " +
+                "(SELECT COUNT(v.ID) FROM vendedor v " +
+                "INNER JOIN Usuario u ON u.vendedor_id = v.id " +
+                "WHERE u.id = " + usuarioLogadoId + ") " +
+                "+ " +
+                "(SELECT COUNT(v.ID) FROM vendedor v " +
+                "INNER JOIN Usuario u ON u.vendedor_id = v.id " +
+                "WHERE u.usuario_proprietario = " + usuarioLogadoId + ") " +
+                ") AS qtdClientes, " +
+                "( " +
+                "SELECT COUNT(DISTINCT p.ID) FROM Produto p " +
+                "INNER JOIN produto_venda pv ON pv.produto_id = p.id " +
+                "INNER JOIN venda v ON pv.venda_id = v.id " +
+                "INNER JOIN vendedor vd ON vd.id = v.vendedor_id " +
+                "INNER JOIN usuario u ON vd.id = u.vendedor_id " +
+                "WHERE u.id = " + usuarioLogadoId + " AND pv.produto_id = p.id) AS qtdProdutos, " +
+                "( " +
+                "(SELECT COUNT(DISTINCT v.id) FROM Venda v " +
+                "INNER JOIN vendedor vd ON vd.id = v.vendedor_id " +
+                "INNER JOIN usuario u ON vd.id = u.vendedor_id " +
+                "WHERE u.id = " + usuarioLogadoId + "  " +
+                "AND v.situacao = 'FECHADA' AND v.aprovacao = 'APROVADA' ) " +
+                "+ " +
+                "(SELECT COUNT(DISTINCT v.id) FROM Venda v " +
+                "INNER JOIN vendedor vd ON vd.id = v.vendedor_id " +
+                "INNER JOIN usuario u ON vd.id = u.vendedor_id " +
+                "WHERE u.usuario_proprietario = " + usuarioLogadoId + "  " +
+                "AND v.situacao = 'FECHADA' AND v.aprovacao = 'APROVADA' ) " +
+                ") AS qtdVendasRealizadas, " +
+                "( " +
+                "(SELECT COUNT(DISTINCT v.id) FROM Venda v " +
+                "INNER JOIN vendedor vd ON vd.id = v.vendedor_id " +
+                "INNER JOIN usuario u ON vd.id = u.vendedor_id " +
+                "WHERE u.id = " + usuarioLogadoId + "  " +
+                "AND v.aprovacao <> 'APROVADA' )  " +
+                "+ " +
+                "(SELECT COUNT(DISTINCT v.id) FROM Venda v " +
+                "INNER JOIN vendedor vd ON vd.id = v.vendedor_id " +
+                "INNER JOIN usuario u ON vd.id = u.vendedor_id " +
+                "WHERE u.usuario_proprietario = " + usuarioLogadoId + "  " +
+                "AND v.aprovacao <> 'APROVADA' ) " +
+                ") " +
+                "AS qtdVendasNaoRealizadas " +
+                "FROM VENDEDOR;";
+    }
 
+    private String totalCardsSuperAdmin() {
+        return "SELECT DISTINCT " +
+                "( " +
+                "(SELECT COUNT(v.ID) FROM vendedor v) " +
+                ") AS qtdClientes, " +
+                "( " +
+                "SELECT COUNT(DISTINCT p.ID) FROM Produto p) AS qtdProdutos, " +
+                "( " +
+                "(SELECT COUNT(DISTINCT v.id) FROM VENDA v " +
+                "WHERE v.situacao = 'FECHADA' AND v.aprovacao = 'APROVADA' ) " +
+                ") AS qtdVendasRealizadas, " +
+                "( " +
+                "(SELECT COUNT(DISTINCT v.id) FROM Venda v " +
+                "WHERE v.aprovacao <> 'APROVADA' )  " +
+                ") " +
+                "AS qtdVendasNaoRealizadas " +
+                "FROM VENDEDOR;";
+    }
+
+    public List<CardsDashboardDto> totalVendedores(Integer usuarioLogadoId, boolean isSuperAdmin) {
+        if (isSuperAdmin) {
+            return jdbcTemplate.query(totalCardsSuperAdmin(),
+                    (rs, rowNum) -> new CardsDashboardDto(
+                            rs.getLong("qtdClientes"),
+                            rs.getLong("qtdProdutos"),
+                            rs.getLong("qtdVendasRealizadas"),
+                            rs.getLong("qtdVendasNaoRealizadas")));
+        } else {
+            return jdbcTemplate.query(totalCardsAdminUserQuery(usuarioLogadoId),
+                    (rs, rowNum) -> new CardsDashboardDto(
+                            rs.getLong("qtdClientes"),
+                            rs.getLong("qtdProdutos"),
+                            rs.getLong("qtdVendasRealizadas"),
+                            rs.getLong("qtdVendasNaoRealizadas")));
+        }
+    }
 }

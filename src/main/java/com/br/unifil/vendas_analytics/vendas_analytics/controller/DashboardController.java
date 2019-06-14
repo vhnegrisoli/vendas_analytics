@@ -1,5 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.CardsDashboardDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.VendasPorPeriodoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.model_relatorios_dashboard.*;
@@ -84,16 +85,7 @@ public class DashboardController {
 
     @GetMapping("/cards-totais")
     public CardsDashboardDto getSomatorios() {
-        long qtdClientes = vendedorRepository.count();
-        long qtdProdutos = produtoRepository.count();
-        long qtdVendasRealizadas = vendaRepository.countBySituacaoAndAprovacao(FECHADA, APROVADA);
-        long qtdVendasNaoRealizadas = vendaRepository.countByAprovacaoNot(APROVADA);
-        return CardsDashboardDto
-                .builder()
-                .qtdClientes(qtdClientes)
-                .qtdProdutos(qtdProdutos)
-                .qtdVendasRealizadas(qtdVendasRealizadas)
-                .qtdVendasNaoRealizadas(qtdVendasNaoRealizadas)
-                .build();
+        UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
+        return dashboardRepository.totalVendedores(usuarioLogado.getId(), usuarioLogado.isSuperAdmin()).get(0);
     }
 }
