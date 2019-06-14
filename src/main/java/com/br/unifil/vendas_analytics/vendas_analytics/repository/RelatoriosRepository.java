@@ -45,18 +45,22 @@ public class RelatoriosRepository {
         Relatório VENDAS POR PRODUTO
      */
 
-    private String relatorioVendasPorProduto() {
+    private String relatorioVendasPorProduto(Integer usuarioLogadoId) {
         return "SELECT " +
                 "p.nome_produto as produto, " +
                 "SUM(pv.quantidade) as quantidade, " +
                 "SUM(p.PRECO * pv.quantidade) as lucro, " +
                 "CAST(AVG(p.PRECO * pv.QUANTIDADE) as NUMERIC(10,2)) as media " +
                 "FROM Produto p INNER JOIN produto_venda pv ON p.id = pv.produto_id " +
+                "INNER JOIN Venda v ON v.id = pv.venda_id " +
+                "INNER JOIN Vendedor vd ON v.vendedor_id = vd.id " +
+                "INNER JOIN usuario u ON u.vendedor_id = vd.id " +
+                "WHERE u.id =  " + usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId + " " +
                 "GROUP BY p.nome_produto";
     }
 
-    public List<VendasPorProdutoDto> vendasPorProduto() {
-        return jdbcTemplate.query(relatorioVendasPorProduto(),
+    public List<VendasPorProdutoDto> vendasPorProduto(Integer usuarioLogadoId) {
+        return jdbcTemplate.query(relatorioVendasPorProduto(usuarioLogadoId),
                 (rs, rowNum) -> new VendasPorProdutoDto(
                         rs.getString("produto"),
                         rs.getInt("quantidade"),
@@ -68,7 +72,7 @@ public class RelatoriosRepository {
         Relatório VENDAS POR FORNECEDOR
      */
 
-    private String relatorioVendasPorFornecedor() {
+    private String relatorioVendasPorFornecedor(Integer usuarioLogadoId) {
         return "SELECT " +
                 "SUM(pv.quantidade) as quantidade, " +
                 "SUM(p.PRECO * pv.quantidade) as lucro, " +
@@ -77,11 +81,15 @@ public class RelatoriosRepository {
                 "FROM Fornecedor f " +
                 "INNER JOIN produto p ON f.id = p.fornecedor_id " +
                 "INNER JOIN produto_venda pv ON p.id = pv.produto_id " +
+                "INNER JOIN Venda v ON v.id = pv.venda_id " +
+                "INNER JOIN Vendedor vd ON v.vendedor_id = vd.id " +
+                "INNER JOIN usuario u ON u.vendedor_id = vd.id " +
+                "WHERE u.id =  " + usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId + " " +
                 "GROUP BY f.nome_fantasia";
     }
 
-    public List<VendasPorFornecedorDto> vendasPorFornecedor() {
-        return jdbcTemplate.query(relatorioVendasPorFornecedor(),
+    public List<VendasPorFornecedorDto> vendasPorFornecedor(Integer usuarioLogadoId) {
+        return jdbcTemplate.query(relatorioVendasPorFornecedor(usuarioLogadoId),
                 (rs, rowNum) -> new VendasPorFornecedorDto(
                         rs.getInt("quantidade"),
                         rs.getDouble("lucro"),
@@ -93,7 +101,7 @@ public class RelatoriosRepository {
         Relatório VENDAS POR CATEGORIA
      */
 
-    private String relatorioVendasPorCategoria() {
+    private String relatorioVendasPorCategoria(Integer usuarioLogadoId) {
         return "SELECT " +
                 "SUM(pv.quantidade) as quantidade, " +
                 "SUM(p.PRECO * pv.quantidade) as lucro, " +
@@ -102,11 +110,15 @@ public class RelatoriosRepository {
                 "FROM Categoria c " +
                 "INNER JOIN produto p ON c.id = p.categoria_id " +
                 "INNER JOIN produto_venda pv ON p.id = pv.produto_id " +
+                "INNER JOIN Venda v ON v.id = pv.venda_id " +
+                "INNER JOIN Vendedor vd ON v.vendedor_id = vd.id " +
+                "INNER JOIN usuario u ON u.vendedor_id = vd.id " +
+                "WHERE u.id =  " + usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId + " " +
                 "GROUP BY c.descricao";
     }
 
-    public List<VendasPorCategoriaDto> vendasPorCategoria() {
-        return jdbcTemplate.query(relatorioVendasPorCategoria(),
+    public List<VendasPorCategoriaDto> vendasPorCategoria(Integer usuarioLogadoId) {
+        return jdbcTemplate.query(relatorioVendasPorCategoria(usuarioLogadoId),
                 (rs, rowNum) -> new VendasPorCategoriaDto(
                         rs.getInt("quantidade"),
                         rs.getDouble("lucro"),
@@ -118,7 +130,7 @@ public class RelatoriosRepository {
         Relatório VENDAS POR VENDEDORES
      */
 
-    private String relatorioVendasPorVendedor() {
+    private String relatorioVendasPorVendedor(Integer usuarioLogadoId) {
         return "SELECT " +
                 "c.nome as cliente, " +
                 "SUM(pv.quantidade) as quantidade, " +
@@ -128,11 +140,13 @@ public class RelatoriosRepository {
                 "INNER JOIN venda v ON v.vendedor_id = c.id " +
                 "INNER JOIN produto_venda pv ON pv.venda_id = v.id " +
                 "INNER JOIN produto p ON p.id = pv.produto_id " +
+                "INNER JOIN usuario u ON u.vendedor_id = c.id " +
+                "WHERE u.id =  " + usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId + " " +
                 "GROUP BY c.nome";
     }
 
-    public List<VendasPorVendedorDto> vendasPorVendedor() {
-        return jdbcTemplate.query(relatorioVendasPorVendedor(),
+    public List<VendasPorVendedorDto> vendasPorVendedor(Integer usuarioLogadoId) {
+        return jdbcTemplate.query(relatorioVendasPorVendedor(usuarioLogadoId),
                 (rs, rowNum) -> new VendasPorVendedorDto(
                         rs.getString("cliente"),
                         rs.getInt("quantidade"),
@@ -144,7 +158,7 @@ public class RelatoriosRepository {
         Relatório VENDAS POR REGIAO
      */
 
-    private String relatorioVendasPorRegiao() {
+    private String relatorioVendasPorRegiao(Integer usuarioLogadoId) {
         return "SELECT " +
                 "r.nome as regiao, " +
                 "SUM(pv.quantidade) as quantidade, " +
@@ -156,11 +170,13 @@ public class RelatoriosRepository {
                 "INNER JOIN venda v ON v.vendedor_id = c.id " +
                 "INNER JOIN produto_venda pv ON pv.venda_id = v.id " +
                 "INNER JOIN produto p ON p.id = pv.produto_id " +
+                "INNER JOIN usuario u ON u.vendedor_id = c.id " +
+                "WHERE u.id =  " + usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId + " " +
                 "GROUP BY r.nome";
     }
 
-    public List<VendasPorRegiaoDto> vendasPorRegiao() {
-        return jdbcTemplate.query(relatorioVendasPorRegiao(),
+    public List<VendasPorRegiaoDto> vendasPorRegiao(Integer usuarioLogadoId) {
+        return jdbcTemplate.query(relatorioVendasPorRegiao(usuarioLogadoId),
                 (rs, rowNum) -> new VendasPorRegiaoDto(
                         rs.getString("regiao"),
                         rs.getInt("quantidade"),
@@ -206,7 +222,7 @@ public class RelatoriosRepository {
         Relatório VENDAS POR ESTADOS
      */
 
-    private String relatorioVendasPorEstado() {
+    private String relatorioVendasPorEstado(Integer usuarioLogadoId) {
         return "SELECT " +
                 "e.estado as estado, " +
                 "SUM(pv.quantidade) as quantidade, " +
@@ -217,11 +233,13 @@ public class RelatoriosRepository {
                 "INNER JOIN venda v ON v.vendedor_id = c.id " +
                 "INNER JOIN produto_venda pv ON pv.venda_id = v.id " +
                 "INNER JOIN produto p ON p.id = pv.produto_id " +
+                "INNER JOIN usuario u ON u.vendedor_id = c.id " +
+                "WHERE u.id =  " + usuarioLogadoId + " OR u.usuario_proprietario = " + usuarioLogadoId + " " +
                 "GROUP BY e.estado";
     }
 
-    public List<VendasPorEstadoDto> vendasPorEstado() {
-        return jdbcTemplate.query(relatorioVendasPorEstado(),
+    public List<VendasPorEstadoDto> vendasPorEstado(Integer usuarioLogadoId) {
+        return jdbcTemplate.query(relatorioVendasPorEstado(usuarioLogadoId),
                 (rs, rowNum) -> new VendasPorEstadoDto(
                         rs.getString("estado"),
                         rs.getInt("quantidade"),
@@ -246,6 +264,7 @@ public class RelatoriosRepository {
                 "LEFT JOIN Produto_Venda pv ON p.id = pv.produto_id " +
                 "LEFT JOIN Fornecedor f ON f.id = p.fornecedor_id " +
                 "LEFT JOIN Categoria c ON c.id = p.categoria_id " +
+                "LEFT JOIN Venda v ON v.id = pv.venda_id " +
                 "WHERE pv.venda_id = " + id;
     }
 

@@ -4,10 +4,7 @@ import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticado
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.HistoricoVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +45,9 @@ public class VendaService {
 
     @Autowired
     private ProdutoVendaRepository produtoVendaRepository;
+
+    @Autowired
+    private RelatoriosRepository relatoriosRepository;
 
     private final ValidacaoException VENDA_NAO_ENCONTRADA_EXCEPTION = new ValidacaoException("Venda não existente");
 
@@ -184,6 +184,11 @@ public class VendaService {
         }
         return vendaRepository.findById(id)
             .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
+    }
+
+    public List<ProdutosDaVendaDto> getProdutosDaVenda(Integer id, Integer usuarioLogadoId) {
+        Integer idPermitido = buscarUma(id).getId();
+        return relatoriosRepository.findAllProdutosDaVendaByVendaId(idPermitido);
     }
 
 }

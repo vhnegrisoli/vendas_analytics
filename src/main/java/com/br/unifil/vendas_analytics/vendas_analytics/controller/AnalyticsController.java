@@ -24,27 +24,27 @@ public class AnalyticsController {
 
     @GetMapping("/vendas-por-categoria")
     public List<VendasPorCategoriaDto> getAllVendasPorCategoria() {
-        return relatoriosRepository.vendasPorCategoria();
+        return relatoriosRepository.vendasPorCategoria(usuarioService.getUsuarioLogado().getId());
     }
 
     @GetMapping("/geral-produtos")
     public List<VendasPorProdutoDto> getAllProdutosAnalytics() {
-        return relatoriosRepository.vendasPorProduto();
+        return relatoriosRepository.vendasPorProduto(usuarioService.getUsuarioLogado().getId());
     }
 
     @GetMapping("/geral-vendedores")
     public List<VendasPorVendedorDto> getAllVendedoresAnalytics() {
-        return relatoriosRepository.vendasPorVendedor();
+        return relatoriosRepository.vendasPorVendedor(usuarioService.getUsuarioLogado().getId());
     }
 
     @GetMapping("/geral-regioes-personalizados")
     public List<VendasPorRegiaoDto> getAllRegioesPersonalizados() {
-        return relatoriosRepository.vendasPorRegiao();
+        return relatoriosRepository.vendasPorRegiao(usuarioService.getUsuarioLogado().getId());
     }
 
     @GetMapping("/geral-estados")
     public List<VendasPorEstadoDto> getAllEstados() {
-        return relatoriosRepository.vendasPorEstado();
+        return relatoriosRepository.vendasPorEstado(usuarioService.getUsuarioLogado().getId());
     }
 
     @GetMapping("/geral-regioes")
@@ -54,7 +54,7 @@ public class AnalyticsController {
 
     @GetMapping("/geral-fornecedores")
     public List<VendasPorFornecedorDto> getAllAnaliseFornecedores() {
-        return relatoriosRepository.vendasPorFornecedor();
+        return relatoriosRepository.vendasPorFornecedor(usuarioService.getUsuarioLogado().getId());
     }
 
 }

@@ -96,7 +96,7 @@ public class VendaController {
 
     @GetMapping("/vendas-produtos/{id}")
     public List<ProdutosDaVendaDto> getProdutosDaVenda(@PathVariable int id) {
-        return relatoriosRepository.findAllProdutosDaVendaByVendaId(id);
+        return vendaService.getProdutosDaVenda(id, usuarioService.getUsuarioLogado().getId());
     }
 
 }
