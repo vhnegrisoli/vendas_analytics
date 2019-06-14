@@ -33,15 +33,15 @@ public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/api/autenticacao/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
                 .antMatchers("/api/vendedores/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
                 .antMatchers("/api/vendas/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .antMatchers("/api/produtos/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .antMatchers("/api/categorias/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
-                .antMatchers("/api/fornecedores/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
+                .antMatchers("/api/produtos/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name(), USER.name())
+                .antMatchers("/api/categorias/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+                .antMatchers("/api/fornecedores/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
                 .antMatchers("/api/analytics/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
                 .antMatchers("/api/dashboard/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
                 .antMatchers("/api/estados/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
                 .antMatchers("/api/dashboard/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
                 .antMatchers("/api/usuarios/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
-                .antMatchers("/api/relatorios-power-bi/*").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
+                .antMatchers("/api/relatorios-power-bi/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
                 .anyRequest().authenticated();
     }
 }
