@@ -22,7 +22,7 @@ public class VendedorController {
 
     @GetMapping("/todos")
     public List<Vendedor> buscarTodos() {
-        return vendedorService.buscaTodos();
+        return vendedorService.buscarTodos();
     }
 
     @GetMapping("/buscar/{id}")

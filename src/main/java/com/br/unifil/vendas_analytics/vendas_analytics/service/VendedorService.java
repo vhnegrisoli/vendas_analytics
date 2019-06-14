@@ -136,7 +136,7 @@ public class VendedorService {
         return ObjectUtils.isEmpty(vendedor.getId());
     }
 
-    public List<Vendedor> buscaTodos() {
+    public List<Vendedor> buscarTodos() {
         UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
         if (usuarioLogado.isUser()) {
             return Collections.singletonList(vendedorRepository.findByEmail(usuarioLogado.getEmail())
@@ -170,11 +170,11 @@ public class VendedorService {
 
     public void validarPermissaoVendedorUser(Integer idBuscado, UsuarioAutenticadoDto usuarioLogado) {
         usuarioRepository.findById(usuarioLogado.getId()).ifPresent(
-                usuario -> {
-                    if (!usuario.getVendedor().getId().equals(idBuscado)) {
-                        throw VENDEDOR_SEM_PERMISSAO;
-                    }
-                });
+            usuario -> {
+                if (!usuario.getVendedor().getId().equals(idBuscado)) {
+                    throw VENDEDOR_SEM_PERMISSAO;
+                }
+            });
     }
 
 }

@@ -52,8 +52,7 @@ public class VendaController {
 
     @GetMapping("/{id}")
     public Venda getUmaVenda(@PathVariable int id) throws ValidationException {
-        return vendaRepository.findById(id).orElseThrow(
-                () -> new ValidationException("Venda não existente"));
+        return vendaService.buscarUma(id);
     }
 
     @PostMapping("/salvar")

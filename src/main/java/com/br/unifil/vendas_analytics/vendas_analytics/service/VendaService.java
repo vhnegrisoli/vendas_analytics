@@ -160,11 +160,30 @@ public class VendaService {
     public List<Venda> buscarTodas() {
         List<Integer> vendedoresId = new ArrayList<>();
         vendedorService
-            .buscaTodos()
+            .buscarTodos()
             .forEach(vendedor -> {
                 vendedoresId.add(vendedor.getId());
             });
         return vendaRepository.findByVendedorIdIn(vendedoresId);
+    }
+
+    public Venda buscarUma(Integer id) {
+        List<Integer> vendedoresId = new ArrayList<>();
+        List<Integer> vendasId = new ArrayList<>();
+        vendedorService
+            .buscarTodos()
+            .forEach(venda -> {
+                vendedoresId.add(venda.getId());
+            });
+        vendaRepository.findByVendedorIdIn(vendedoresId)
+            .forEach(venda -> {
+                vendasId.add(venda.getId());
+            });
+        if (!vendasId.contains(id)) {
+            throw new ValidacaoException("Você não tem permissão para ver esta venda.");
+        }
+        return vendaRepository.findById(id)
+            .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
     }
 
 }
