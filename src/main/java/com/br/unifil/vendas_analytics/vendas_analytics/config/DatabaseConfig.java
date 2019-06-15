@@ -19,7 +19,8 @@ public class DatabaseConfig {
     public DataSource sqlServerDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        dataSource.setUrl("jdbc:sqlserver://sqlvhnegrisoli.ddns.net:1433;databaseName=vendas_analytics");
+//        dataSource.setUrl("jdbc:sqlserver://sqlvhnegrisoli.ddns.net:1433;databaseName=vendas_analytics");
+        dataSource.setUrl("jdbc:sqlserver://DESKTOP-0I3K5NK\\USUARIO:1433;databaseName=vendas_analytics");
         dataSource.setUsername("sqluser1");
         dataSource.setPassword("1y5h8j");
 

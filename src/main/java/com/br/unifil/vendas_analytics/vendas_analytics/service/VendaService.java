@@ -142,23 +142,6 @@ public class VendaService {
         return ObjectUtils.isEmpty(venda.getId());
     }
 
-    public List<ProdutosDaVendaDto> produtosVenda(int id) {
-        List<ProdutosDaVendaDto> produtos = new ArrayList();
-        List<Object[]> objetosProdutos = vendaRepository.findAllProdutosDaVendaByVendaId(id);
-        for (Object[] itemProduto : objetosProdutos) {
-            ProdutosDaVendaDto produtoInserir = new ProdutosDaVendaDto();
-            produtoInserir.setId((Integer) itemProduto[0]);
-            produtoInserir.setProduto((String) itemProduto[1]);
-            produtoInserir.setDescricao((String) itemProduto[2]);
-            produtoInserir.setFornecedor((String) itemProduto[3]);
-            produtoInserir.setCategoria((String) itemProduto[4]);
-            produtoInserir.setPreco((Double) itemProduto[5]);
-            produtoInserir.setQuantidade((Integer) itemProduto[6]);
-            produtos.add(produtoInserir);
-        }
-        return produtos;
-    }
-
     public List<Venda> buscarTodas() {
         List<Integer> vendedoresId = new ArrayList<>();
         vendedorService
@@ -188,7 +171,7 @@ public class VendaService {
             .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
     }
 
-    public List<ProdutosDaVendaDto> getProdutosDaVenda(Integer id, Integer usuarioLogadoId) {
+    public List<ProdutosDaVendaDto> getProdutosDaVenda(Integer id) {
         Integer idPermitido = getIdVendaPermitida(id);
         return relatoriosRepository.findAllProdutosDaVendaByVendaId(idPermitido);
     }
