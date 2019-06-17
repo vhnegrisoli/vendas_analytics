@@ -103,13 +103,13 @@ public class DashboardRepository {
                 "INNER JOIN vendedor vd ON vd.id = v.vendedor_id " +
                 "INNER JOIN usuario u ON vd.id = u.vendedor_id " +
                 "WHERE u.id = " + usuarioLogadoId + "  " +
-                "AND v.aprovacao <> 'APROVADA' )  " +
+                "AND v.aprovacao = 'REJEITADA' )  " +
                 "+ " +
                 "(SELECT COUNT(DISTINCT v.id) FROM Venda v " +
                 "INNER JOIN vendedor vd ON vd.id = v.vendedor_id " +
                 "INNER JOIN usuario u ON vd.id = u.vendedor_id " +
                 "WHERE u.usuario_proprietario = " + usuarioLogadoId + "  " +
-                "AND v.aprovacao <> 'APROVADA' ) " +
+                "AND v.aprovacao = 'REJEITADA' ) " +
                 ") " +
                 "AS qtdVendasNaoRealizadas " +
                 "FROM VENDEDOR;";
