@@ -236,4 +236,18 @@ public abstract class UsuarioService {
             .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
     }
 
+    public List<Usuario> buscarAdministradores() {
+        UsuarioAutenticadoDto usuarioLogado = getUsuarioLogado();
+        List<Usuario> usuarios;
+        PermissoesUsuario admin = permissoesUsuarioRepository.findById(2).get();
+        PermissoesUsuario superAdmin = permissoesUsuarioRepository.findById(3).get();
+        if (usuarioLogado.isSuperAdmin()) {
+            usuarios = usuarioRepository.findByPermissoesUsuarioInAndSituacao(Arrays.asList(admin, superAdmin), ATIVO);
+        } else {
+            usuarios = usuarioRepository.findByPermissoesUsuarioAndSituacao(admin, ATIVO);
+            usuarios = getUsuariosNivelAdmin(usuarios, usuarioLogado.getId());
+        }
+        return usuarios;
+    }
+
 }

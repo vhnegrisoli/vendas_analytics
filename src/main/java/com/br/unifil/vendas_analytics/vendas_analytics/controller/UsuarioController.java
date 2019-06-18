@@ -54,9 +54,7 @@ public class UsuarioController {
 
     @GetMapping("/buscar-administradores")
     public List<Usuario> buscarAdmins() {
-        PermissoesUsuario permissoesUsuario = new PermissoesUsuario();
-        permissoesUsuario.setId(2);
-        return usuarioRepository.findByPermissoesUsuarioAndSituacao(permissoesUsuario, ATIVO);
+        return usuarioService.buscarAdministradores();
     }
 
 }
