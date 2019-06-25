@@ -61,16 +61,15 @@ public abstract class UsuarioService {
         usuario.setDataCadastro(LocalDateTime.now());
         validaUsuario(usuario);
         usuario = validarTrocaDeSituacao(usuario);
-        validarUsuarioProprietario(usuario);
         usuarioRepository.save(usuario);
     }
 
     public void validaUsuario(Usuario usuario) throws ValidacaoException {
-        validarClienteExistente(usuario);
+        validarVendedorExistente(usuario);
         validaEmailClienteESituacao(usuario);
     }
 
-    public void validarClienteExistente(Usuario usuario) throws ValidacaoException {
+    public void validarVendedorExistente(Usuario usuario) throws ValidacaoException {
         if (isEmpty(usuario.getVendedor().getId())) {
             throw new ValidacaoException("É preciso ter um vendedor para cadastrar um novo usuário");
         }
@@ -96,7 +95,6 @@ public abstract class UsuarioService {
 
     public Usuario validarAtivacao(Usuario usuario) throws ValidacaoException {
         if(!isNovoCadastro(usuario)) {
-
             Usuario usuarioAntigo = usuarioRepository.findById(usuario.getId())
                     .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
 
@@ -167,20 +165,6 @@ public abstract class UsuarioService {
              }
         );
         return relatoriosNomes;
-    }
-
-    public void validarUsuarioProprietario(Usuario usuario) {
-        if (!isEmpty(usuario.getUsuarioProprietario())) {
-            usuarioRepository.findById(usuario.getUsuarioProprietario())
-                .orElseThrow(() -> new ValidacaoException("Não existe um Usuário Proprietário."));
-            PermissoesUsuario permissoesUsuario = permissoesUsuarioRepository
-                .findById(usuario.getPermissoesUsuario().getId())
-                .orElseThrow(() -> new ValidacaoException("Permissão não existente"));
-            if (permissoesUsuario.getPermissao().equals(ADMIN)) {
-                throw new ValidacaoException("O usuário a ser cadastrado está definido como ADMINISTRADOR, por favor,"
-                        + " defina-o com a permissão de USUÁRIO.");
-            }
-        }
     }
 
     public UsuarioAutenticadoDto getUsuarioLogado() {
