@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -51,8 +52,7 @@ public class Vendedor {
     @NotNull
     @Column(name = "data_nascimento")
     @Basic
-    @Temporal(TemporalType.DATE)
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
 
     @Column
     @Basic
