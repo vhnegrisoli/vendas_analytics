@@ -136,13 +136,13 @@ public abstract class UsuarioService {
     }
 
     public void removerUsuario(Integer id) {
+        if (!getIdsPermitidos().contains(id)) {
+            throw new ValidacaoException("Você não tem permissão para remover esse usuário");
+        }
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
-
         List<RelatoriosPowerBi> relatorios = powerBiRepository.findByUsuario(usuario);
-
         Vendedor vendedor = vendedorRepository.findById(usuario.getVendedor().getId())
             .orElseThrow(() -> new ValidacaoException("Vendedor não identificado."));
-
         if (usuario.getSituacao().equals(ATIVO)) {
             throw new ValidacaoException("Não é possível remover esse usuário pois ele está ativo para o vendedor "
                     + vendedor.getNome() + ".");
@@ -196,6 +196,13 @@ public abstract class UsuarioService {
             usuarios = getUsuariosNivelAdmin(usuarios, usuarioLogado.getId());
         }
         return usuarios;
+    }
+
+    public List<Integer> getIdsPermitidos () {
+        return buscarTodos()
+            .stream()
+            .map(Usuario::getId)
+            .collect(toList());
     }
 
     public List<Usuario> getUsuariosNivelAdmin(List<Usuario> usuarios, Integer usuarioLogadoId) {

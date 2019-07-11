@@ -57,6 +57,9 @@ public class VendedorService {
 
     @Transactional
     public void removerVendedorComUsuarioComVendasVinculadas(Integer id) {
+        if (!getVendedoresPermitidos().contains(id)) {
+            throw new ValidacaoException("Você não tem permissão para remover esse vendedor.");
+        }
         Vendedor vendedor = vendedorRepository.findById(id)
             .orElseThrow(() -> new ValidacaoException("Não foi possível encontrar o vendedor."));
         Usuario usuario = usuarioRepository.findByVendedorIdAndSituacao(vendedor.getId(), ATIVO)
@@ -139,13 +142,13 @@ public class VendedorService {
             return Collections.singletonList(vendedorRepository.findByEmail(usuarioLogado.getEmail())
                 .orElseThrow(() -> new ValidacaoException("Vendedor sem usuário ou com email inválido.")));
         } else if (usuarioLogado.isAdmin()) {
-            return vendedorRepository.findByIdIn(getVendedoresPermitidos(usuarioLogado.getId()));
+            return vendedorRepository.findByIdIn(getVendedoresPermitidos());
         } else {
             return vendedorRepository.findAll();
         }
     }
 
-    public List<Integer> getVendedoresPermitidos(Integer usuarioLogadoId) {
+    public List<Integer> getVendedoresPermitidos() {
         List<Integer> vendedoresIds = new ArrayList<>();
         usuarioService.buscarTodos()
             .forEach(usuario -> vendedoresIds.add(usuario.getVendedor().getId()));
@@ -159,7 +162,7 @@ public class VendedorService {
         if (usuarioLogado.isUser()) {
             validarPermissaoVendedorUser(id, usuarioLogado);
         }
-        if (!getVendedoresPermitidos(usuarioLogado.getId()).contains(id)) {
+        if (!getVendedoresPermitidos().contains(id)) {
             throw VENDEDOR_SEM_PERMISSAO;
         }
         return vendedor;
