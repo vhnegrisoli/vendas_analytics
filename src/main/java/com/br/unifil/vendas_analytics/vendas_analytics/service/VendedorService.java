@@ -93,6 +93,7 @@ public class VendedorService {
                     .situacao(ATIVO)
                     .permissoesUsuario(PermissoesUsuario.builder().id(1).build())
                     .vendedor(vendedor)
+                    .usuarioProprietario(usuarioService.getUsuarioLogado().getId())
                     .ultimoAcesso(null)
                     .build();
             usuarioService.salvarUsuario(usuario);
