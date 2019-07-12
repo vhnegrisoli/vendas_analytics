@@ -1,5 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.UsuarioAlteracaoSenhaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.PermissoesUsuarioRepository;
@@ -55,6 +56,16 @@ public class UsuarioController {
     @GetMapping("/buscar-administradores")
     public List<Usuario> buscarAdmins() {
         return usuarioService.buscarAdministradores();
+    }
+
+    @GetMapping("/atualizar-ultimo-acesso/{id}")
+    public Usuario atualizarUltimoAcesso(@PathVariable Integer id) {
+        return usuarioService.atualizarUltimoAcesso(id);
+    }
+
+    @PutMapping("/atualizar-senha")
+    public void atualizarUltimoAcesso(@RequestBody UsuarioAlteracaoSenhaDto usuarioAlteracaoSenhaDto) {
+        usuarioService.alterarSenhaUsuario(usuarioAlteracaoSenhaDto);
     }
 
 }

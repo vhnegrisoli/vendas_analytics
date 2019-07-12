@@ -60,4 +60,8 @@ public class Usuario {
 
     @Column(name = "usuario_proprietario")
     private Integer usuarioProprietario;
+
+    @Column(name = "ultimo_acesso")
+    @Basic
+    private LocalDateTime ultimoAcesso;
 }

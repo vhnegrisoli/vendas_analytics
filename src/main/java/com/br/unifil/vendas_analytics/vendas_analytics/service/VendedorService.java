@@ -42,6 +42,8 @@ public class VendedorService {
     private static final ValidacaoException VENDEDOR_SEM_PERMISSAO = new ValidacaoException
         ("Você não tem permissão para ver esse vendedor.");
 
+    private static final String SENHA_AUTOMATICA = "alterar";
+
     @Transactional
     public void salvarVendedor(Vendedor vendedor) throws ValidacaoException {
         try {
@@ -87,10 +89,11 @@ public class VendedorService {
                     .dataCadastro(LocalDateTime.now())
                     .email(vendedor.getEmail())
                     .nome(vendedor.getNome())
-                    .senha(gerarSenha())
+                    .senha(SENHA_AUTOMATICA)
                     .situacao(ATIVO)
                     .permissoesUsuario(PermissoesUsuario.builder().id(1).build())
                     .vendedor(vendedor)
+                    .ultimoAcesso(null)
                     .build();
             usuarioService.salvarUsuario(usuario);
         }

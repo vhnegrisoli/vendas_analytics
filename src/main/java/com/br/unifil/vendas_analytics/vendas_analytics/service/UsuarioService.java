@@ -1,6 +1,7 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
+import com.br.unifil.vendas_analytics.vendas_analytics.dto.UsuarioAlteracaoSenhaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Vendedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,9 +46,6 @@ public abstract class UsuarioService {
     private PowerBiRepository powerBiRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private PermissoesUsuarioRepository permissoesUsuarioRepository;
 
     private final ValidacaoException USUARIO_NAO_EXISTENTE_EXCEPTION = new ValidacaoException("O usuário não existe");
@@ -56,11 +55,11 @@ public abstract class UsuarioService {
     public void salvarUsuario(Usuario usuario) throws ValidacaoException {
         if (isNovoCadastro(usuario)) {
             usuario.setSituacao(ATIVO);
-            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         }
         usuario.setDataCadastro(LocalDateTime.now());
         validaUsuario(usuario);
         usuario = validarTrocaDeSituacao(usuario);
+        usuario = verificarDataUltimoAcesso(usuario);
         usuarioRepository.save(usuario);
     }
 
@@ -129,6 +128,17 @@ public abstract class UsuarioService {
                             + usuario.getEmail() + " já está cadastrado para um usuário ATIVO.");
                 }
             });
+    }
+
+    public Usuario verificarDataUltimoAcesso(Usuario usuario) {
+        if (!isNovoCadastro(usuario)) {
+            usuarioRepository.findById(usuario.getId()).ifPresent(usuarioExistente -> {
+                if (!isEmpty(usuarioExistente.getUltimoAcesso())) {
+                    usuario.setUltimoAcesso(usuarioExistente.getUltimoAcesso());
+                }
+            });
+        }
+        return usuario;
     }
 
     public boolean isNovoCadastro(Usuario usuario) {
@@ -239,6 +249,24 @@ public abstract class UsuarioService {
             usuarios = getUsuariosNivelAdmin(usuarios, usuarioLogado.getId());
         }
         return usuarios;
+    }
+
+    @Transactional
+    public Usuario atualizarUltimoAcesso(Integer id) {
+        if (!getIdsPermitidos().contains(id)) {
+            throw new ValidacaoException("Você não tem permissão para atualizar o último acesso desse usuário");
+        }
+        usuarioRepository.atualizarUltimoAcessoUsuario(LocalDateTime.now(), id);
+        return usuarioRepository.findById(id).orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
+    }
+
+    @Transactional
+    public void alterarSenhaUsuario(UsuarioAlteracaoSenhaDto usuarioAlteracaoSenhaDto) {
+        if (!getIdsPermitidos().contains(usuarioAlteracaoSenhaDto.getUsuarioId())) {
+            throw new ValidacaoException("Você não tem permissão para atualizar a senha desse usuário");
+        }
+        usuarioRepository.atualizarSenha(usuarioAlteracaoSenhaDto.getNovaSenha(),
+            usuarioAlteracaoSenhaDto.getUsuarioId());
     }
 
 }
