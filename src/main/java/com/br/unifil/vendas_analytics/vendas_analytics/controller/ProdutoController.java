@@ -1,12 +1,10 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Produto;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
+import com.br.unifil.vendas_analytics.vendas_analytics.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.bind.ValidationException;
 import java.util.List;
 
 @CrossOrigin
@@ -15,41 +13,30 @@ import java.util.List;
 public class ProdutoController {
 
     @Autowired
-    private ProdutoRepository produtoRepository;
+    private ProdutoService produtoService;
 
     @GetMapping("/todos")
     public List<Produto> getAllProdutos() {
-        return produtoRepository.findAll();
+        return produtoService.buscarTodos();
     }
 
     @PostMapping("/salvar")
-    public void save(@RequestBody Produto produto) throws ValidationException {
-        try {
-            produtoRepository.save(produto);
-        } catch (Exception e) {
-            throw new ValidationException("Não foi possível salvar o produto");
-        }
+    public void save(@RequestBody Produto produto) {
+        produtoService.save(produto);
     }
 
     @GetMapping("buscar/{id}")
     public Produto findOne(@PathVariable Integer id) {
-        return produtoRepository.findById(id).orElseThrow(() -> new ValidacaoException("Produto não encontrado"));
+        return produtoService.buscarUm(id);
     }
 
     @GetMapping("/total-produtos")
     public long getTotalProdutos() {
-        return produtoRepository.count();
+        return produtoService.getTotalProdutos();
     }
 
     @GetMapping("/remover/{id}")
-    public void remover(@PathVariable int id) {
-        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new ValidacaoException("Produto" +
-                " não encontrado."));
-        try {
-            produtoRepository.delete(produto);
-        } catch (Exception e) {
-            throw new ValidacaoException("Não é possível remover o produto " + produto.getNomeProduto() + " pois " +
-                    "esse produto já está vinculado a uma venda realizada.");
-        }
+    public void remover(@PathVariable Integer id) {
+        produtoService.remover(id);
     }
 }

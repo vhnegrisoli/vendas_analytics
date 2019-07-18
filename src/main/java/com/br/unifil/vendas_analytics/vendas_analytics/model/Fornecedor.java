@@ -39,4 +39,10 @@ public class Fornecedor {
     @Column
     @Basic
     private String endereco;
+
+    @NotNull
+    @Column
+    @Basic
+    private Integer usuarioCadastro;
+
 }

@@ -52,4 +52,9 @@ public class Produto implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "produto")
     private List<ProdutoVenda> venda;
+
+    @NotNull
+    @Column
+    @Basic
+    private Integer usuarioCadastro;
 }

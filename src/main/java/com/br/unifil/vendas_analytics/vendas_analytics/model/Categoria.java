@@ -25,4 +25,8 @@ public class Categoria {
     @NotNull
     private String descricao;
 
+    @NotNull
+    @Column
+    @Basic
+    private Integer usuarioCadastro;
 }

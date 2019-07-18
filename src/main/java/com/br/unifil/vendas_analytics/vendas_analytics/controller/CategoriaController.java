@@ -1,12 +1,11 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Categoria;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.CategoriaRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.service.CategoriaService;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.bind.ValidationException;
 import java.util.List;
 
 @CrossOrigin
@@ -15,38 +14,26 @@ import java.util.List;
 public class CategoriaController {
 
     @Autowired
-    private CategoriaRepository categoriaRepository;
+    private CategoriaService categoriaService;
 
     @GetMapping("/todas")
     public List<Categoria> getAllCategorias() {
-        return categoriaRepository.findAll();
+        return categoriaService.buscarTodos();
     }
 
     @PostMapping("/salvar")
-    public void save(@RequestBody Categoria categoria) throws ValidationException {
-        try {
-            categoriaRepository.save(categoria);
-        } catch (Exception e) {
-            throw new ValidationException("Não foi possível salvar a categoria.");
-        }
+    public void save(@RequestBody Categoria categoria) {
+        categoriaService.save(categoria);
     }
 
     @GetMapping("buscar/{id}")
     public Categoria findOne(@PathVariable Integer id) {
-        return categoriaRepository.findById(id).orElseThrow(() -> new ValidacaoException("Categoria não encontrada"));
+        return categoriaService.buscarUm(id);
     }
 
     @GetMapping("/remover/{id}")
-    public void remover(@PathVariable int id) {
-        Categoria categoria = categoriaRepository.findById(id).orElseThrow(() -> new ValidacaoException("Categoria" +
-                " não encontrada."));
-        try {
-            categoriaRepository.delete(categoria);
-        } catch (Exception e) {
-            throw new ValidacaoException("Não é possível remover a categoria " + categoria.getDescricao() + " pois" +
-                    " essa categoria já está vinculada a um produto.");
-        }
-
+    public void remover(@PathVariable Integer id) {
+        categoriaService.remover(id);
     }
 
 }
