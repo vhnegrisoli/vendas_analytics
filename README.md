@@ -5,6 +5,8 @@ título de Bacharelado em Ciência da Computação pelo Centro Universitário Fi
 
 Sistema: V.A - Vendas Analytics
 
+Acesso à aplicação: http://vendas-analytics-app.herokuapp.com/
+
 Tecnologias utilizada no Back-End:
 
 - Banco de dados Microsoft SQL Server 2017 Express
@@ -17,5 +19,4 @@ Tecnologias utilizada no Back-End:
 * Hibernate
 * Lombok Project
 * Spring Security
-* JWT
 * OAuth2
