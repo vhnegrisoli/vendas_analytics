@@ -1,6 +1,5 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.repository;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum;
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;

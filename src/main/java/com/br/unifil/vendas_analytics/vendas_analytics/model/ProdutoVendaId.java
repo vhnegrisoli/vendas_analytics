@@ -1,7 +1,5 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;

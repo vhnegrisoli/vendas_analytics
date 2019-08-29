@@ -2,7 +2,6 @@ package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Categoria;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.CategoriaService;
-import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
