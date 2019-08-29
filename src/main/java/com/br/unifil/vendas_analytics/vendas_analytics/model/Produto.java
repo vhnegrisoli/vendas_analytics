@@ -1,6 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

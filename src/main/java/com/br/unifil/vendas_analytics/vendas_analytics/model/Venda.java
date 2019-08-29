@@ -2,7 +2,8 @@ package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum;
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum;
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

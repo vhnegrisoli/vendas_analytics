@@ -1,19 +1,21 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.service;
 
-import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.dto.HistoricoVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.ProdutoVenda;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.ProdutoVendaId;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.Venda;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.Vendedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
@@ -179,5 +181,6 @@ public class VendaService {
     public Integer getIdVendaPermitida(Integer id) {
         return buscarUma(id).getId();
     }
+
 
 }

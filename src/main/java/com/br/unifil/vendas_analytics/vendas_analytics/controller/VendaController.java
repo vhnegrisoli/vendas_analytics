@@ -3,7 +3,7 @@ package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.HistoricoVendaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ProdutosDaVendaDto;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.*;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.Venda;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.HistoricoVendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.RelatoriosRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
@@ -17,11 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
-import java.lang.*;
 import java.util.List;
-
-import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.APROVADA;
-import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FECHADA;
 
 @CrossOrigin
 @RestController

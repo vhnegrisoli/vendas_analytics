@@ -3,21 +3,19 @@ package com.br.unifil.vendas_analytics.vendas_analytics.service;
 import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.UsuarioAlteracaoSenhaDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.Vendedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.RelatoriosPowerBi;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.model.Vendedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.PermissoesUsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.PowerBiRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;

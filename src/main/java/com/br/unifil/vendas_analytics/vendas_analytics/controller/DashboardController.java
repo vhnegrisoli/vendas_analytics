@@ -2,7 +2,7 @@ package com.br.unifil.vendas_analytics.vendas_analytics.controller;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.*;
-import com.br.unifil.vendas_analytics.vendas_analytics.repository.*;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.DashboardRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
