@@ -19,9 +19,15 @@ public class DashboardRepository {
 
     private String vendasPorPeriodoUserAdmin(Integer usuarioLogadoId) {
         return "SELECT " +
+            "SUM(\"quantidade\") AS quantidade, " +
+            "SUM(\"lucro\") AS lucro, " +
+            "SUM(\"media\") AS media, " +
+            "\"meses\" AS meses " +
+            "FROM (" +
+            "SELECT " +
             "COUNT(v.id) AS quantidade, " +
-            "SUM(p.preco) AS lucro, " +
-            "AVG(p.preco) AS media, " +
+            "SUM(p.preco * pv.quantidade) AS lucro, " +
+            "AVG(p.preco * pv.quantidade) AS media, " +
             "v.mes_compra AS meses " +
             "FROM VENDA v " +
             "INNER JOIN produto_venda pv ON v.id = pv.venda_id " +
@@ -42,7 +48,9 @@ public class DashboardRepository {
             "INNER JOIN vendedor vd ON vd.id = v.vendedor_id " +
             "INNER JOIN usuario u ON u.vendedor_id = vd.id " +
             "WHERE u.usuario_proprietario =  " + usuarioLogadoId +
-            "GROUP BY v.mes_compra ";
+            "GROUP BY v.mes_compra " +
+            ") m " +
+            "GROUP BY m.\"meses\";";
     }
 
     private String vendasPorPeriodoSuperAdmin() {
