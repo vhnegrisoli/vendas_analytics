@@ -12,7 +12,6 @@ import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoExcep
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -23,6 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
 public class VendedorService {
@@ -137,7 +137,7 @@ public class VendedorService {
     }
 
     public boolean isNovoCadastro(Vendedor vendedor) {
-        return ObjectUtils.isEmpty(vendedor.getId());
+        return isEmpty(vendedor.getId());
     }
 
     public List<Vendedor> buscarTodos() {

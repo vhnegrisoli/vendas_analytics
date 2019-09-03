@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
 
-    public List<Produto> findByIdIn(List<Integer> ids);
-
     Optional<Produto> findByIdAndUsuarioCadastroIn(Integer id, List<Integer> usuariosCadastro);
 
     List<Produto> findByUsuarioCadastroIn(List<Integer> usuariosCadastro);

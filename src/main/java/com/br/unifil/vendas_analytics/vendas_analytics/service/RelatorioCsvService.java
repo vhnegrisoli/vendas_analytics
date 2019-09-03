@@ -6,11 +6,12 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.ExportarCsvRep
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
 public class RelatorioCsvService {
@@ -33,13 +34,13 @@ public class RelatorioCsvService {
         UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
         List<ExportarCsvDto> resposta = new ArrayList<>();
         if (usuarioLogado.isSuperAdmin()) {
-            if (ObjectUtils.isEmpty(dataInicial) || ObjectUtils.isEmpty(dataFinal)) {
+            if (isEmpty(dataInicial) || isEmpty(dataFinal)) {
                 resposta = exportarCsvRepository.exportarCsvSuperAdminCompleto();
             } else {
                 resposta = exportarCsvRepository.exportarCsvSuperAdminFiltros(dataInicial, dataFinal);
             }
         } else {
-            if (ObjectUtils.isEmpty(dataInicial) || ObjectUtils.isEmpty(dataFinal)) {
+            if (isEmpty(dataInicial) || isEmpty(dataFinal)) {
                 resposta = exportarCsvRepository.exportarCsvSemFiltroDeData(usuarioLogado.getId());
             } else {
                 resposta = exportarCsvRepository.exportarCsvComFiltroDeData(dataInicial, dataFinal, usuarioLogado.getId());
