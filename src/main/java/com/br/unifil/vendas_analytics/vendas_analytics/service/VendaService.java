@@ -8,14 +8,11 @@ import com.br.unifil.vendas_analytics.vendas_analytics.model.Vendedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.*;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +23,7 @@ import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSitua
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.*;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.ABERTA;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.FECHADA;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
 public class VendaService {
@@ -101,7 +99,7 @@ public class VendaService {
         if (venda.getProdutos().isEmpty()) {
             throw new ValidacaoException("Você deve cadastrar produtos no carrinho de compra para tratar uma venda.");
         }
-        if (ObjectUtils.isEmpty(venda.getVendedor())) {
+        if (isEmpty(venda.getVendedor())) {
             throw new ValidacaoException("Você deve selecionar o vendedor para realizar a venda.");
         }
     }
@@ -141,7 +139,7 @@ public class VendaService {
     }
 
     public boolean isNovaVenda(Venda venda) {
-        return ObjectUtils.isEmpty(venda.getId());
+        return isEmpty(venda.getId());
     }
 
     public List<Venda> buscarTodas() {
@@ -157,15 +155,8 @@ public class VendaService {
     public Venda buscarUma(Integer id) {
         List<Integer> vendedoresId = new ArrayList<>();
         List<Integer> vendasId = new ArrayList<>();
-        vendedorService
-            .buscarTodos()
-            .forEach(venda -> {
-                vendedoresId.add(venda.getId());
-            });
-        vendaRepository.findByVendedorIdIn(vendedoresId)
-            .forEach(venda -> {
-                vendasId.add(venda.getId());
-            });
+        vendedorService.buscarTodos().forEach(venda -> vendedoresId.add(venda.getId()));
+        vendaRepository.findByVendedorIdIn(vendedoresId).forEach(venda -> vendasId.add(venda.getId()));
         if (!vendasId.contains(id)) {
             throw new ValidacaoException("Você não tem permissão para ver esta venda.");
         }
