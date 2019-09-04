@@ -23,11 +23,11 @@ public class RelatorioCsvService {
     private UsuarioService usuarioService;
 
     public String gerarCabecalho() {
-        return "Nome do Vendedor;CPF do Vendedor;Email do Vendedor;Endereço do Vendedor;Cidade;Estado;"
-            + "Região;Usuário do Vendedor;Código da Venda;Quantidade de Itens;Data da Venda;Situação"
-            + " da Venda;Aprovação da Venda;Nome do Vendedor;Email do Vendedor;CPF do Vendedor;"
-            + "Código do Produto;Produto;Valor do Pedido;Categoria;CNPJ do Fornecedor;"
-            + "Nome do Fornecedor;Razão Social do Fornecedor";
+        return "Nome do Vendedor;CPF do Vendedor;Email do Vendedor;Endereco do Vendedor;Cidade;Estado;"
+            + "Regiao;Usuario do Vendedor;Codigo da Venda;Quantidade de Itens;Data da Venda;Situacao"
+            + " da Venda;Aprovacao da Venda;Nome do Vendedor;Email do Vendedor;CPF do Vendedor;"
+            + "Codigo do Produto;Produto;Valor do Pedido;Categoria;CNPJ do Fornecedor;"
+            + "Nome do Fornecedor;Razao Social do Fornecedor";
     }
 
     public String gerarCsv(String dataInicial, String dataFinal) throws JsonProcessingException {
@@ -56,30 +56,51 @@ public class RelatorioCsvService {
             .forEach(
                 registro -> {
                     dadosVenda.set(dadosVenda.get()
-                        + ";" + registro.getNomeVendedor()
-                        + ";" + registro.getCpfVendedor()
-                        + ";" + registro.getEmailVendedor()
-                        + ";" + registro.getEnderecoVendedor()
-                        + ";" + registro.getCidade()
-                        + ";" + registro.getEstado()
-                        + ";" + registro.getRegiao()
-                        + ";" + registro.getUsuarioVendedor()
-                        + ";" + registro.getCodigoVenda()
-                        + ";" + registro.getQuantidadeItens()
-                        + ";" + registro.getDataVenda()
-                        + ";" + registro.getSituacaoVenda()
-                        + ";" + registro.getAprovacaoVenda()
-                        + ";" + registro.getClienteNome()
-                        + ";" + registro.getClienteEmail()
-                        + ";" + registro.getClienteCpf()
-                        + ";" + registro.getCodigoProduto()
-                        + ";" + registro.getProduto()
-                        + ";" + registro.getValorPedido()
-                        + ";" + registro.getCategoria()
-                        + ";" + registro.getCnpjFornecedor()
-                        + ";" + registro.getFornecedorNomeFantasia()
-                        + ";" + registro.getRazaoSocialFornecedor() + ";\n");
+                        + validarCampoStringNulo(registro.getNomeVendedor())
+                        + ";" + validarCampoStringNulo(registro.getCpfVendedor())
+                        + ";" + validarCampoStringNulo(registro.getEmailVendedor())
+                        + ";" + validarCampoStringNulo(registro.getEnderecoVendedor())
+                        + ";" + validarCampoStringNulo(registro.getCidade())
+                        + ";" + validarCampoStringNulo(registro.getEstado())
+                        + ";" + validarCampoStringNulo(registro.getRegiao())
+                        + ";" + validarCampoStringNulo(registro.getUsuarioVendedor())
+                        + ";" + validarCampoIntegerNulo(registro.getCodigoVenda())
+                        + ";" + validarCampoIntegerNulo(registro.getQuantidadeItens())
+                        + ";" + validarCampoStringNulo(registro.getDataVenda())
+                        + ";" + validarCampoStringNulo(registro.getSituacaoVenda())
+                        + ";" + validarCampoStringNulo(registro.getAprovacaoVenda())
+                        + ";" + validarCampoStringNulo(registro.getClienteNome())
+                        + ";" + validarCampoStringNulo(registro.getClienteEmail())
+                        + ";" + validarCampoStringNulo(registro.getClienteCpf())
+                        + ";" + validarCampoIntegerNulo(registro.getCodigoProduto())
+                        + ";" + validarCampoStringNulo(registro.getProduto())
+                        + ";" + validarCampoDoubleNulo(registro.getValorPedido())
+                        + ";" + validarCampoStringNulo(registro.getCategoria())
+                        + ";" + validarCampoStringNulo(registro.getCnpjFornecedor())
+                        + ";" + validarCampoStringNulo(registro.getFornecedorNomeFantasia())
+                        + ";" + validarCampoStringNulo(registro.getRazaoSocialFornecedor()) + ";\n");
                 });
         return dadosVenda.get();
+    }
+
+    private String validarCampoStringNulo(String campo) {
+        if (isEmpty(campo)) {
+            return "";
+        }
+        return campo;
+    }
+
+    private String validarCampoIntegerNulo(Integer campo) {
+        if (isEmpty(campo)) {
+            return "";
+        }
+        return campo.toString();
+    }
+
+    private String validarCampoDoubleNulo(Double campo) {
+        if (isEmpty(campo)) {
+            return "";
+        }
+        return campo.toString();
     }
 }
