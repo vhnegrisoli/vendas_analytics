@@ -1,6 +1,5 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

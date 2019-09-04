@@ -40,12 +40,16 @@ public class ProdutoVendaId implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProdutoVendaId that = (ProdutoVendaId) o;
-        return Objects.equals(produtoId, that.produtoId) &&
-                Objects.equals(vendaId, that.vendaId);
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        ProdutoVendaId that = (ProdutoVendaId) object;
+        return Objects.equals(produtoId, that.produtoId)
+            && Objects.equals(vendaId, that.vendaId);
     }
 
     @Override

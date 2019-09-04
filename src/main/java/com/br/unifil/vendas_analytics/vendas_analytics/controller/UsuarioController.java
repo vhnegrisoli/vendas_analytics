@@ -6,7 +6,6 @@ import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.PermissoesUsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.service.UsuarioService;
-import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +31,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/salvar")
-    public void save(@RequestBody Usuario usuario) throws ValidacaoException {
+    public void save(@RequestBody Usuario usuario) {
         usuarioService.salvarUsuario(usuario);
     }
 

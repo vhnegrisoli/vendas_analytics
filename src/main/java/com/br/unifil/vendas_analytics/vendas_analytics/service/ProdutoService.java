@@ -19,7 +19,7 @@ public class ProdutoService {
     @Autowired
     private UsuarioService usuarioService;
 
-    private final static ValidacaoException PRODUTO_NOT_FOUND_EXCEPTION =
+    private static final ValidacaoException PRODUTO_NOT_FOUND_EXCEPTION =
         new ValidacaoException("Produto não encontrado");
 
     public void save(Produto produto) {
@@ -56,5 +56,4 @@ public class ProdutoService {
             return usuarioService.getIdsPermitidos();
         }
     }
-
 }

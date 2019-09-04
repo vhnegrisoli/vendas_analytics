@@ -30,5 +30,4 @@ public class UsuarioAutenticadoDto {
     public boolean isUser() {
         return permissao.getPermissao().equals(USER);
     }
-
 }

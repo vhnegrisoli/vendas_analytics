@@ -21,36 +21,37 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     private static final String APPLICATION_CLIENT = "vendas_analytics-client";
     private static final String APPLICATION_SECRET = "vendas_analytics-secret";
+    private static final Integer TOKEN_VALIDITY_SECONDS = 500000;
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         security
-                .passwordEncoder(passwordEncoder)
-                .tokenKeyAccess("permitAll()")
-                .checkTokenAccess("isAuthenticated()")
-                .allowFormAuthenticationForClients();
+            .passwordEncoder(passwordEncoder)
+            .tokenKeyAccess("permitAll()")
+            .checkTokenAccess("isAuthenticated()")
+            .allowFormAuthenticationForClients();
     }
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient(APPLICATION_CLIENT)
-                .secret(passwordEncoder.encode(APPLICATION_SECRET))
-                .authorizedGrantTypes("password")
-                .authorities(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
-                .scopes("read", "write", "trust")
-                .resourceIds("oauth2-resource")
-                .accessTokenValiditySeconds(500000);
+            .withClient(APPLICATION_CLIENT)
+            .secret(passwordEncoder.encode(APPLICATION_SECRET))
+            .authorizedGrantTypes("password")
+            .authorities(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
+            .scopes("read", "write", "trust")
+            .resourceIds("oauth2-resource")
+            .accessTokenValiditySeconds(TOKEN_VALIDITY_SECONDS);
     }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
-                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
-                .tokenEnhancer(new CustomTokenEnhancer());
+            .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
+            .tokenEnhancer(new CustomTokenEnhancer());
     }
 }

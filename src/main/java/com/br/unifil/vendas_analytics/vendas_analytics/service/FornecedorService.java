@@ -19,7 +19,7 @@ public class FornecedorService {
     @Autowired
     private UsuarioService usuarioService;
 
-    private final static ValidacaoException FORNECEDOR_NOT_FOUND_EXCEPTION =
+    private static final ValidacaoException FORNECEDOR_NOT_FOUND_EXCEPTION =
         new ValidacaoException("Fornecedor não encontrado");
 
     public void save(Fornecedor fornecedor) {

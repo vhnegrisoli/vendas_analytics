@@ -18,7 +18,7 @@ public class CategoriaService {
     @Autowired
     private UsuarioService usuarioService;
 
-    private final static ValidacaoException CATEGORIA_NOT_FOUND_EXCEPTION =
+    private static final ValidacaoException CATEGORIA_NOT_FOUND_EXCEPTION =
         new ValidacaoException("Categoria não encontrado");
 
     public void save(Categoria categoria) {
@@ -51,6 +51,4 @@ public class CategoriaService {
             return usuarioService.getIdsPermitidos();
         }
     }
-
-
 }

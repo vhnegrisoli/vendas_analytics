@@ -9,7 +9,6 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioReposit
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
-import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,13 +38,13 @@ public class VendedorService {
     @Autowired
     private VendaRepository vendaRepository;
 
-    private static final ValidacaoException VENDEDOR_SEM_PERMISSAO = new ValidacaoException
-        ("Você não tem permissão para ver esse vendedor.");
+    private static final ValidacaoException VENDEDOR_SEM_PERMISSAO =
+        new ValidacaoException("Você não tem permissão para ver esse vendedor.");
 
     private static final String SENHA_AUTOMATICA = "alterar";
 
     @Transactional
-    public void salvarVendedor(Vendedor vendedor) throws ValidacaoException {
+    public void salvarVendedor(Vendedor vendedor) {
         try {
             if (isNovoCadastro(vendedor)) {
                 validarNovoVendedor(vendedor);
@@ -58,7 +57,7 @@ public class VendedorService {
     }
 
     @Transactional
-    public void removerVendedorComUsuarioComVendasVinculadas(Integer id) {
+    public void validarVendedorComUsuarioComVendasVinculadas(Integer id) {
         if (!getVendedoresPermitidos().contains(id)) {
             throw new ValidacaoException("Você não tem permissão para remover esse vendedor.");
         }
@@ -66,36 +65,40 @@ public class VendedorService {
             .orElseThrow(() -> new ValidacaoException("Não foi possível encontrar o vendedor."));
         Usuario usuario = usuarioRepository.findByVendedorIdAndSituacao(vendedor.getId(), ATIVO)
             .orElseThrow(() -> new ValidacaoException("Não há usuário ativo para o vendedor " + vendedor.getNome()
-                + ", por favor, verifique se o vendedor possui usuários inativos, ative novamente e tente fazer a " +
-                    "remoção do vendedor."));
+                + ", por favor, verifique se o vendedor possui usuários inativos, ative novamente e tente fazer a "
+                + "remoção do vendedor."));
+        removerVendedor(usuario, vendedor);
+    }
+
+    private void removerVendedor(Usuario usuario, Vendedor vendedor) {
         try {
             List<Venda> vendas = vendaRepository.findByVendedor(vendedor);
             if (!vendas.isEmpty()) {
-                throw new ValidacaoException("O vendedor " + vendedor.getNome() + " não pode ser removido pois já " +
-                        "possui vendas cadastradas em seu nome. Por favor, contate o administrador do " +
-                        "sistema para a remoção.");
+                throw new ValidacaoException("O vendedor " + vendedor.getNome() + " não pode ser removido pois já "
+                    + "possui vendas cadastradas em seu nome. Por favor, contate o administrador do "
+                    + "sistema para a remoção.");
             }
             usuarioRepository.delete(usuario);
             vendedorRepository.delete(vendedor);
-        } catch (Exception e){
-            throw e;
+        } catch (Exception ex) {
+            throw ex;
         }
     }
 
-    public void criaUsuarioAoInserirVendedor(Vendedor vendedor) throws ValidacaoException {
+    public void criaUsuarioAoInserirVendedor(Vendedor vendedor) {
         if (!hasUsuario(vendedor)) {
             Usuario usuario = Usuario
-                    .builder()
-                    .dataCadastro(LocalDateTime.now())
-                    .email(vendedor.getEmail())
-                    .nome(vendedor.getNome())
-                    .senha(SENHA_AUTOMATICA)
-                    .situacao(ATIVO)
-                    .permissoesUsuario(PermissoesUsuario.builder().id(1).build())
-                    .vendedor(vendedor)
-                    .usuarioProprietario(usuarioService.getUsuarioLogado().getId())
-                    .ultimoAcesso(null)
-                    .build();
+                .builder()
+                .dataCadastro(LocalDateTime.now())
+                .email(vendedor.getEmail())
+                .nome(vendedor.getNome())
+                .senha(SENHA_AUTOMATICA)
+                .situacao(ATIVO)
+                .permissoesUsuario(PermissoesUsuario.builder().id(1).build())
+                .vendedor(vendedor)
+                .usuarioProprietario(usuarioService.getUsuarioLogado().getId())
+                .ultimoAcesso(null)
+                .build();
             usuarioService.salvarUsuario(usuario);
         }
     }
@@ -104,32 +107,26 @@ public class VendedorService {
         AtomicReference<Boolean> hasUsuario = new AtomicReference<>();
         hasUsuario.set(false);
         usuarioRepository.findByVendedorId(vendedor.getId()).forEach(
-                usuario -> {
-                    hasUsuario.set(true);
-                }
+            usuario -> {
+                hasUsuario.set(true);
+            }
         );
         return hasUsuario.get();
     }
 
-    public String gerarSenha() {
-        RandomStringGenerator pwdGenerator = new RandomStringGenerator.Builder().withinRange(33, 45)
-                .build();
-        return pwdGenerator.generate(10);
-    }
-
-    public void validarNovoVendedor(Vendedor vendedor) throws ValidacaoException {
+    public void validarNovoVendedor(Vendedor vendedor) {
         validarCpfCadastrado(vendedor);
         validarEmailCadastrado(vendedor);
     }
 
-    public void validarCpfCadastrado(Vendedor vendedor) throws ValidacaoException {
+    public void validarCpfCadastrado(Vendedor vendedor) {
         Optional<Vendedor> vendedorCpf = vendedorRepository.findByCpf(vendedor.getCpf());
         if (vendedorCpf.isPresent() && !vendedor.getId().equals(vendedorCpf.get().getId())) {
             throw new ValidacaoException("CPF já cadastrado");
         }
     }
 
-    public void validarEmailCadastrado(Vendedor vendedor) throws ValidacaoException {
+    public void validarEmailCadastrado(Vendedor vendedor) {
         Optional<Vendedor> vendedorEmail = vendedorRepository.findByEmail(vendedor.getEmail());
         if (vendedorEmail.isPresent() && !vendedor.getId().equals(vendedorEmail.get().getId())) {
             throw new ValidacaoException("Email já cadastrado");
@@ -161,7 +158,7 @@ public class VendedorService {
 
     public Vendedor buscarUm(Integer id) {
         Vendedor vendedor =  vendedorRepository.findById(id)
-                .orElseThrow(() -> new ValidacaoException("O vendedor não existe."));
+            .orElseThrow(() -> new ValidacaoException("O vendedor não existe."));
         UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
         if (usuarioLogado.isUser()) {
             validarPermissaoVendedorUser(id, usuarioLogado);
@@ -180,5 +177,4 @@ public class VendedorService {
                 }
             });
     }
-
 }

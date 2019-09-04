@@ -49,10 +49,10 @@ public class VendaService {
     @Autowired
     private RelatoriosRepository relatoriosRepository;
 
-    private final ValidacaoException VENDA_NAO_ENCONTRADA_EXCEPTION = new ValidacaoException("Venda não existente");
+    private static final ValidacaoException VENDA_NAO_ENCONTRADA_EXCEPTION =
+        new ValidacaoException("Venda não existente");
 
     public void save(Venda venda) {
-        List<ProdutoVenda> produtos = venda.getProdutos();
         venda = insereData(venda);
         venda = validaVendaAguardandoAprovacao(venda);
         Venda vendaCadastrar = venda;
@@ -60,6 +60,7 @@ public class VendaService {
         vendaCadastrar.setProdutos(null);
         validarVendedorComUsuarioAtivo(venda.getVendedor());
         vendaRepository.save(vendaCadastrar);
+        List<ProdutoVenda> produtos = venda.getProdutos();
         saveVendaProduto(vendaCadastrar, produtos);
     }
 
@@ -67,13 +68,13 @@ public class VendaService {
         AtomicReference<Integer> id = new AtomicReference<>(null);
         id.set(vendaCadastrar.getId());
         produtos.forEach(
-                produto -> {
-                    ProdutoVendaId pk = new ProdutoVendaId();
-                    pk.setProdutoId(produto.getId().getProdutoId());
-                    pk.setVendaId(id.get());
-                    produto.setId(pk);
-                    produtoVendaRepository.save(produto);
-                }
+            produto -> {
+                ProdutoVendaId pk = new ProdutoVendaId();
+                pk.setProdutoId(produto.getId().getProdutoId());
+                pk.setVendaId(id.get());
+                produto.setId(pk);
+                produtoVendaRepository.save(produto);
+            }
         );
     }
 
@@ -108,7 +109,7 @@ public class VendaService {
     public void aprovarVenda(int id) {
         Integer idPermitido = getIdVendaPermitida(id);
         Venda venda = vendaRepository.findById(idPermitido)
-                .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
+            .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
         if (!isNovaVenda(venda)) {
             if (venda.getAprovacao().equals(AGUARDANDO_APROVACAO)) {
                 venda.setAprovacao(APROVADA);
@@ -122,10 +123,10 @@ public class VendaService {
     public void rejeitarVenda(int id) {
         Integer idPermitido = getIdVendaPermitida(id);
         Venda venda = vendaRepository.findById(idPermitido)
-                .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
+            .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
         if (!isNovaVenda(venda)) {
             if (venda.getAprovacao().equals(AGUARDANDO_APROVACAO)
-                    || venda.getAprovacao().equals(APROVADA)) {
+                || venda.getAprovacao().equals(APROVADA)) {
                 venda.setAprovacao(REJEITADA);
                 venda.setSituacao(FECHADA);
             }
@@ -135,7 +136,7 @@ public class VendaService {
 
     public void validarVendedorComUsuarioAtivo(Vendedor vendedor) {
         usuarioRepository.findByVendedorIdAndSituacao(vendedor.getId(), ATIVO)
-                .orElseThrow(() -> new ValidacaoException("Não existe um usuário ativo para este vendedor."));
+            .orElseThrow(() -> new ValidacaoException("Não existe um usuário ativo para este vendedor."));
     }
 
     public boolean isNovaVenda(Venda venda) {
@@ -172,6 +173,4 @@ public class VendaService {
     public Integer getIdVendaPermitida(Integer id) {
         return buscarUma(id).getId();
     }
-
-
 }
