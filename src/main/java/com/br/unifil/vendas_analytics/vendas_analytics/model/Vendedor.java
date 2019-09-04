@@ -1,11 +1,14 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Entity
 @Table(name = "vendedor")
@@ -80,4 +83,8 @@ public class Vendedor {
     @JoinColumn(name = "estado_id")
     private Estado estado;
 
+    @JsonIgnore
+    public boolean isNovoCadastro() {
+        return isEmpty(this.id);
+    }
 }

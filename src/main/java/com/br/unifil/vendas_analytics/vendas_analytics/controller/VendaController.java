@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.util.List;
 
 @CrossOrigin
@@ -48,7 +47,7 @@ public class VendaController {
     }
 
     @GetMapping("/{id}")
-    public Venda getUmaVenda(@PathVariable int id) throws ValidationException {
+    public Venda getUmaVenda(@PathVariable int id) {
         return vendaService.buscarUma(id);
     }
 

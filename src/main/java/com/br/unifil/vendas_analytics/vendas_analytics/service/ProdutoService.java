@@ -3,12 +3,15 @@ package com.br.unifil.vendas_analytics.vendas_analytics.service;
 import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Produto;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoVendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+
+import static com.br.unifil.vendas_analytics.vendas_analytics.ExceptionMessage.ProdutoExceptionMessage.PRODUTO_NAO_ENCONTRADO;
+import static com.br.unifil.vendas_analytics.vendas_analytics.ExceptionMessage.ProdutoExceptionMessage.PRODUTO_VINCULADO_VENDAS;
 
 @Service
 public class ProdutoService {
@@ -19,8 +22,8 @@ public class ProdutoService {
     @Autowired
     private UsuarioService usuarioService;
 
-    private static final ValidacaoException PRODUTO_NOT_FOUND_EXCEPTION =
-        new ValidacaoException("Produto não encontrado");
+    @Autowired
+    private ProdutoVendaRepository produtoVendaRepository;
 
     public void save(Produto produto) {
         produto.setUsuarioCadastro(usuarioService.getUsuarioLogado().getId());
@@ -29,7 +32,7 @@ public class ProdutoService {
 
     public Produto buscarUm(Integer id) {
         return produtoRepository.findByIdAndUsuarioCadastroIn(id, getIdsDoUsuarioProprietario())
-            .orElseThrow(() -> PRODUTO_NOT_FOUND_EXCEPTION);
+            .orElseThrow(PRODUTO_NAO_ENCONTRADO::getException);
     }
 
     public List<Produto> buscarTodos() {
@@ -37,8 +40,11 @@ public class ProdutoService {
     }
 
     public void remover(Integer id) {
+        if (produtoVendaRepository.existsByProdutoId(id)) {
+            throw PRODUTO_VINCULADO_VENDAS.getException();
+        }
         Produto produto = produtoRepository.findByIdAndUsuarioCadastroIn(id, getIdsDoUsuarioProprietario())
-            .orElseThrow(() -> PRODUTO_NOT_FOUND_EXCEPTION);
+            .orElseThrow(PRODUTO_NAO_ENCONTRADO::getException);
         produtoRepository.delete(produto);
     }
 

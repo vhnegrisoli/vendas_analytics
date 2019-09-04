@@ -3,6 +3,7 @@ package com.br.unifil.vendas_analytics.vendas_analytics.model;
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum;
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,8 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Entity
 @Table(name = "venda")
@@ -64,4 +67,9 @@ public class Venda implements Serializable {
 
     @Column(name = "cliente_cpf")
     private String clienteCpf;
+
+    @JsonIgnore
+    public boolean isNovaVenda() {
+        return isEmpty(this.id);
+    }
 }

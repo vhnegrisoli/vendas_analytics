@@ -6,7 +6,6 @@ import com.br.unifil.vendas_analytics.vendas_analytics.model.ProdutoVendaId;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Venda;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Vendedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.*;
-import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +18,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.br.unifil.vendas_analytics.vendas_analytics.ExceptionMessage.VendaExceptionMessage.*;
+import static com.br.unifil.vendas_analytics.vendas_analytics.ExceptionMessage.VendedorExceptionMessage.VENDEDOR_SEM_USUARIO_ATIVO;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaAprovacaoEnum.*;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.VendaSituacaoEnum.ABERTA;
@@ -48,9 +49,6 @@ public class VendaService {
 
     @Autowired
     private RelatoriosRepository relatoriosRepository;
-
-    private static final ValidacaoException VENDA_NAO_ENCONTRADA_EXCEPTION =
-        new ValidacaoException("Venda não existente");
 
     public void save(Venda venda) {
         venda = insereData(venda);
@@ -89,7 +87,7 @@ public class VendaService {
     }
 
     public Venda validaVendaAguardandoAprovacao(Venda venda) {
-        if (isNovaVenda(venda)) {
+        if (venda.isNovaVenda()) {
             venda.setAprovacao(AGUARDANDO_APROVACAO);
             venda.setSituacao(ABERTA);
         }
@@ -98,10 +96,10 @@ public class VendaService {
 
     public void validarProdutosEVendedoresNulos(Venda venda) {
         if (venda.getProdutos().isEmpty()) {
-            throw new ValidacaoException("Você deve cadastrar produtos no carrinho de compra para tratar uma venda.");
+            throw VENDA_SEM_PRODUTOS.getException();
         }
         if (isEmpty(venda.getVendedor())) {
-            throw new ValidacaoException("Você deve selecionar o vendedor para realizar a venda.");
+            throw VENDA_SEM_VENDEDOR.getException();
         }
     }
 
@@ -109,8 +107,8 @@ public class VendaService {
     public void aprovarVenda(int id) {
         Integer idPermitido = getIdVendaPermitida(id);
         Venda venda = vendaRepository.findById(idPermitido)
-            .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
-        if (!isNovaVenda(venda)) {
+            .orElseThrow(VENDA_NAO_ENCONTRADA::getException);
+        if (!venda.isNovaVenda()) {
             if (venda.getAprovacao().equals(AGUARDANDO_APROVACAO)) {
                 venda.setAprovacao(APROVADA);
                 venda.setSituacao(FECHADA);
@@ -123,8 +121,8 @@ public class VendaService {
     public void rejeitarVenda(int id) {
         Integer idPermitido = getIdVendaPermitida(id);
         Venda venda = vendaRepository.findById(idPermitido)
-            .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
-        if (!isNovaVenda(venda)) {
+            .orElseThrow(VENDA_NAO_ENCONTRADA::getException);
+        if (!venda.isNovaVenda()) {
             if (venda.getAprovacao().equals(AGUARDANDO_APROVACAO)
                 || venda.getAprovacao().equals(APROVADA)) {
                 venda.setAprovacao(REJEITADA);
@@ -136,11 +134,7 @@ public class VendaService {
 
     public void validarVendedorComUsuarioAtivo(Vendedor vendedor) {
         usuarioRepository.findByVendedorIdAndSituacao(vendedor.getId(), ATIVO)
-            .orElseThrow(() -> new ValidacaoException("Não existe um usuário ativo para este vendedor."));
-    }
-
-    public boolean isNovaVenda(Venda venda) {
-        return isEmpty(venda.getId());
+            .orElseThrow(VENDEDOR_SEM_USUARIO_ATIVO::getException);
     }
 
     public List<Venda> buscarTodas() {
@@ -159,10 +153,10 @@ public class VendaService {
         vendedorService.buscarTodos().forEach(venda -> vendedoresId.add(venda.getId()));
         vendaRepository.findByVendedorIdIn(vendedoresId).forEach(venda -> vendasId.add(venda.getId()));
         if (!vendasId.contains(id)) {
-            throw new ValidacaoException("Você não tem permissão para ver esta venda.");
+            throw VENDA_SEM_PERMISSAO_VISUALIZAR.getException();
         }
         return vendaRepository.findById(id)
-            .orElseThrow(() -> VENDA_NAO_ENCONTRADA_EXCEPTION);
+            .orElseThrow(VENDA_NAO_ENCONTRADA::getException);
     }
 
     public List<ProdutosDaVendaDto> getProdutosDaVenda(Integer id) {

@@ -3,12 +3,15 @@ package com.br.unifil.vendas_analytics.vendas_analytics.service;
 import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Fornecedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.FornecedorRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
+import com.br.unifil.vendas_analytics.vendas_analytics.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+
+import static com.br.unifil.vendas_analytics.vendas_analytics.ExceptionMessage.ProdutoExceptionMessage.FORNECEDOR_NAO_ENCONTRADO;
+import static com.br.unifil.vendas_analytics.vendas_analytics.ExceptionMessage.ProdutoExceptionMessage.FORNECEDOR_VINCULADO_PRODUTO;
 
 @Service
 public class FornecedorService {
@@ -19,8 +22,8 @@ public class FornecedorService {
     @Autowired
     private UsuarioService usuarioService;
 
-    private static final ValidacaoException FORNECEDOR_NOT_FOUND_EXCEPTION =
-        new ValidacaoException("Fornecedor não encontrado");
+    @Autowired
+    private ProdutoRepository produtoRepository;
 
     public void save(Fornecedor fornecedor) {
         fornecedor.setUsuarioCadastro(usuarioService.getUsuarioLogado().getId());
@@ -29,7 +32,7 @@ public class FornecedorService {
 
     public Fornecedor buscarUm(Integer id) {
         return fornecedorRepository.findByIdAndUsuarioCadastroIn(id, getIdsDoUsuarioProprietario())
-            .orElseThrow(() -> FORNECEDOR_NOT_FOUND_EXCEPTION);
+            .orElseThrow(FORNECEDOR_NAO_ENCONTRADO::getException);
     }
 
     public List<Fornecedor> buscarTodos() {
@@ -38,7 +41,10 @@ public class FornecedorService {
 
     public void remover(Integer id) {
         Fornecedor fornecedor = fornecedorRepository.findByIdAndUsuarioCadastroIn(id, getIdsDoUsuarioProprietario())
-            .orElseThrow(() -> FORNECEDOR_NOT_FOUND_EXCEPTION);
+            .orElseThrow(FORNECEDOR_NAO_ENCONTRADO::getException);
+        if (produtoRepository.existsByFornecedor(fornecedor)) {
+            throw FORNECEDOR_VINCULADO_PRODUTO.getException();
+        }
         fornecedorRepository.delete(fornecedor);
     }
 

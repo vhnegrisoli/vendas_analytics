@@ -8,7 +8,7 @@ import com.br.unifil.vendas_analytics.vendas_analytics.model.Vendedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendaRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +17,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.br.unifil.vendas_analytics.vendas_analytics.ExceptionMessage.VendedorExceptionMessage.*;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
+@Slf4j
 public class VendedorService {
 
     @Autowired
@@ -38,51 +39,34 @@ public class VendedorService {
     @Autowired
     private VendaRepository vendaRepository;
 
-    private static final ValidacaoException VENDEDOR_SEM_PERMISSAO =
-        new ValidacaoException("Você não tem permissão para ver esse vendedor.");
-
     private static final String SENHA_AUTOMATICA = "alterar";
 
     @Transactional
     public void salvarVendedor(Vendedor vendedor) {
-        try {
-            if (isNovoCadastro(vendedor)) {
-                validarNovoVendedor(vendedor);
-            }
-            vendedorRepository.save(vendedor);
-            criaUsuarioAoInserirVendedor(vendedor);
-        } catch (Exception ex) {
-            throw new ValidacaoException("Não foi possível salvar o vendedor.");
-        }
+        validarDadosVendedor(vendedor);
+        vendedorRepository.save(vendedor);
+        criaUsuarioAoInserirVendedor(vendedor);
     }
 
     @Transactional
     public void validarVendedorComUsuarioComVendasVinculadas(Integer id) {
         if (!getVendedoresPermitidos().contains(id)) {
-            throw new ValidacaoException("Você não tem permissão para remover esse vendedor.");
+            throw VENDEDOR_SEM_PERMISSAO_REMOVER.getException();
         }
         Vendedor vendedor = vendedorRepository.findById(id)
-            .orElseThrow(() -> new ValidacaoException("Não foi possível encontrar o vendedor."));
+            .orElseThrow(VENDEDOR_NAO_ENCONTRADO::getException);
         Usuario usuario = usuarioRepository.findByVendedorIdAndSituacao(vendedor.getId(), ATIVO)
-            .orElseThrow(() -> new ValidacaoException("Não há usuário ativo para o vendedor " + vendedor.getNome()
-                + ", por favor, verifique se o vendedor possui usuários inativos, ative novamente e tente fazer a "
-                + "remoção do vendedor."));
+            .orElseThrow(VENDEDOR_SEM_PERMISSAO_VISUALIZAR::getException);
         removerVendedor(usuario, vendedor);
     }
 
     private void removerVendedor(Usuario usuario, Vendedor vendedor) {
-        try {
-            List<Venda> vendas = vendaRepository.findByVendedor(vendedor);
-            if (!vendas.isEmpty()) {
-                throw new ValidacaoException("O vendedor " + vendedor.getNome() + " não pode ser removido pois já "
-                    + "possui vendas cadastradas em seu nome. Por favor, contate o administrador do "
-                    + "sistema para a remoção.");
-            }
-            usuarioRepository.delete(usuario);
-            vendedorRepository.delete(vendedor);
-        } catch (Exception ex) {
-            throw ex;
+        List<Venda> vendas = vendaRepository.findByVendedor(vendedor);
+        if (!vendas.isEmpty()) {
+            throw VENDEDOR_VENDAS_CADASTRADAS.getException();
         }
+        usuarioRepository.delete(usuario);
+        vendedorRepository.delete(vendedor);
     }
 
     public void criaUsuarioAoInserirVendedor(Vendedor vendedor) {
@@ -114,34 +98,52 @@ public class VendedorService {
         return hasUsuario.get();
     }
 
-    public void validarNovoVendedor(Vendedor vendedor) {
+    public void validarDadosVendedor(Vendedor vendedor) {
+        validarDataNascimento(vendedor);
         validarCpfCadastrado(vendedor);
         validarEmailCadastrado(vendedor);
     }
 
-    public void validarCpfCadastrado(Vendedor vendedor) {
-        Optional<Vendedor> vendedorCpf = vendedorRepository.findByCpf(vendedor.getCpf());
-        if (vendedorCpf.isPresent() && !vendedor.getId().equals(vendedorCpf.get().getId())) {
-            throw new ValidacaoException("CPF já cadastrado");
+    private void validarDataNascimento(Vendedor vendedor) {
+        if (vendedor.isNovoCadastro() && isEmpty(vendedor.getDataNascimento())) {
+            throw VENDEDOR_SEM_DATA_NASCIMENTO.getException();
+        }
+        Vendedor vendedorExistente = vendedorRepository.findById(vendedor.getId())
+            .orElseThrow(VENDEDOR_NAO_ENCONTRADO::getException);
+        if (isEmpty(vendedor.getDataNascimento())) {
+            vendedor.setDataNascimento(vendedorExistente.getDataNascimento());
         }
     }
 
-    public void validarEmailCadastrado(Vendedor vendedor) {
-        Optional<Vendedor> vendedorEmail = vendedorRepository.findByEmail(vendedor.getEmail());
-        if (vendedorEmail.isPresent() && !vendedor.getId().equals(vendedorEmail.get().getId())) {
-            throw new ValidacaoException("Email já cadastrado");
+    private void validarCpfCadastrado(Vendedor vendedor) {
+        if (vendedor.isNovoCadastro() && vendedorRepository.existsByCpf(vendedor.getCpf())) {
+            throw VENDEDOR_CPF_JA_CADASTRADO.getException();
         }
+        vendedorRepository.findByCpf(vendedor.getCpf())
+            .ifPresent(vendedorCpf -> {
+                if (!vendedor.getId().equals(vendedorCpf.getId())) {
+                    throw VENDEDOR_CPF_JA_CADASTRADO.getException();
+                }
+            });
     }
 
-    public boolean isNovoCadastro(Vendedor vendedor) {
-        return isEmpty(vendedor.getId());
+    private void validarEmailCadastrado(Vendedor vendedor) {
+        if (vendedor.isNovoCadastro() && vendedorRepository.existsByEmail(vendedor.getEmail())) {
+            throw VENDEDOR_EMAIL_JA_CADASTRADO.getException();
+        }
+        vendedorRepository.findByEmail(vendedor.getEmail())
+            .ifPresent(vendedorEmail -> {
+                if (!vendedor.getId().equals(vendedorEmail.getId())) {
+                    throw VENDEDOR_EMAIL_JA_CADASTRADO.getException();
+                }
+            });
     }
 
     public List<Vendedor> buscarTodos() {
         UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
         if (usuarioLogado.isUser()) {
             return Collections.singletonList(vendedorRepository.findByEmail(usuarioLogado.getEmail())
-                .orElseThrow(() -> new ValidacaoException("Vendedor sem usuário ou com email inválido.")));
+                .orElseThrow(VENDEDOR_EMAIL_INVALIDO::getException));
         } else if (usuarioLogado.isAdmin()) {
             return vendedorRepository.findByIdIn(getVendedoresPermitidos());
         } else {
@@ -158,13 +160,13 @@ public class VendedorService {
 
     public Vendedor buscarUm(Integer id) {
         Vendedor vendedor =  vendedorRepository.findById(id)
-            .orElseThrow(() -> new ValidacaoException("O vendedor não existe."));
+            .orElseThrow(VENDEDOR_NAO_ENCONTRADO::getException);
         UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
         if (usuarioLogado.isUser()) {
             validarPermissaoVendedorUser(id, usuarioLogado);
         }
         if (!getVendedoresPermitidos().contains(id)) {
-            throw VENDEDOR_SEM_PERMISSAO;
+            throw VENDEDOR_SEM_PERMISSAO_VISUALIZAR.getException();
         }
         return vendedor;
     }
@@ -173,7 +175,7 @@ public class VendedorService {
         usuarioRepository.findById(usuarioLogado.getId()).ifPresent(
             usuario -> {
                 if (!usuario.getVendedor().getId().equals(idBuscado)) {
-                    throw VENDEDOR_SEM_PERMISSAO;
+                    throw VENDEDOR_SEM_PERMISSAO_VISUALIZAR.getException();
                 }
             });
     }

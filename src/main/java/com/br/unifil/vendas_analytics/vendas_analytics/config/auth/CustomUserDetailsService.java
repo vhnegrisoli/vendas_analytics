@@ -1,7 +1,6 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.config.auth;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.br.unifil.vendas_analytics.vendas_analytics.ExceptionMessage.UsuarioExceptionMessage.USUARIO_ACESSO_INVALIDO;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
 
 @Service("customUserDetailsService")
@@ -37,6 +37,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                     usuario.getEmail(),
                     encoder.encode(usuario.getSenha()),
                     permissoes);
-            }).orElseThrow(() -> new ValidacaoException("Usuário ou senha inválidos, tente novamente."));
+            }).orElseThrow(USUARIO_ACESSO_INVALIDO::getException);
     }
 }
