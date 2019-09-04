@@ -6,8 +6,7 @@ public enum UsuarioSituacao {
     INATIVO("INATIVO");
 
     private String situacao;
-    UsuarioSituacao (String situacao) {
+    UsuarioSituacao(String situacao) {
         this.situacao = situacao;
     }
-
 }

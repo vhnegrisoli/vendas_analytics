@@ -21,7 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 public class Venda implements Serializable {
 
     @Id
@@ -64,5 +64,4 @@ public class Venda implements Serializable {
 
     @Column(name = "cliente_cpf")
     private String clienteCpf;
-
 }

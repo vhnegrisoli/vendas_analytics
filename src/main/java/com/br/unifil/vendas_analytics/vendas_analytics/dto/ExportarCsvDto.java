@@ -9,28 +9,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ExportarCsvDto {
 
-    private String nome_vendedor;
-    private String cpf_vendedor;
-    private String email_vendedor;
-    private String endereco_vendedor;
+    private String nomeVendedor;
+    private String cpfVendedor;
+    private String emailVendedor;
+    private String enderecoVendedor;
     private String cidade;
     private String estado;
     private String regiao;
-    private String usuario_vendedor;
-    private Integer codigo_venda;
-    private Integer quantidade_itens;
-    private String data_venda;
-    private String situacao_venda;
-    private String aprovacao_venda;
-    private String cliente_nome;
-    private String cliente_email;
-    private String cliente_cpf;
-    private Integer codigo_produto;
+    private String usuarioVendedor;
+    private Integer codigoVenda;
+    private Integer quantidadeItens;
+    private String dataVenda;
+    private String situacaoVenda;
+    private String aprovacaoVenda;
+    private String clienteNome;
+    private String clienteEmail;
+    private String clienteCpf;
+    private Integer codigoProduto;
     private String produto;
-    private Double valor_pedido;
+    private Double valorPedido;
     private String categoria;
-    private String cnpj_fornecedor;
-    private String fornecedor_nome_fantasia;
-    private String razao_social_fornecedor;
-
+    private String cnpjFornecedor;
+    private String fornecedorNomeFantasia;
+    private String razaoSocialFornecedor;
 }

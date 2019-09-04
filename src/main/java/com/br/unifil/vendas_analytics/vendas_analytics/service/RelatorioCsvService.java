@@ -23,11 +23,11 @@ public class RelatorioCsvService {
     private UsuarioService usuarioService;
 
     public String gerarCabecalho() {
-        return "Nome do Vendedor;CPF do Vendedor;Email do Vendedor;Endereço do Vendedor;Cidade;Estado;" +
-                "Região;Usuário do Vendedor;Código da Venda;Quantidade de Itens;Data da Venda;Situação" +
-                " da Venda;Aprovação da Venda;Nome do Vendedor;Email do Vendedor;CPF do Vendedor;" +
-                "Código do Produto;Produto;Valor do Pedido;Categoria;CNPJ do Fornecedor;" +
-                "Nome do Fornecedor;Razão Social do Fornecedor";
+        return "Nome do Vendedor;CPF do Vendedor;Email do Vendedor;Endereço do Vendedor;Cidade;Estado;"
+            + "Região;Usuário do Vendedor;Código da Venda;Quantidade de Itens;Data da Venda;Situação"
+            + " da Venda;Aprovação da Venda;Nome do Vendedor;Email do Vendedor;CPF do Vendedor;"
+            + "Código do Produto;Produto;Valor do Pedido;Categoria;CNPJ do Fornecedor;"
+            + "Nome do Fornecedor;Razão Social do Fornecedor";
     }
 
     public String gerarCsv(String dataInicial, String dataFinal) throws JsonProcessingException {
@@ -46,37 +46,40 @@ public class RelatorioCsvService {
                 resposta = exportarCsvRepository.exportarCsvComFiltroDeData(dataInicial, dataFinal, usuarioLogado.getId());
             }
         }
+        return criarStringCsv(resposta);
+    }
+
+    @SuppressWarnings({"checkstyle:methodlength"})
+    private String criarStringCsv(List<ExportarCsvDto> resposta) {
         AtomicReference<String> dadosVenda = new AtomicReference<>(gerarCabecalho() + "\n");
         resposta
             .forEach(
                 registro -> {
-                    dadosVenda.set(dadosVenda.get() +
-                            registro.getNome_vendedor() + ";" +
-                            registro.getCpf_vendedor() + ";" +
-                            registro.getEmail_vendedor() + ";" +
-                            registro.getEndereco_vendedor() + ";" +
-                            registro.getCidade() + ";" +
-                            registro.getEstado() + ";" +
-                            registro.getRegiao() + ";" +
-                            registro.getUsuario_vendedor() + ";" +
-                            registro.getCodigo_venda() + ";" +
-                            registro.getQuantidade_itens() + ";" +
-                            registro.getData_venda() + ";" +
-                            registro.getSituacao_venda() + ";" +
-                            registro.getAprovacao_venda() + ";" +
-                            registro.getCliente_nome() + ";" +
-                            registro.getCliente_email() + ";" +
-                            registro.getCliente_cpf() + ";" +
-                            registro.getCodigo_produto() + ";" +
-                            registro.getProduto() + ";" +
-                            registro.getValor_pedido() + ";" +
-                            registro.getCategoria() + ";" +
-                            registro.getCnpj_fornecedor() + ";" +
-                            registro.getFornecedor_nome_fantasia() + ";" +
-                            registro.getRazao_social_fornecedor() + ";\n");
-                }
-            );
+                    dadosVenda.set(dadosVenda.get()
+                        + ";" + registro.getNomeVendedor()
+                        + ";" + registro.getCpfVendedor()
+                        + ";" + registro.getEmailVendedor()
+                        + ";" + registro.getEnderecoVendedor()
+                        + ";" + registro.getCidade()
+                        + ";" + registro.getEstado()
+                        + ";" + registro.getRegiao()
+                        + ";" + registro.getUsuarioVendedor()
+                        + ";" + registro.getCodigoVenda()
+                        + ";" + registro.getQuantidadeItens()
+                        + ";" + registro.getDataVenda()
+                        + ";" + registro.getSituacaoVenda()
+                        + ";" + registro.getAprovacaoVenda()
+                        + ";" + registro.getClienteNome()
+                        + ";" + registro.getClienteEmail()
+                        + ";" + registro.getClienteCpf()
+                        + ";" + registro.getCodigoProduto()
+                        + ";" + registro.getProduto()
+                        + ";" + registro.getValorPedido()
+                        + ";" + registro.getCategoria()
+                        + ";" + registro.getCnpjFornecedor()
+                        + ";" + registro.getFornecedorNomeFantasia()
+                        + ";" + registro.getRazaoSocialFornecedor() + ";\n");
+                });
         return dadosVenda.get();
     }
-
 }

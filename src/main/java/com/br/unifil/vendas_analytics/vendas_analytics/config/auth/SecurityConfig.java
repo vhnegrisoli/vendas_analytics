@@ -40,22 +40,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         String[] permitAll = {
-                "/*",
-                "/oauth/authorize",
-                "/oauth/token",
-                "/oauth/confirm_access"
+            "/*",
+            "/oauth/authorize",
+            "/oauth/token",
+            "/oauth/confirm_access"
         };
 
         http
-                .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/oauth/token").permitAll()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .and()
-                .requestMatchers()
-                .antMatchers(permitAll)
-                .antMatchers(HttpMethod.OPTIONS, "/**")
-                .and().formLogin().disable()
-                .csrf().disable()
-                .headers().frameOptions().disable();
+            .authorizeRequests()
+            .antMatchers(HttpMethod.OPTIONS, "/oauth/token").permitAll()
+            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .and()
+            .requestMatchers()
+            .antMatchers(permitAll)
+            .antMatchers(HttpMethod.OPTIONS, "/**")
+            .and().formLogin().disable()
+            .csrf().disable()
+            .headers().frameOptions().disable();
     }
 }

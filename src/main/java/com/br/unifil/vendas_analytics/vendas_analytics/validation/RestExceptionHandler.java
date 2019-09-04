@@ -11,7 +11,7 @@ import java.util.Date;
 public class RestExceptionHandler {
 
     @ExceptionHandler(ValidacaoException.class)
-    public ResponseEntity<?> handleResouseNotFoundException(ValidacaoException rfnException){
+    public ResponseEntity<?> handleResouseNotFoundException(ValidacaoException rfnException) {
         ValidacaoExceptionDetails resourceNotFoundDetails = new ValidacaoExceptionDetails();
         resourceNotFoundDetails.setTitle("Recurso não encontrado");
         resourceNotFoundDetails.setTimestamp(new Date().getTime());
@@ -19,5 +19,4 @@ public class RestExceptionHandler {
         resourceNotFoundDetails.setDetails(rfnException.getMessage());
         return new ResponseEntity<>(resourceNotFoundDetails, HttpStatus.NOT_FOUND);
     }
-
 }

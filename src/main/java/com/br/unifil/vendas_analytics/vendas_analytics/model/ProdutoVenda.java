@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "produto_venda")
-public class ProdutoVenda implements Serializable{
+public class ProdutoVenda implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -82,14 +82,18 @@ public class ProdutoVenda implements Serializable{
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProdutoVenda that = (ProdutoVenda) o;
-        return quantidade == that.quantidade &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(produto, that.produto) &&
-                Objects.equals(venda, that.venda);
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        ProdutoVenda that = (ProdutoVenda) object;
+        return quantidade == that.quantidade
+            && Objects.equals(id, that.id)
+            && Objects.equals(produto, that.produto)
+            && Objects.equals(venda, that.venda);
     }
 
     @Override

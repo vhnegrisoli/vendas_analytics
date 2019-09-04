@@ -16,7 +16,6 @@ import java.util.List;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
 
-
 @Service(value = "userService")
 public class UserServiceImpl extends UsuarioService implements UserDetailsService {
 
@@ -26,7 +25,7 @@ public class UserServiceImpl extends UsuarioService implements UserDetailsServic
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByEmailAndSituacao(email, ATIVO)
-                .orElseThrow(() -> new ValidacaoException(""));
+            .orElseThrow(() -> new ValidacaoException(""));
         return new org.springframework.security.core.userdetails.User(usuario.getEmail(), usuario.getSenha(), getAuthority());
     }
 

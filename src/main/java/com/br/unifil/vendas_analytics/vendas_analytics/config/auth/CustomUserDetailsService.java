@@ -23,22 +23,21 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         return usuarioRepository
-                .findByEmailAndSituacao(email, ATIVO)
-                .map(usuario -> {
-                     List<GrantedAuthority> permissoes = AuthorityUtils
-                         .createAuthorityList("ROLE_" + usuario.getPermissoesUsuario().getPermissao().name());
-                    return new User(
-                            usuario.getEmail(),
-                            encoder.encode(usuario.getSenha()),
-                            permissoes);
-                    }
-                ).orElseThrow(() -> new ValidacaoException("Usuário ou senha inválidos, tente novamente."));
-
+            .findByEmailAndSituacao(email, ATIVO)
+            .map(usuario -> {
+                List<GrantedAuthority> permissoes = AuthorityUtils
+                    .createAuthorityList("ROLE_" + usuario.getPermissoesUsuario().getPermissao().name());
+                return new User(
+                    usuario.getEmail(),
+                    encoder.encode(usuario.getSenha()),
+                    permissoes);
+                }
+            ).orElseThrow(() -> new ValidacaoException("Usuário ou senha inválidos, tente novamente."));
     }
 }
