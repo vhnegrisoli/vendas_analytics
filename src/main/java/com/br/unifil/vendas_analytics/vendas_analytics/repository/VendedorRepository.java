@@ -12,6 +12,10 @@ public interface VendedorRepository extends JpaRepository<Vendedor, Integer> {
 
     Optional<Vendedor> findByEmail(String email);
 
+    Boolean existsByEmail(String email);
+
+    Boolean existsByCpf(String cpf);
+
     List<Vendedor> findByIdIn(List<Integer> ids);
 
 }

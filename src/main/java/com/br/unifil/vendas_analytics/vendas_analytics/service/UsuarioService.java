@@ -6,12 +6,10 @@ import com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEn
 import com.br.unifil.vendas_analytics.vendas_analytics.model.PermissoesUsuario;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.RelatoriosPowerBi;
 import com.br.unifil.vendas_analytics.vendas_analytics.model.Usuario;
-import com.br.unifil.vendas_analytics.vendas_analytics.model.Vendedor;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.PermissoesUsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.PowerBiRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.UsuarioRepository;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorRepository;
-import com.br.unifil.vendas_analytics.vendas_analytics.validation.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.br.unifil.vendas_analytics.vendas_analytics.ExceptionMessage.UsuarioExceptionMessage.*;
+import static com.br.unifil.vendas_analytics.vendas_analytics.ExceptionMessage.VendedorExceptionMessage.VENDEDOR_NAO_ENCONTRADO;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.ADMIN;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUsuarioEnum.SUPER_ADMIN;
 import static com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao.ATIVO;
@@ -46,12 +46,6 @@ public abstract class UsuarioService {
     @Autowired
     private PermissoesUsuarioRepository permissoesUsuarioRepository;
 
-    private static final ValidacaoException USUARIO_NAO_EXISTENTE_EXCEPTION =
-        new ValidacaoException("O usuário não existe");
-
-    private static final ValidacaoException PERMISSAO_NOT_FOUND =
-        new ValidacaoException("Permissão não encontrada.");
-
     private static final List<PermissoesUsuarioEnum> PERMISSOES_ADMIN = Arrays.asList(ADMIN, SUPER_ADMIN);
 
     private static final Integer INDEX_ADMIN = 2;
@@ -59,7 +53,7 @@ public abstract class UsuarioService {
     private static final Integer INDEX_SUPER_ADMIN = 3;
 
     public void salvarUsuario(Usuario usuario) {
-        if (isNovoCadastro(usuario)) {
+        if (usuario.isNovoCadastro()) {
             usuario.setSituacao(ATIVO);
         }
         usuario.setDataCadastro(LocalDateTime.now());
@@ -71,12 +65,12 @@ public abstract class UsuarioService {
 
     public void validaUsuario(Usuario usuario) {
         validarVendedorExistente(usuario);
-        validaEmailClienteESituacao(usuario);
+        validaEmailVendedorESituacao(usuario);
     }
 
     public void validarVendedorExistente(Usuario usuario) {
         if (isEmpty(usuario.getVendedor().getId())) {
-            throw new ValidacaoException("É preciso ter um vendedor para cadastrar um novo usuário");
+            throw USUARIO_SEM_VENDEDOR.getException();
         }
     }
 
@@ -87,9 +81,9 @@ public abstract class UsuarioService {
     }
 
     public Usuario validarInativacao(Usuario usuario) {
-        if (!isNovoCadastro(usuario)) {
+        if (!usuario.isNovoCadastro()) {
             Usuario usuarioAntigo = usuarioRepository.findById(usuario.getId())
-                .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
+                .orElseThrow(USUARIO_NAO_ENCONTRADO::getException);
             if (!usuario.getSituacao().equals(usuarioAntigo.getSituacao())
                 && usuario.getSituacao().equals(INATIVO)) {
                 usuario.setSituacao(INATIVO);
@@ -99,18 +93,17 @@ public abstract class UsuarioService {
     }
 
     public Usuario validarAtivacao(Usuario usuario) {
-        if (!isNovoCadastro(usuario)) {
+        if (!usuario.isNovoCadastro()) {
             Usuario usuarioAntigo = usuarioRepository.findById(usuario.getId())
-                .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
-            List<Usuario> validaCliente = usuarioRepository.findByVendedorId(usuario.getVendedor().getId());
-            if (!validaCliente.isEmpty()) {
-                validaCliente.stream().filter(usuarioCliente -> usuarioCliente.getSituacao().equals(ATIVO)
-                    && usuario.getSituacao().equals(ATIVO)
-                    && !usuarioCliente.getId().equals(usuario.getId()))
-                    .forEach(cliente -> {
-                        throw new ValidacaoException("Este vendedor já possui um um usuário ATIVO, e não há "
-                            + "possibilidade de um vendedor ter mais de um usuário");
-                    });
+                .orElseThrow(USUARIO_NAO_ENCONTRADO::getException);
+            List<Usuario> usuarios = usuarioRepository.findByVendedorId(usuario.getVendedor().getId());
+            if (!usuarios.isEmpty()) {
+                usuarios.forEach(usuarioVendedor -> {
+                    if (usuario.getVendedor().getId().equals(usuarioVendedor.getId())
+                        && !usuario.getId().equals(usuarioVendedor.getId())) {
+                        throw USUARIO_COM_VENDEDOR.getException();
+                    }
+                });
             }
             if (!usuario.getSituacao().equals(usuarioAntigo.getSituacao()) && usuario.getSituacao().equals(ATIVO)) {
                 usuario.setSituacao(ATIVO);
@@ -119,18 +112,16 @@ public abstract class UsuarioService {
         return  usuario;
     }
 
-    public void validaEmailClienteESituacao(Usuario usuario) {
-        usuarioRepository.findByEmailAndSituacao(usuario.getEmail(), ATIVO)
-            .ifPresent(usuarioValidar -> {
-                if (isNovoCadastro(usuario) || !usuario.getId().equals(usuarioValidar.getId())) {
-                    throw new ValidacaoException("Não é possível inserir o usuário pois o email "
-                        + usuario.getEmail() + " já está cadastrado para um usuário ATIVO.");
-                }
-            });
+    public void validaEmailVendedorESituacao(Usuario usuario) {
+        Usuario usuarioValidar = usuarioRepository.findByEmail(usuario.getEmail())
+            .orElseThrow(USUARIO_NAO_ENCONTRADO::getException);
+        if (usuario.isNovoCadastro() || !usuario.getId().equals(usuarioValidar.getId())) {
+            throw USUARIO_EMAIL_JA_CADASTRADO.getException();
+        }
     }
 
     public Usuario verificarDataUltimoAcesso(Usuario usuario) {
-        if (!isNovoCadastro(usuario)) {
+        if (!usuario.isNovoCadastro()) {
             usuarioRepository.findById(usuario.getId()).ifPresent(usuarioExistente -> {
                 if (!isEmpty(usuarioExistente.getUltimoAcesso())) {
                     usuario.setUltimoAcesso(usuarioExistente.getUltimoAcesso());
@@ -140,24 +131,17 @@ public abstract class UsuarioService {
         return usuario;
     }
 
-    public boolean isNovoCadastro(Usuario usuario) {
-        return isEmpty(usuario.getId());
-    }
-
     public void removerUsuario(Integer id) {
         if (!getIdsPermitidos().contains(id)) {
-            throw new ValidacaoException("Você não tem permissão para remover esse usuário");
+            throw USUARIO_SEM_PERMISSAO_REMOVER.getException();
         }
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(USUARIO_NAO_ENCONTRADO::getException);
         List<RelatoriosPowerBi> relatorios = powerBiRepository.findByUsuario(usuario);
-        Vendedor vendedor = vendedorRepository.findById(usuario.getVendedor().getId())
-            .orElseThrow(() -> new ValidacaoException("Vendedor não identificado."));
+        vendedorRepository.findById(usuario.getVendedor().getId()).orElseThrow((VENDEDOR_NAO_ENCONTRADO::getException));
         if (usuario.getSituacao().equals(ATIVO)) {
-            throw new ValidacaoException("Não é possível remover esse usuário pois ele está ativo para o vendedor "
-                + vendedor.getNome() + ".");
+            throw USUARIO_ATIVO.getException();
         } else if (!relatorios.isEmpty()) {
-            throw new ValidacaoException("Não é possível remover o usuário " + usuario.getNome() + " pois esse"
-                + " usuário está vinculado aos relatórios: " + getNomes(relatorios));
+            throw USUARIO_COM_RELATORIOS.getException();
         } else {
             usuarioRepository.delete(usuario);
         }
@@ -183,10 +167,10 @@ public abstract class UsuarioService {
                 email = (((UserDetails)principal).getUsername());
             }
         } catch (Exception ex) {
-            throw new ValidacaoException("Não há uma sessão de usuário ativa.");
+            throw USUARIO_SEM_SESSAO.getException();
         }
         Usuario usuario = usuarioRepository.findByEmailAndSituacao(email, ATIVO)
-            .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
+            .orElseThrow(USUARIO_NAO_ENCONTRADO::getException);
         return new UsuarioAutenticadoDto(usuario.getId(), usuario.getNome(), usuario.getEmail(),
             usuario.getPermissoesUsuario());
     }
@@ -221,19 +205,19 @@ public abstract class UsuarioService {
         buscarTodos()
             .forEach(usuario -> usuariosPermitidos.add(usuario.getId()));
         if (!usuariosPermitidos.contains(id)) {
-            throw new ValidacaoException("Você não tem permissão para ver esse usuário.");
+            throw USUARIO_SEM_PERMISSAO_VISUALIZAR.getException();
         }
         return usuarioRepository.findById(id)
-            .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
+            .orElseThrow(USUARIO_NAO_ENCONTRADO::getException);
     }
 
     public List<Usuario> buscarAdministradores() {
         UsuarioAutenticadoDto usuarioLogado = getUsuarioLogado();
         List<Usuario> usuarios;
         PermissoesUsuario admin = permissoesUsuarioRepository.findById(INDEX_ADMIN)
-            .orElseThrow(() -> PERMISSAO_NOT_FOUND);
+            .orElseThrow(PERMISSAO_NAO_ENCONTRADA::getException);
         PermissoesUsuario superAdmin = permissoesUsuarioRepository.findById(INDEX_SUPER_ADMIN)
-            .orElseThrow(() -> PERMISSAO_NOT_FOUND);
+            .orElseThrow(PERMISSAO_NAO_ENCONTRADA::getException);
         if (usuarioLogado.isSuperAdmin()) {
             usuarios = usuarioRepository.findByPermissoesUsuarioInAndSituacao(Arrays.asList(admin, superAdmin), ATIVO);
         } else {
@@ -246,16 +230,16 @@ public abstract class UsuarioService {
     @Transactional
     public Usuario atualizarUltimoAcesso(Integer id) {
         if (!getIdsPermitidos().contains(id)) {
-            throw new ValidacaoException("Você não tem permissão para atualizar o último acesso desse usuário");
+            throw USUARIO_SEM_PERMISSAO_ATUALIZAR_ULTIMO_ACESSO.getException();
         }
         usuarioRepository.atualizarUltimoAcessoUsuario(LocalDateTime.now(), id);
-        return usuarioRepository.findById(id).orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
+        return usuarioRepository.findById(id).orElseThrow(USUARIO_NAO_ENCONTRADO::getException);
     }
 
     @Transactional
     public void alterarSenhaUsuario(UsuarioAlteracaoSenhaDto usuarioAlteracaoSenhaDto) {
         if (!getIdsPermitidos().contains(usuarioAlteracaoSenhaDto.getUsuarioId())) {
-            throw new ValidacaoException("Você não tem permissão para atualizar a senha desse usuário");
+            throw USUARIO_SEM_PERMISSAO_ATUALIZAR_SENHA.getException();
         }
         usuarioRepository.atualizarSenha(usuarioAlteracaoSenhaDto.getNovaSenha(),
             usuarioAlteracaoSenhaDto.getUsuarioId());

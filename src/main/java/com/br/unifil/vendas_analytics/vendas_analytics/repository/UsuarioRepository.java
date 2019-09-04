@@ -19,6 +19,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     Optional<Usuario> findByEmailAndSituacao(String email, UsuarioSituacao situacao);
 
+    Optional<Usuario> findByEmail(String email);
+
     List<Usuario> findByPermissoesUsuarioAndSituacao(PermissoesUsuario permissoesUsuario,
                                                            UsuarioSituacao usuarioSituacao);
 

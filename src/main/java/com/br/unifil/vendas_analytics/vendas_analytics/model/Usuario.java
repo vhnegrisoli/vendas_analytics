@@ -1,6 +1,7 @@
 package com.br.unifil.vendas_analytics.vendas_analytics.model;
 
 import com.br.unifil.vendas_analytics.vendas_analytics.enums.UsuarioSituacao;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Entity
 @Table(name = "usuario")
@@ -64,4 +67,9 @@ public class Usuario {
     @Column(name = "ultimo_acesso")
     @Basic
     private LocalDateTime ultimoAcesso;
+
+    @JsonIgnore
+    public boolean isNovoCadastro() {
+        return isEmpty(this.id);
+    }
 }

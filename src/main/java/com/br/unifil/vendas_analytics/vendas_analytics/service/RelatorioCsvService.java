@@ -3,11 +3,9 @@ package com.br.unifil.vendas_analytics.vendas_analytics.service;
 import com.br.unifil.vendas_analytics.vendas_analytics.config.UsuarioAutenticadoDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.dto.ExportarCsvDto;
 import com.br.unifil.vendas_analytics.vendas_analytics.repository.ExportarCsvRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -30,9 +28,9 @@ public class RelatorioCsvService {
             + "Nome do Fornecedor;Razao Social do Fornecedor";
     }
 
-    public String gerarCsv(String dataInicial, String dataFinal) throws JsonProcessingException {
+    public String gerarCsv(String dataInicial, String dataFinal) {
         UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
-        List<ExportarCsvDto> resposta = new ArrayList<>();
+        List<ExportarCsvDto> resposta;
         if (usuarioLogado.isSuperAdmin()) {
             if (isEmpty(dataInicial) || isEmpty(dataFinal)) {
                 resposta = exportarCsvRepository.exportarCsvSuperAdminCompleto();
