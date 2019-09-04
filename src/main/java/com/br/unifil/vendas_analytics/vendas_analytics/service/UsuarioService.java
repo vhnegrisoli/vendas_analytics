@@ -187,7 +187,7 @@ public abstract class UsuarioService {
         }
         Usuario usuario = usuarioRepository.findByEmailAndSituacao(email, ATIVO)
             .orElseThrow(() -> USUARIO_NAO_EXISTENTE_EXCEPTION);
-        return new UsuarioAutenticadoDto(usuario.getId(), usuario.getEmail(), usuario.getNome(),
+        return new UsuarioAutenticadoDto(usuario.getId(), usuario.getNome(), usuario.getEmail(),
             usuario.getPermissoesUsuario());
     }
 

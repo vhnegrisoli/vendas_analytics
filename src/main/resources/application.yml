@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://sqlvhnegrisoli.ddns.net:1433;databaseName=vendas_analytics
+    #datasource:
+    #url: jdbc:sqlserver://DESKTOP-E1IE22V\\USUARIO:1433;databaseName=vendas_analytics
+    username: sqluser1
+    password: 1y5h8j
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+    database: SQL_SERVER
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+security:
+  basic:
+    enable: false
+  oauth2:
+    resource:
+      filter-order: 3
+
+oauth-clients:
+  vendas_analytics:
+    client: vendas_analytics-client
+    secret: vendas_analytics-secret
