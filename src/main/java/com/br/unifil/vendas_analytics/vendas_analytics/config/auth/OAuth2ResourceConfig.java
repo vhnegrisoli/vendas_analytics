@@ -15,6 +15,7 @@ import static com.br.unifil.vendas_analytics.vendas_analytics.enums.PermissoesUs
 public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
 
     @Override
+    @SuppressWarnings({"checkstyle:methodlength"})
     public void configure(HttpSecurity http) throws Exception {
         String[] permitAll = {
             "/login/**",

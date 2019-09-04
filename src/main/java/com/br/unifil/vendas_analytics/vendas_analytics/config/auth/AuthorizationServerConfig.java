@@ -25,6 +25,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     private static final String APPLICATION_CLIENT = "vendas_analytics-client";
     private static final String APPLICATION_SECRET = "vendas_analytics-secret";
+    private static final Integer TOKEN_VALIDITY_SECONDS = 500000;
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
@@ -44,7 +45,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
             .authorities(SUPER_ADMIN.name(), ADMIN.name(), USER.name())
             .scopes("read", "write", "trust")
             .resourceIds("oauth2-resource")
-            .accessTokenValiditySeconds(500000);
+            .accessTokenValiditySeconds(TOKEN_VALIDITY_SECONDS);
     }
 
     @Override

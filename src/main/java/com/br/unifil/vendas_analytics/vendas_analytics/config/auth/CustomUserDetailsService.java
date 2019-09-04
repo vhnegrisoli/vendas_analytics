@@ -37,7 +37,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                     usuario.getEmail(),
                     encoder.encode(usuario.getSenha()),
                     permissoes);
-                }
-            ).orElseThrow(() -> new ValidacaoException("Usuário ou senha inválidos, tente novamente."));
+            }).orElseThrow(() -> new ValidacaoException("Usuário ou senha inválidos, tente novamente."));
     }
 }
