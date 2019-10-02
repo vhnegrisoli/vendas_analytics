@@ -50,16 +50,16 @@ public class VendaService {
     @Autowired
     private RelatoriosRepository relatoriosRepository;
 
+    @Transactional
     public void save(Venda venda) {
-        venda = insereData(venda);
-        venda = validaVendaAguardandoAprovacao(venda);
-        Venda vendaCadastrar = venda;
+        insereData(venda);
+        validaVendaAguardandoAprovacao(venda);
         validarProdutosEVendedoresNulos(venda);
-        vendaCadastrar.setProdutos(null);
         validarVendedorComUsuarioAtivo(venda.getVendedor());
-        vendaRepository.save(vendaCadastrar);
         List<ProdutoVenda> produtos = venda.getProdutos();
-        saveVendaProduto(vendaCadastrar, produtos);
+        venda.setProdutos(null);
+        vendaRepository.save(venda);
+        saveVendaProduto(venda, produtos);
     }
 
     public void saveVendaProduto(Venda vendaCadastrar, List<ProdutoVenda> produtos) {
