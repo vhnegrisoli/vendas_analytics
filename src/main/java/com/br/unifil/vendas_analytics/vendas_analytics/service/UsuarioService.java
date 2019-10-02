@@ -113,11 +113,12 @@ public abstract class UsuarioService {
     }
 
     public void validaEmailVendedorESituacao(Usuario usuario) {
-        Usuario usuarioValidar = usuarioRepository.findByEmail(usuario.getEmail())
-            .orElseThrow(USUARIO_NAO_ENCONTRADO::getException);
-        if (usuario.isNovoCadastro() || !usuario.getId().equals(usuarioValidar.getId())) {
-            throw USUARIO_EMAIL_JA_CADASTRADO.getException();
-        }
+        usuarioRepository.findByEmail(usuario.getEmail())
+            .ifPresent(usuarioValidar -> {
+                if (usuario.isNovoCadastro() || !usuario.getId().equals(usuarioValidar.getId())) {
+                    throw USUARIO_EMAIL_JA_CADASTRADO.getException();
+                }
+            });
     }
 
     public Usuario verificarDataUltimoAcesso(Usuario usuario) {
