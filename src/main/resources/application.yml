@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://sqlvhnegrisoli.ddns.net:5432/vendas_analytics
-    username: postgres
-    password: 1y5h8j
+    jdbc-url: jdbc:postgresql://ec2-23-21-129-125.compute-1.amazonaws.com:5432/d2b9hl5rvllubs
+    username: hoizfkboifmoes
+    password: 264185c6ff383ab7d29d2e633b01e4b0b519977e31423bb73144dab7408257c7
     initialization-mode: always
     initialize: true
     continue-on-error: true
