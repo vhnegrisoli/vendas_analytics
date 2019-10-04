@@ -28,7 +28,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class Venda implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
     @Column(name = "data_compra")

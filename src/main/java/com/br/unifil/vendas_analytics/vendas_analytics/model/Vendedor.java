@@ -21,7 +21,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class Vendedor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
     @NotNull

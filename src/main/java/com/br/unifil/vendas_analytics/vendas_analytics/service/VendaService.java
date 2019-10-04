@@ -82,7 +82,7 @@ public class VendaService {
         String mes = date.getMonth().getDisplayName(TextStyle.FULL, new Locale("pt"));
         LocalDateTime dataCompra = LocalDateTime.now();
         venda.setDataCompra(dataCompra);
-        venda.setMesCompra(mes);
+        venda.setMesCompra(mes.toUpperCase());
         return venda;
     }
 

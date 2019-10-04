@@ -16,12 +16,12 @@ public class DatabaseConfig {
     }
 
     @Bean
-    public DataSource sqlServerDataSource() {
+    public DataSource postgreSqlDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        dataSource.setUrl("jdbc:sqlserver://sqlvhnegrisoli.ddns.net:1433;databaseName=vendas_analytics");
-        //dataSource.setUrl("jdbc:sqlserver://DESKTOP-E1IE22V\\USUARIO:1433;databaseName=vendas_analytics");
-        dataSource.setUsername("sqluser1");
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        //dataSource.setUrl("jdbc:postgresql://localhost:5432/nutricao_esportiva");
+        dataSource.setUrl("jdbc:postgresql://sqlvhnegrisoli.ddns.net:5432/vendas_analytics");
+        dataSource.setUsername("postgres");
         dataSource.setPassword("1y5h8j");
         return dataSource;
     }

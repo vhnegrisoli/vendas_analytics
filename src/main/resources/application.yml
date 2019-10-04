@@ -1,21 +1,24 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://sqlvhnegrisoli.ddns.net:1433;databaseName=vendas_analytics
-    #datasource:
-    #url: jdbc:sqlserver://DESKTOP-E1IE22V\\USUARIO:1433;databaseName=vendas_analytics
-    username: sqluser1
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://sqlvhnegrisoli.ddns.net:5432/vendas_analytics
+    #url: jdbc:postgresql://localhost:5432/nutricao_esportiva
+    username: postgres
     password: 1y5h8j
-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    initialization-mode: always
+    initialize: true
+    continue-on-error: true
+
   jpa:
+    hibernate:
+      ddl-auto: none
+      format_sql: true
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.SQLServer2012Dialect
-    database: SQL_SERVER
-  jackson:
-    serialization:
-      fail-on-empty-beans: false
+        dialect: org.hibernate.dialect.PostgreSQL9Dialect
+        jdbc:
+          lob.non_contextual_creation: true
 
 security:
   basic:
