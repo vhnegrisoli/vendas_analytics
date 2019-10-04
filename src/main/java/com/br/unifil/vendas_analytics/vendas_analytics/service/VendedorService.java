@@ -105,13 +105,16 @@ public class VendedorService {
     }
 
     private void validarDataNascimento(Vendedor vendedor) {
-        if (vendedor.isNovoCadastro() && isEmpty(vendedor.getDataNascimento())) {
-            throw VENDEDOR_SEM_DATA_NASCIMENTO.getException();
-        }
-        Vendedor vendedorExistente = vendedorRepository.findById(vendedor.getId())
-            .orElseThrow(VENDEDOR_NAO_ENCONTRADO::getException);
-        if (isEmpty(vendedor.getDataNascimento())) {
-            vendedor.setDataNascimento(vendedorExistente.getDataNascimento());
+        if (vendedor.isNovoCadastro()) {
+            if (isEmpty(vendedor.getDataNascimento())) {
+                throw VENDEDOR_SEM_DATA_NASCIMENTO.getException();
+            }
+        } else {
+            Vendedor vendedorExistente = vendedorRepository.findById(vendedor.getId())
+                .orElseThrow(VENDEDOR_NAO_ENCONTRADO::getException);
+            if (isEmpty(vendedor.getDataNascimento())) {
+                vendedor.setDataNascimento(vendedorExistente.getDataNascimento());
+            }
         }
     }
 

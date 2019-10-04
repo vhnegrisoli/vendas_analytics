@@ -85,6 +85,6 @@ public class Vendedor {
 
     @JsonIgnore
     public boolean isNovoCadastro() {
-        return isEmpty(this.id);
+        return isEmpty(id);
     }
 }
