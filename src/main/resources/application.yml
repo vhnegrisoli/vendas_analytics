@@ -1,15 +1,19 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://sqlvhnegrisoli.ddns.net:5432/vendas_analytics
-    #url: jdbc:postgresql://localhost:5432/nutricao_esportiva
+    jdbc-url: jdbc:postgresql://sqlvhnegrisoli.ddns.net:5432/vendas_analytics
     username: postgres
     password: 1y5h8j
     initialization-mode: always
     initialize: true
     continue-on-error: true
+    platform: postgresql
+
+  jackson:
+    time-zone: America/Sao_Paulo
 
   jpa:
+    database: POSTGRESQL
     hibernate:
       ddl-auto: none
       format_sql: true
