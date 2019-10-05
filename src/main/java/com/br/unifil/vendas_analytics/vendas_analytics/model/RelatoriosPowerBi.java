@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "RELATORIOS_POWER_BI")
+@Table(name = "relatorios_power_bi")
 public class RelatoriosPowerBi {
 
     @Id

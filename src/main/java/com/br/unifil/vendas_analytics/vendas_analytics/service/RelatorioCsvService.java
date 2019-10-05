@@ -6,6 +6,8 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.ExportarCsvRep
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -64,7 +66,7 @@ public class RelatorioCsvService {
                         + ";" + validarCampoStringNulo(registro.getUsuarioVendedor())
                         + ";" + validarCampoIntegerNulo(registro.getCodigoVenda())
                         + ";" + validarCampoIntegerNulo(registro.getQuantidadeItens())
-                        + ";" + validarCampoStringNulo(registro.getDataVenda())
+                        + ";" + validarData(validarCampoStringNulo(registro.getDataVenda()))
                         + ";" + validarCampoStringNulo(registro.getSituacaoVenda())
                         + ";" + validarCampoStringNulo(registro.getAprovacaoVenda())
                         + ";" + validarCampoStringNulo(registro.getClienteNome())
@@ -86,6 +88,11 @@ public class RelatorioCsvService {
             return "";
         }
         return campo;
+    }
+
+    private String validarData(String data) {
+        return data.equals("") ? ""
+            : LocalDateTime.parse(data.replace(" ", "T")).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     }
 
     private String validarCampoIntegerNulo(Integer campo) {
