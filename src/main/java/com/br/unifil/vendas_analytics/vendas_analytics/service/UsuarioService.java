@@ -13,6 +13,7 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.VendedorReposi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -32,19 +33,18 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
-public abstract class UsuarioService {
+public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-
     @Autowired
     private VendedorRepository vendedorRepository;
-
     @Autowired
     private PowerBiRepository powerBiRepository;
-
     @Autowired
     private PermissoesUsuarioRepository permissoesUsuarioRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private static final List<PermissoesUsuarioEnum> PERMISSOES_ADMIN = Arrays.asList(ADMIN, SUPER_ADMIN);
 
@@ -60,6 +60,7 @@ public abstract class UsuarioService {
         validaUsuario(usuario);
         usuario = validarTrocaDeSituacao(usuario);
         usuario = verificarDataUltimoAcesso(usuario);
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuarioRepository.save(usuario);
     }
 
@@ -148,18 +149,6 @@ public abstract class UsuarioService {
         }
     }
 
-    public List<String> getNomes(List<RelatoriosPowerBi> relatorios) {
-        ArrayList<String> relatoriosNomes =  new ArrayList<>();
-        AtomicInteger index = new AtomicInteger(1);
-        relatorios.forEach(
-            relatorio -> {
-                relatoriosNomes.add(index + " - " + relatorio.getTitulo());
-                index.getAndIncrement();
-            }
-        );
-        return relatoriosNomes;
-    }
-
     public UsuarioAutenticadoDto getUsuarioLogado() {
         String email = "";
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -242,7 +231,7 @@ public abstract class UsuarioService {
         if (!getIdsPermitidos().contains(usuarioAlteracaoSenhaDto.getUsuarioId())) {
             throw USUARIO_SEM_PERMISSAO_ATUALIZAR_SENHA.getException();
         }
-        usuarioRepository.atualizarSenha(usuarioAlteracaoSenhaDto.getNovaSenha(),
+        usuarioRepository.atualizarSenha(passwordEncoder.encode(usuarioAlteracaoSenhaDto.getNovaSenha()),
             usuarioAlteracaoSenhaDto.getUsuarioId());
     }
 }
