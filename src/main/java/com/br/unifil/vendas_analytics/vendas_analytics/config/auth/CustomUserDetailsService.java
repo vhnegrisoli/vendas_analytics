@@ -8,8 +8,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +21,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    private PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
@@ -35,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .createAuthorityList("ROLE_" + usuario.getPermissoesUsuario().getPermissao().name());
                 return new User(
                     usuario.getEmail(),
-                    encoder.encode(usuario.getSenha()),
+                    usuario.getSenha(),
                     permissoes);
             }).orElseThrow(USUARIO_ACESSO_INVALIDO::getException);
     }
