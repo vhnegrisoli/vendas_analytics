@@ -232,6 +232,6 @@ public class UsuarioService {
             throw USUARIO_SEM_PERMISSAO_ATUALIZAR_SENHA.getException();
         }
         usuarioRepository.atualizarSenha(passwordEncoder.encode(usuarioAlteracaoSenhaDto.getNovaSenha()),
-            usuarioAlteracaoSenhaDto.getUsuarioId());
+            LocalDateTime.now(), usuarioAlteracaoSenhaDto.getUsuarioId());
     }
 }

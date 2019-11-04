@@ -32,6 +32,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     void atualizarUltimoAcessoUsuario(LocalDateTime ultimoAcesso, Integer id);
 
     @Modifying
-    @Query(value = "update Usuario a set a.senha = :senha where a.id = :id")
-    void atualizarSenha(String senha, Integer id);
+    @Query(value = "update Usuario a set a.senha = :senha, a.ultimoAcesso = :ultimoAcesso where a.id = :id")
+    void atualizarSenha(String senha, LocalDateTime ultimoAcesso, Integer id);
 }
