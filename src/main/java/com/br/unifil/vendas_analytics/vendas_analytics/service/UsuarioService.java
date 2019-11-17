@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.br.unifil.vendas_analytics.vendas_analytics.ExceptionMessage.UsuarioExceptionMessage.*;
 import static com.br.unifil.vendas_analytics.vendas_analytics.ExceptionMessage.VendedorExceptionMessage.VENDEDOR_NAO_ENCONTRADO;
