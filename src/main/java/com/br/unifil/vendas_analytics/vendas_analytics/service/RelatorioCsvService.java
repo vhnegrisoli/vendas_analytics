@@ -6,8 +6,10 @@ import com.br.unifil.vendas_analytics.vendas_analytics.repository.ExportarCsvRep
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -30,9 +32,13 @@ public class RelatorioCsvService {
             + "Nome do Fornecedor;Razao Social do Fornecedor";
     }
 
+    @SuppressWarnings("MethodLength")
     public String gerarCsv(String dataInicial, String dataFinal) {
         UsuarioAutenticadoDto usuarioLogado = usuarioService.getUsuarioLogado();
         List<ExportarCsvDto> resposta;
+        if (LocalDate.parse(dataFinal).equals(LocalDate.now())) {
+            dataFinal = LocalDate.now().plusDays(1).toString();
+        }
         if (usuarioLogado.isSuperAdmin()) {
             if (isEmpty(dataInicial) || isEmpty(dataFinal)) {
                 resposta = exportarCsvRepository.exportarCsvSuperAdminCompleto();
